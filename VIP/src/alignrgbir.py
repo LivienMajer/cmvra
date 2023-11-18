@@ -236,9 +236,13 @@ import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
 from info_nce_pytorch import InfoNCE
-
-model = torch.nn.DataParallel(model, device_ids=[0,1]).cuda()  # Assuming GPUs 3 and 4 are available
-ir_model = torch.nn.DataParallel(ir_model, device_ids=[0,1]).cuda()
+print('count',torch.cuda.device_count())
+model = model.cuda(5)
+ir_model = ir_model.cuda(5)
+model = torch.nn.DataParallel(model, device_ids=[5,7])  # Assuming GPUs 3 and 4 are available
+ir_model = torch.nn.DataParallel(ir_model, device_ids=[5,7])
+for name, param in model.module.named_parameters():
+        print(name, param.device)
 # Hyperparameters
 learning_rate = 0.0001
 num_epochs = 10
@@ -301,6 +305,6 @@ for epoch in range(num_epochs):
         # Save the best model (optional)
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
-            torch.save(ir_model.state_dict(), 'best_ir_encoder2.pth')
+            torch.save(ir_model.state_dict(), 'best_ir_encoder3.pth')
 
 print("Training complete!")

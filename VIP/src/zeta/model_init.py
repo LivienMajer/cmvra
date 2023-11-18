@@ -11,32 +11,28 @@ class SimpleNamespace:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
-def initialize_vip_encoder(config_path, weights_path, modality='rgb', freeze=True):
-
-    # Load configuration
-    with open(config_path) as f:
-        config = json.load(f)
+def initialize_vip_encoder(config, modality='rgb', freeze=True):
 
     # Create an 'args' object from the configuration
     args = edict({
         "clip_config": config["clip_config"],
         "clip_weights": config["clip_weights"],
         "clip_vision_additional_config": edict(config["clip_vision_additional_config"]),
-        "e2e_weights_path": config["e2e_weights_path"]
+        "e2e_weights_path": "path/to/CLIP-ViP-B/16/checkpoint"
     })
 
     # Initialize the model instance
     model_instance = VidCLIP(args)
-    print(model_instance)
+    
 
     # Load model weights
-    ckpt = torch.load(weights_path)
+    ckpt = torch.load(config["e2e_weights_path"])
     model_instance.load_state_dict(ckpt)
 
     # Load the base CLIPConfig
     clipconfig = CLIPVisionConfig.from_pretrained(args.clip_config)
 
-    additional_vision_config_obj = SimpleNamespace(**config["additional_vision_config"])
+    additional_vision_config_obj = SimpleNamespace(**config["clip_vision_additional_config"])
     setattr(clipconfig, "additional_vision_config", additional_vision_config_obj)
 
     # Initialize the CLIPVisionModel
@@ -76,7 +72,7 @@ def initalize_aligned_encoder(config_path, weights_path, modality='rgb', freeze=
         "clip_config": config["clip_config"],
         "clip_weights": config["clip_weights"],
         "clip_vision_additional_config": edict(config["clip_vision_additional_config"]),
-        "e2e_weights_path": config["e2e_weights_path"]
+        "e2e_weights_path": "path/to/CLIP-ViP-B/16/checkpoint"
     })
 
     # Load the base CLIPConfig
@@ -118,6 +114,21 @@ class CLIPVisionModel(CLIPPreTrainedModel):
     
 
 class MultiModalityModel(nn.Module):
+    """
+    A multi-modality model that integrates different modality encoders and classifiers for each modality.
+
+    This model supports processing multiple modalities (e.g., text, image, audio) by utilizing specific
+    encoders for each modality and applies a linear classifier for each to predict the class labels.
+
+    Attributes:
+        modalities_encoders (nn.ModuleDict): A dictionary of encoder modules for different modalities.
+        num_classes (int): Number of classes for the classification task.
+        in_features (int): Number of input features for the linear classifiers.
+
+    Methods:
+        forward_encoder: Processes the input through the encoder of the specified modality.
+        forward_classifier: Processes the input through both the encoder and classifier of the specified modality.
+    """
     def __init__(self, modalities_encoders, num_classes, in_features):
         super(MultiModalityModel, self).__init__()
         self.modalities_encoders = nn.ModuleDict(modalities_encoders)

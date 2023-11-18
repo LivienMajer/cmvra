@@ -4,8 +4,20 @@ import torch.optim as optim
 from tqdm import tqdm
 from info_nce_pytorch import InfoNCE
 import logging
+import os
+from datetime import datetime
+from glob import glob
+import json
 
-def align_modalities_process(multi_modality_model, train_loader, val_loader, num_epochs=10, learning_rate=0.0001, temperature=0.1):
+def align_modalities_process(multi_modality_model, 
+                             train_loader, 
+                             val_loader, 
+                             num_epochs=10, 
+                             learning_rate=0.0001, 
+                             temperature=0.1, 
+                             resume_from_checkpoint=False, 
+                             checkpoint_dir='/home/bas06400/Thesis/VIP/src/align_checkpoints',
+                             config=None):
     """
     Train and validate a multi-modality model.
 
@@ -17,6 +29,19 @@ def align_modalities_process(multi_modality_model, train_loader, val_loader, num
     :param learning_rate: Learning rate for the optimizer.
     :param temperature: Temperature parameter for InfoNCE loss.
     """
+    modalities = '_'.join(config['modalities'])
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
+    checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
+    stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
+
+    # Function to find the latest checkpoint
+    def find_latest_checkpoint():
+        list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
+        if list_of_files:
+            return max(list_of_files, key=os.path.getctime)
+        return None
+
 
     # Initialize the optimizer and loss function
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
@@ -24,11 +49,26 @@ def align_modalities_process(multi_modality_model, train_loader, val_loader, num
 
     # Placeholder for best validation loss
     best_val_loss = float('inf')
+    start_epoch = 0
+    training_stats = {"epochs": [], "train_loss": [], "val_loss": []}
+
+    if resume_from_checkpoint:
+        latest_checkpoint_path = find_latest_checkpoint()
+        if latest_checkpoint_path:
+            logging.info(f"Resuming from checkpoint: {latest_checkpoint_path}")
+            checkpoint = torch.load(latest_checkpoint_path)
+            multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            start_epoch = checkpoint['epoch']
+            best_val_loss = checkpoint['best_val_loss']
+            training_stats = checkpoint.get('training_stats', training_stats)
+        else:
+            logging.info("No checkpoint found, starting training from scratch.")
 
     logging.info("Starting training loop")
-
+    
     # Training loop
-    for epoch in range(num_epochs):
+    for epoch in range(start_epoch, num_epochs):
         epoch_loss = 0.0
         multi_modality_model.train()
         logging.info(f"Epoch {epoch+1}/{num_epochs} - Training")
@@ -38,7 +78,7 @@ def align_modalities_process(multi_modality_model, train_loader, val_loader, num
 
             embeddings = {}
             for modality in batch_data.keys():
-                if modality in multi_modality_model.modalities_encoders:
+                if modality in multi_modality_model.module.modalities_encoders:
                     data = batch_data[modality].cuda()
                     embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
@@ -60,7 +100,7 @@ def align_modalities_process(multi_modality_model, train_loader, val_loader, num
             for batch_data, _, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
                 embeddings = {}
                 for modality in batch_data.keys():
-                    if modality in multi_modality_model.modalities_encoders:
+                    if modality in multi_modality_model.module.modalities_encoders:
                         data = batch_data[modality].cuda()
                         embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
@@ -69,11 +109,27 @@ def align_modalities_process(multi_modality_model, train_loader, val_loader, num
                 val_loss += loss.item()
 
             avg_val_loss = val_loss / len(val_loader)
+
             logging.info(f"Epoch [{epoch+1}/{num_epochs}], Validation Loss: {avg_val_loss:.4f}")
+
+            training_stats["epochs"].append(epoch + 1)
+            training_stats["train_loss"].append(epoch_loss / len(train_loader))
+            training_stats["val_loss"].append(avg_val_loss)
             
             if avg_val_loss < best_val_loss:
                 best_val_loss = avg_val_loss
-                torch.save(multi_modality_model.state_dict(), 'best_multi_modality_model.pth')
-                logging.info("Best model saved")
-
+                checkpoint = {
+                    'epoch': epoch + 1,
+                    'model_state_dict': multi_modality_model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'best_val_loss': best_val_loss,
+                    # Add any other things you need to save
+                }
+                torch.save(checkpoint, checkpoint_path)
+                logging.info(f"Best val loss {best_val_loss}")
+                logging.info(f"New best model saved at epoch {epoch+1}")
+        # Save final training statistics
+        with open(stats_path, 'w') as f:
+            json.dump(training_stats, f)
+        logging.info(f"Training statistics saved to {stats_path}")
     logging.info("Training complete!")
