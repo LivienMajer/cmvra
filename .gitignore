@@ -1,5 +1,6 @@
 best_classefier_model.pth
 best_ir_encoder.pth
+best_ir_encoder2.pth
 best_model.pth
 pretrain_clipvip_base_16.pt
 pretrain_clipvip_base_32.pt
