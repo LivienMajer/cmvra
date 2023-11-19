@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+import datetime
 
 import sys 
 import os
@@ -13,6 +14,7 @@ import torch
 from zeta.data_loader import load_dataloaders
 from zeta.model_init import initialize_vip_encoder, MultiModalityModel
 from zeta.align_process import align_modalities_process
+from zeta.train_classefier import train_classefier_process
 
 def setup_ccname():
     user = getpass.getuser()
@@ -52,20 +54,19 @@ def parse_args():
     return config
 
 # cmd arguments
-def setup_logging(log_file='project.log'):
+def setup_logging(config):
+    modalities_str = '_'.join(config['modalities'])
+    current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = f'task_{config["task"]}_{modalities_str}_{current_time}.log'
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         handlers=[
                             logging.FileHandler(log_file),
                             logging.StreamHandler()
                         ])
-# used modalities
-# epochs 
-#num workers
-# dataset
-
-
-
+    # Log the entire config
+    config_str = json.dumps(config, indent=4)
+    logging.info(f"Configuration:\n{config_str}")
 
 
 # task 1 algin modalities 
@@ -73,8 +74,8 @@ def setup_logging(log_file='project.log'):
 def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
     logging.info("Aligning modalities...")
     
-    selected_gpu_ids = select_gpus(num_gpus=4)
-    
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Training on the following GPUs {selected_gpu_ids}")
     
 
     modalities_encoders = {}
@@ -89,19 +90,10 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
         modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
 
     
-    
-    #torch.cuda.set_device(sorted(selected_gpu_ids)[0])
-    
     multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
 
-    
-    
     multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
     
-
-    
-
-    print('device ids',multi_modality_model.device_ids)
     
     align_modalities_process(multi_modality_model,
                             train_loader,
@@ -111,15 +103,46 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
                             temperature,
                             resume_from_checkpoint,
                             checkpoint_dir,
+                            sorted(selected_gpu_ids)[0],
                             config
                             )
 
 
 # task 2 train classefiers for algiened encoders
-def train_classifiers():
+def train_classifiers(train_loader, val_loader, test_loader, config):
     logging.info("Training classifiers...")
-    # Your code for task 2
-# task 2 b continue training for classefiers
+
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Training on the following GPUs {selected_gpu_ids}")
+    
+    
+
+    modalities_encoders = {}
+    for modality in config['modalities']:
+        if modality == 'rgb':
+            freeze = True
+        else:
+            freeze = False
+        encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
+        # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
+        encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
+        modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
+
+    
+    
+    multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
+
+    
+    
+    multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
+
+    target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
+    cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
+
+    multi_modality_model.load_state_dict(cktp['model_state_dict'])
+
+    #multi_modality_model = multi_modality_model.cuda(sorted(selected_gpu_ids)[0])
+    train_classefier_process(multi_modality_model, sorted(selected_gpu_ids)[0], train_loader, val_loader, test_loader, config)
 
 def evaluate_knn():
     logging.info("Evaluating KNN...")
@@ -135,7 +158,7 @@ def evaluate_text_encoder():
 
 def main():
     config = parse_args()
-    setup_logging()
+    setup_logging(config)
 
     #config
     task = config['task']
@@ -168,7 +191,10 @@ def main():
         cktp_dir,
         config)
     elif task == '2':
-        train_classifiers()
+        train_classifiers(train_data, 
+                        val_data, 
+                        test_data, 
+                        config)
     elif task == '3':
         evaluate_text_encoder()
     elif task == '4':

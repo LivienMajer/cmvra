@@ -43,9 +43,13 @@ def compute_metrics(x):
     d = np.diag(-x)
     d = d[:, np.newaxis]
     ind = sx - d
+
     ind = np.where(ind == 0)
+    print(ind)
     ind = ind[1]
     #predictions = ind
+    print('len ind',len(ind), 'sum',np.sum(ind == 0))
+    print(float(np.sum(ind == 0))  / len(ind))
     r1 = float(np.sum(ind == 0))  / len(ind)
     r5 = float(np.sum(ind < 5))  / len(ind)
     r10 = float(np.sum(ind < 10))  / len(ind)

@@ -17,6 +17,7 @@ def align_modalities_process(multi_modality_model,
                              temperature=0.1, 
                              resume_from_checkpoint=False, 
                              checkpoint_dir='/home/bas06400/Thesis/VIP/src/align_checkpoints',
+                             device=None,
                              config=None):
     """
     Train and validate a multi-modality model.
@@ -79,7 +80,7 @@ def align_modalities_process(multi_modality_model,
             embeddings = {}
             for modality in batch_data.keys():
                 if modality in multi_modality_model.module.modalities_encoders:
-                    data = batch_data[modality].cuda()
+                    data = batch_data[modality].cuda(device)
                     embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
             modality_keys = list(embeddings.keys())
@@ -101,7 +102,7 @@ def align_modalities_process(multi_modality_model,
                 embeddings = {}
                 for modality in batch_data.keys():
                     if modality in multi_modality_model.module.modalities_encoders:
-                        data = batch_data[modality].cuda()
+                        data = batch_data[modality].cuda(device)
                         embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
                 modality_keys = list(embeddings.keys())

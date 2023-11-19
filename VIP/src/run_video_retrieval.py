@@ -8,6 +8,9 @@ from tqdm import tqdm
 from os.path import join, exists
 from easydict import EasyDict as edict
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 import torch
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
@@ -154,6 +157,20 @@ def validate(model, val_loaders, cfg):
         vis_feats = vis_feats[:valid_len]
 
         sim_matrix = cal_cossim(text_feats, vis_feats)
+        print('shape', sim_matrix.shape)
+        # Creating a heatmap using seaborn
+        plt.figure(figsize=(30, 30))
+        ax = sns.heatmap(sim_matrix, annot=True, cmap='viridis', square=True)
+
+
+        # Drawing red lines around the diagonal fields
+        for i in range(len(sim_matrix)):
+            ax.add_patch(plt.Rectangle((i, i), 1, 1, fill=False, edgecolor='red', lw=2))
+        plt.title("Heatmap of Similarity Matrix")
+        plt.xlabel("Visual Features")
+        plt.ylabel("Text Features")
+        # Saving the plot to a file
+        plt.savefig('similarity_matrix_heatmap.png', bbox_inches='tight')
 
         for type in ["simple", "DSL"]:
             LOGGER.info(f"Evaluate under setting: {type}.")

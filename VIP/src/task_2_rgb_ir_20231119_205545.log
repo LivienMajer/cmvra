@@ -1,17 +1,23 @@
+2023-11-19 20:55:45,326 - INFO - Configuration:
 {
-    "task": "1",
-    "modalities": ["rgb", "ir"],
+    "task": "2",
+    "number_gpus": "2",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
     "num_classes": 60,
     "in_features": 512,
     "epochs": 10,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
     "learning_rate": 0.001,
     "temperature": 0.07,
     "num_workers": 10,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
-    "batch_size": 8,
+    "batch_size": 32,
     "pin_memory": true,
     "clip_config": "openai/clip-vit-base-patch16",
     "clip_weights": "openai/clip-vit-base-patch16",
@@ -19,8 +25,10 @@
         "type": "ViP",
         "temporal_size": 12,
         "if_use_temporal_embed": true,
-        "logit_scale_init_value": 4.60,
+        "logit_scale_init_value": 4.6,
         "add_cls_num": 3
     },
     "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
 }
+2023-11-19 20:55:45,361 - INFO - Training classifiers...
+2023-11-19 20:55:45,538 - INFO - Training on the following GPUs [2, 3]
