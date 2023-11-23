@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 from glob import glob
 import json
+import gc
 
 def align_modalities_process(multi_modality_model, 
                              train_loader, 
@@ -43,7 +44,9 @@ def align_modalities_process(multi_modality_model,
             return max(list_of_files, key=os.path.getctime)
         return None
 
-
+    def clear_memory():
+        gc.collect()
+        torch.cuda.empty_cache()
     # Initialize the optimizer and loss function
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     info_nce_loss = InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
@@ -84,11 +87,13 @@ def align_modalities_process(multi_modality_model,
                     embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
             modality_keys = list(embeddings.keys())
-            loss = info_nce_loss(embeddings[modality_keys[0]], embeddings[modality_keys[1]])
+            loss = info_nce_loss(embeddings[modality_keys[1]], embeddings[modality_keys[0]])
 
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item()
+            
+            clear_memory()
 
         logging.info(f"Epoch [{epoch+1}/{num_epochs}], Avg Loss: {epoch_loss / len(train_loader):.4f}")
 
@@ -106,9 +111,10 @@ def align_modalities_process(multi_modality_model,
                         embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
 
                 modality_keys = list(embeddings.keys())
-                loss = info_nce_loss(embeddings[modality_keys[0]], embeddings[modality_keys[1]])
+                loss = info_nce_loss(embeddings[modality_keys[1]], embeddings[modality_keys[0]])
                 val_loss += loss.item()
 
+                clear_memory()
             avg_val_loss = val_loss / len(val_loader)
 
             logging.info(f"Epoch [{epoch+1}/{num_epochs}], Validation Loss: {avg_val_loss:.4f}")
@@ -134,3 +140,4 @@ def align_modalities_process(multi_modality_model,
             json.dump(training_stats, f)
         logging.info(f"Training statistics saved to {stats_path}")
     logging.info("Training complete!")
+

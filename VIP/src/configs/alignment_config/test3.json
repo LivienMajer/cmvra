@@ -8,7 +8,7 @@
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
     "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
-    "learning_rate": 0.001,
+    "learning_rate": 0.0001,
     "temperature": 0.07,
     "num_workers": 10,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",

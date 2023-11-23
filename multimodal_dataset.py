@@ -4,6 +4,8 @@ import torch
 import numpy as np
 from typing import Optional
 from torchvision import transforms
+from PIL import Image
+import cv2
 
 from evl.video_dataset.transform import create_random_augment, random_resized_crop
 
@@ -20,6 +22,7 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         self.std = std if std else torch.tensor([0.5, 0.5, 0.5])
         self.spatial_size = spatial_size
         self.use_advanced_processing = use_advanced_processing
+        self.original_video_size = (1920, 1080)
 
     def __len__(self):
         return len(self.data_list)
@@ -34,21 +37,33 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         sample_indices = self._determine_sample_indices(os.path.join(self.data_root, paths[0]))
 
         for modality, path in zip(self.modalities, paths[:-1]):
+            full_path = os.path.join(self.data_root, path)
             if modality in self.active_modalities:
-                full_path = os.path.join(self.data_root, path)
-                modality_frames[modality] = self._extract_frames(full_path, sample_indices)
-                
-                if self.use_advanced_processing:
-                    frames_tensor = self._advanced_processing(modality_frames[modality])
-                    modality_frames[modality] = frames_tensor.permute(1,0,2,3)
+                if modality == 'skeleton':
+                    skeleton_data = self.load_skeleton_data(full_path)
+                    scaled_skeleton_data = self.scale_skeleton_data(skeleton_data)
+                    # Apply any skeleton-specific processing if needed
+                    processed_skeleton_data = self.advanced_processing_skeleton(scaled_skeleton_data)
+                    modality_frames[modality] = processed_skeleton_data
+                else:
+                    modality_frames[modality] = self._extract_frames(full_path, sample_indices)
+                    if self.use_advanced_processing:
+                        frames_tensor = self._advanced_processing(modality_frames[modality])
+                        modality_frames[modality] = frames_tensor
 
         return modality_frames, label
     
 
     def _determine_sample_indices(self, sample_path):
-        container = av.open(sample_path)
-        total_frames = sum(1 for _ in container.decode(video=0))
-        container.close()
+        # Open the video file with OpenCV
+        cap = cv2.VideoCapture(sample_path)
+
+        # Get the total number of frames in the video
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        # Release the video capture object
+        cap.release()
+        
         # determine sampling procedure
         if True:
             return self._random_sample_frame_idx(total_frames)
@@ -71,67 +86,105 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         return frame_indices
     """
     def _extract_frames(self, path, sample_indices):
-        container = av.open(path)
-        frames = {}
-        for frame in container.decode(video=0):
-            frames[frame.pts] = frame
-        container.close()
-        extracted_frames = [frames[k] for k in sorted(frames.keys()) if k in sample_indices]
-
-        # Check if the video is an IR video
-        if 'ir' in path:
-            tensor_frames = [torch.tensor(frame.to_ndarray()) for frame in extracted_frames]
-            # Stack the tensors together
-            frames_tensor = torch.stack(tensor_frames).unsqueeze(3)
+        if 'depth' in path:
+            # Handling depth data
+            depth_images = sorted(os.listdir(path))
+            # Ensure that the sample_indices are within the range of available images
+            sample_indices = [i for i in sample_indices if i < len(depth_images)]
+            
+            extracted_frames = [self._load_depth_image(os.path.join(path, depth_images[idx])) for idx in sample_indices]
+            del sample_indices, depth_images
+            frames_tensor = torch.stack(extracted_frames)
+            del extracted_frames
+            #print('depth',frames_tensor.shape)
         else:
-            tensor_frames = [torch.tensor(frame.to_rgb().to_ndarray()) for frame in extracted_frames]
+            # Handling RGB and IR videos using OpenCV
+            cap = cv2.VideoCapture(path)
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-            # Stack the tensors together
-            frames_tensor = torch.stack(tensor_frames)
+            # Adjust the sample_indices if needed
+            sample_indices = [i for i in sample_indices if i < total_frames]
+
+            extracted_frames = []
+            for frame_idx in sample_indices:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+                ret, frame = cap.read()
+                if ret:
+                    if 'ir' in path:
+                        # Convert frame to grayscale for IR videos
+                        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                        frame = np.expand_dims(frame, axis=-1)  # Add channel dimension
+                    frame_tensor = transforms.ToTensor()(frame)
+                    extracted_frames.append(frame_tensor)
+
+            cap.release()
+
+            # Stack the frames along the first dimension and permute dimensions to match PyTorch format
+            frames_tensor = torch.stack(extracted_frames) # From NHWC to NCHW format
 
         return frames_tensor
+    
+    def load_skeleton_data(self, skeleton_path):
+        skeleton_data = np.load(skeleton_path, allow_pickle=True).item()
+        # Assume using RGB skeleton data from the first body
+        skel_body0 = skeleton_data.get('rgb_body0', np.zeros((1, 25, 3)))
+        return torch.tensor(skel_body0, dtype=torch.float32)
 
+    def scale_skeleton_data(self, skeleton_data):
+        original_width, original_height = self.original_video_size
+        scale_factor = self.spatial_size / max(original_width, original_height)
+        return skeleton_data * scale_factor
+
+    def _load_depth_image(self, img_path):
+        # Load a single depth image as a grayscale tensor
+        image = Image.open(img_path).convert('L')  # Convert to grayscale ('L' mode)
+        tensor_image = transforms.ToTensor()(image)
+        return tensor_image
+    
+    def normalize_skeleton_data(self, skeleton_data):
+        # Assuming skeleton_data is scaled to have coordinates in the range [0, 224]
+        # Normalize to the range [0, 1]
+        normalized_data = skeleton_data / 224.0
+        return normalized_data
+    
     def _advanced_processing(self, frames_tensor):
-        frames_tensor = frames_tensor.float() / 255.0
-        #print(frames_tensor.shape)
-        # Adjust normalization based on number of channels
-        num_channels = frames_tensor.size(-1)
-        if num_channels == 1:
+        # Normalization
+        if frames_tensor.size(1) == 1:  # Single-channel (IR or Depth)
             mean = torch.tensor([0.5])
             std = torch.tensor([0.5])
-        else:
+        else:  # Multi-channel (RGB)
             mean = self.mean
             std = self.std
 
+        mean = mean.view(-1, 1, 1)  # Reshape for broadcasting
+        std = std.view(-1, 1, 1)
         frames_tensor = (frames_tensor - mean) / std
 
         # Augmentation
         if self.random_sample and self.auto_augment is not None:
             aug_transform = create_random_augment(
-                input_size=(frames_tensor.size(1), frames_tensor.size(2)),
+                input_size=(frames_tensor.size(2), frames_tensor.size(3)),  # Height and Width
                 auto_augment=self.auto_augment,
                 interpolation=self.interpolation,
             )
-            frames_tensor = frames_tensor.permute(0, 3, 1, 2)  # T, C, H, W
-            frames_tensor = [transforms.ToPILImage()(frames_tensor[i]) for i in range(frames_tensor.size(0))]
-            frames_tensor = aug_transform(frames_tensor)
-            frames_tensor = torch.stack([transforms.ToTensor()(img) for img in frames_tensor])
-            frames_tensor = frames_tensor.permute(0, 2, 3, 1)
+            # Apply augmentation to each frame
+            frames_list = [transforms.ToPILImage()(frame) for frame in frames_tensor]
+            augmented_frames = [aug_transform(frame) for frame in frames_list]
+            frames_tensor = torch.stack([transforms.ToTensor()(frame) for frame in augmented_frames])
 
-        # Resizing and Cropping
-        frames_tensor = frames_tensor.permute(3, 0, 1, 2)  # C, T, H, W
-        if frames_tensor.size(-2) < frames_tensor.size(-1):
-            new_width = self.spatial_size #frames_tensor.size(-1) * self.spatial_size // frames_tensor.size(-2)
-            new_height = self.spatial_size
-        else:
-            new_height = self.spatial_size #frames_tensor.size(-2) * self.spatial_size // frames_tensor.size(-1)
-            new_width = self.spatial_size
+        # Resizing and Cropping with modality-specific interpolation
+        new_height, new_width = self.spatial_size, self.spatial_size
+        if frames_tensor.size(1) == 3:
+            interpolation_mode = 'bilinear'
+        else:  # For 'ir' and 'depth'
+            interpolation_mode = 'nearest'
+
         frames_tensor = torch.nn.functional.interpolate(
             frames_tensor, size=(new_height, new_width),
-            mode='bilinear', align_corners=False,
+            mode=interpolation_mode, align_corners=False if interpolation_mode == 'bilinear' else None
         )
 
-        return frames_tensor  
+        return frames_tensor
         
 
 class SingleFrameVideoDataset(MultiModalVideoDataset):

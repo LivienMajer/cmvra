@@ -164,30 +164,30 @@ def custom_collate_fn(batch):
     """
     collated_data = {}
     collated_labels = []
-    collated_idx =[]
+    
     
     # Initialize empty lists for each modality in the first sample
     for modality in batch[0][0].keys():
         collated_data[modality] = []
     
-    for data, label , idx in batch:
+    for data, label  in batch:
         collated_labels.append(label-1)
         for modality, frames in data.items():
             collated_data[modality].append(frames)
-        collated_idx.append(idx)
+        
     # Convert lists to tensors for each modality
     for modality, frames_list in collated_data.items():
         collated_data[modality] = torch.stack(frames_list)
     
     collated_labels = torch.tensor(collated_labels)
     
-    return collated_data, collated_labels, collated_idx
+    return collated_data, collated_labels
 
 
 # Create a DataLoader
-batch_size = 16
+batch_size = 32 #16
 shuffle = True
-num_workers = 10
+num_workers = 20
 pin_memory = True
 
 # Create a DataLoader for the training set
@@ -237,12 +237,12 @@ import torch.optim as optim
 from tqdm import tqdm
 from info_nce_pytorch import InfoNCE
 print('count',torch.cuda.device_count())
-model = model.cuda(5)
-ir_model = ir_model.cuda(5)
-model = torch.nn.DataParallel(model, device_ids=[5,7])  # Assuming GPUs 3 and 4 are available
-ir_model = torch.nn.DataParallel(ir_model, device_ids=[5,7])
-for name, param in model.module.named_parameters():
-        print(name, param.device)
+model = model.cuda(4)
+ir_model = ir_model.cuda(4)
+model = torch.nn.DataParallel(model, device_ids=[4,5,6,7])  # Assuming GPUs 3 and 4 are available
+ir_model = torch.nn.DataParallel(ir_model, device_ids=[4,5,6,7])
+#for name, param in model.module.named_parameters():
+ #       print(name, param.device)
 # Hyperparameters
 learning_rate = 0.0001
 num_epochs = 10
@@ -262,7 +262,7 @@ for epoch in range(num_epochs):
     model.train()
     ir_model.train()
     # Wrap dataloader with tqdm for progress bar
-    for batch_data, _ , _ in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
+    for batch_data, _ in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
         # Move data to GPU
         rgb_data = batch_data['rgb'].cuda() #.to('cuda:3')
         ir_data = batch_data['ir'].cuda() #.to('cuda:3')
@@ -291,7 +291,7 @@ for epoch in range(num_epochs):
     ir_model.eval()
     with torch.no_grad():
         val_loss = 0.0
-        for batch_data, _ ,_ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
+        for batch_data, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
             rgb_data = batch_data['rgb'].cuda() #.to('cuda:3')
             ir_data = batch_data['ir'].cuda() #.to('cuda:3')
             rgb_emb  = model(rgb_data)
@@ -305,6 +305,6 @@ for epoch in range(num_epochs):
         # Save the best model (optional)
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
-            torch.save(ir_model.state_dict(), 'best_ir_encoder3.pth')
+            torch.save(ir_model.state_dict(), 'best_ir_encoder4.pth')
 
 print("Training complete!")

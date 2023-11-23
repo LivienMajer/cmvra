@@ -11,7 +11,7 @@
     "num_workers": 10,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
-    "batch_size": 8,
+    "batch_size": 16,
     "pin_memory": true,
     "clip_config": "openai/clip-vit-base-patch16",
     "clip_weights": "openai/clip-vit-base-patch16",

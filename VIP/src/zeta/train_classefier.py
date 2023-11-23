@@ -16,11 +16,11 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
     # Extracting configuration parameters
     num_epochs = config['epochs']
     learning_rate = config['learning_rate']
-    checkpoint_dir = config.get('checkpoint_dir', '/path/to/checkpoints')
+    checkpoint_dir = config['cktp_dir']
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
-    checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
+    checkpoint_path = os.path.join(checkpoint_dir, 'classefier_checkpoints/', checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, f"stats_{modalities}_{timestamp}.json")
 
     # Initialize optimizer and criterion
@@ -53,7 +53,7 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
                 'best_val_loss': best_val_loss,
                 'training_stats': training_stats
             }
-            torch.save(checkpoint, os.path.join(checkpoint_path, 'classefier_checkpoints'))
+            torch.save(checkpoint, checkpoint_path)
             logging.info(f"New best model saved at epoch {epoch+1} with val loss: {best_val_loss:.4f}")
 
     # Save final training statistics
@@ -112,9 +112,9 @@ def train_epoch(model, device, train_loader, criterion, optimizer, epoch, num_ep
     avg_losses = {modality: epoch_losses[modality] / len(train_loader) for modality in epoch_losses}
     avg_accuracies = {modality: epoch_accuracies[modality] / len(train_loader) for modality in epoch_accuracies}
 
-    print(f"Epoch [{epoch+1}/{num_epochs}]")
+    logging.info(f"Epoch [{epoch+1}/{num_epochs}]")
     for modality in model.module.modalities_encoders:
-        print(f"Modality: {modality}, Loss: {avg_losses[modality]:.4f}, Accuracy: {avg_accuracies[modality]:.4f}")
+        logging.info(f"Modality: {modality}, Loss: {avg_losses[modality]:.4f}, Accuracy: {avg_accuracies[modality]:.4f}")
 
     return avg_losses, avg_accuracies
 
@@ -142,9 +142,9 @@ def evaluate_model(model, device, loader, criterion, epoch, num_epochs):
     avg_val_losses = {modality: val_losses[modality] / len(loader) for modality in val_losses}
     avg_val_accuracies = {modality: val_accuracies[modality] / len(loader) for modality in val_accuracies}
 
-    print(f"Validation/Test Epoch [{epoch+1}/{num_epochs}]")
-    for modality in model.modalities_encoders:
-        print(f"Modality: {modality}, Loss: {avg_val_losses[modality]:.4f}, Accuracy: {avg_val_accuracies[modality]:.4f}")
+    logging.info(f"Validation/Test Epoch [{epoch+1}/{num_epochs}]")
+    for modality in model.module.modalities_encoders:
+        logging.info(f"Modality: {modality}, Loss: {avg_val_losses[modality]:.4f}, Accuracy: {avg_val_accuracies[modality]:.4f}")
 
     return avg_val_losses, avg_val_accuracies
 

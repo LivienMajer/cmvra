@@ -119,10 +119,8 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
 
     modalities_encoders = {}
     for modality in config['modalities']:
-        if modality == 'rgb':
-            freeze = True
-        else:
-            freeze = False
+        
+        freeze = True
         encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
         # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
         encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
@@ -139,10 +137,45 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
     cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
 
+
+    """
+    cktp_state_dict = cktp['model_state_dict']
+    
+    # Get your current model's state dictionary
+    current_state_dict = multi_modality_model.state_dict()
+
+    # List for storing keys that do not match
+    mismatched_keys = []
+
+    # Compare
+    for key in cktp_state_dict:
+        if key in current_state_dict:
+            # Check if the weights are the same
+            if not torch.equal(cktp_state_dict[key], current_state_dict[key]):
+                mismatched_keys.append(key)
+                logging.info(f"Weights differ for {key}")
+        else:
+            mismatched_keys.append(key)
+            logging.info(f"{key} is not present in the current model's state dictionary")
+
+    # Logging the final list of mismatched keys
+    if mismatched_keys:
+        logging.info("Final list of mismatched keys: " + ", ".join(mismatched_keys))
+    else:
+        logging.info("All keys matched successfully.")
+    """
+    
+    
+    
     multi_modality_model.load_state_dict(cktp['model_state_dict'])
 
     #multi_modality_model = multi_modality_model.cuda(sorted(selected_gpu_ids)[0])
-    train_classefier_process(multi_modality_model, sorted(selected_gpu_ids)[0], train_loader, val_loader, test_loader, config)
+    train_classefier_process(multi_modality_model, 
+                            sorted(selected_gpu_ids)[0], 
+                            train_loader, 
+                            val_loader, 
+                            test_loader, 
+                            config)
 
 def evaluate_knn():
     logging.info("Evaluating KNN...")
