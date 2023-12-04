@@ -190,6 +190,7 @@ def evaluate_text_encoder():
 # task 4 evealuate knn
 
 def main():
+    setup_ccname()
     config = parse_args()
     setup_logging(config)
 
@@ -207,11 +208,12 @@ def main():
     batch_size= config['batch_size']
     pin_memory= config['pin_memory']
 
-    train_data, val_data, test_data = load_dataloaders(data_list=data_list,
-                                                        data_root=data_root,
+    train_data, val_data, test_data = load_dataloaders(data_root=data_root,
+                                                       modalities=modalities,
                                                         batch_size=batch_size,
                                                         num_workers=num_workers,
-                                                        pin_memory=pin_memory)
+                                                        pin_memory=pin_memory,
+                                                        split=config['split'])
     # Task executions
     if task == '1':
         align_modalities(modalities, 

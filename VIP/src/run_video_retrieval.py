@@ -65,7 +65,7 @@ def mk_video_ret_dataloader(dataset_name, vis_format, anno_path, vis_dir, cfg, t
         tokenizer=tokenizer, max_length=cfg.max_txt_len, is_train=is_train)
     dataloader = DataLoader(dataset,
                             batch_size=batch_size,
-                            shuffle=False,
+                            shuffle=is_train,
                             num_workers=cfg.n_workers,
                             pin_memory=cfg.pin_mem,
                             collate_fn=vret_collator.collate_batch)
@@ -158,20 +158,21 @@ def validate(model, val_loaders, cfg):
 
         sim_matrix = cal_cossim(text_feats, vis_feats)
         print('shape', sim_matrix.shape)
+        """
         # Creating a heatmap using seaborn
         plt.figure(figsize=(30, 30))
-        ax = sns.heatmap(sim_matrix, annot=True, cmap='viridis', square=True)
+        ax = sns.heatmap(sim_matrix, annot=True, cmap='viridis', square=True, annot_kws={"size": 40}, fmt=".4f")
 
 
         # Drawing red lines around the diagonal fields
         for i in range(len(sim_matrix)):
-            ax.add_patch(plt.Rectangle((i, i), 1, 1, fill=False, edgecolor='red', lw=2))
-        plt.title("Heatmap of Similarity Matrix")
-        plt.xlabel("Visual Features")
-        plt.ylabel("Text Features")
+            ax.add_patch(plt.Rectangle((i, i), 1, 1, fill=False, edgecolor='red', lw=3))
+        plt.title("Heatmap of Similarity Matrix", fontsize=44)
+        plt.xlabel("Visual Features", fontsize=40)
+        plt.ylabel("Text Features", fontsize=40)
         # Saving the plot to a file
         plt.savefig('similarity_matrix_heatmap.png', bbox_inches='tight')
-
+        """
         for type in ["simple", "DSL"]:
             LOGGER.info(f"Evaluate under setting: {type}.")
             val_log = {f'valid/{loader_name}_t2v_recall_1': 0,
@@ -188,8 +189,9 @@ def validate(model, val_loaders, cfg):
             if type == "DSL":
                 sim_matrix = sim_matrix * np_softmax(sim_matrix*100, axis=0)
 
-            v2tr1,v2tr5,v2tr10,v2tmedr,v2tmeanr = compute_metrics(sim_matrix.T)
             t2vr1,t2vr5,t2vr10,t2vmedr,t2vmeanr = compute_metrics(sim_matrix)
+            v2tr1,v2tr5,v2tr10,v2tmedr,v2tmeanr = compute_metrics(sim_matrix.T)
+            
 
             val_log.update({f'valid/{loader_name}_t2v_recall_1': t2vr1,
                             f'valid/{loader_name}_t2v_recall_5': t2vr5,
@@ -233,7 +235,7 @@ def start_training():
     model = setup_model(cfg, device=device)
 
     # Use DataParallel to wrap the model
-    model = torch.nn.DataParallel(model, device_ids=[0, 1, 2, 3])
+    model = torch.nn.DataParallel(model, device_ids=[0, 5, 6, 7])
     model.train()
 
     optimizer = setup_e2e_optimizer(model, cfg)
@@ -317,10 +319,17 @@ def start_training():
     loss_func = build_loss_func(cfg.loss_config)
 
     for step, batch in enumerate(InfiniteIterator(train_loader)):
+        #for key in batch.keys():
+        #    print(key)
+        #print(batch['video'].shape)
+        #print(batch['text_input_ids'])
+        #print(batch['text_input_mask'])
         outputs = model(**batch)
         
         vis_feat = outputs['vis_features']
         text_feat = outputs['text_features']
+
+        
         
         if cfg.loss_config.loss_name in ["NCELearnableTempLoss", "NCELearnableTempDSLLoss"]:
             if hasattr(model, 'module'):

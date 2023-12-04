@@ -2,6 +2,7 @@
     "task": "1",
     "number_gpus": "4",
     "modalities": ["rgb", "ir"],
+    "split": "CV",
     "num_classes": 60,
     "in_features": 512,
     "epochs": 10,

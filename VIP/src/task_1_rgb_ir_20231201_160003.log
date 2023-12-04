@@ -1,23 +1,24 @@
-2023-11-21 18:11:31,513 - INFO - Configuration:
+2023-12-01 16:00:03,391 - INFO - Configuration:
 {
-    "task": "2",
-    "number_gpus": "2",
+    "task": "1",
+    "number_gpus": "4",
     "modalities": [
         "rgb",
         "ir"
     ],
+    "split": "CV",
     "num_classes": 60,
     "in_features": 512,
     "epochs": 10,
-    "res_cktp": false,
+    "res_cktp": true,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
     "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
     "learning_rate": 0.0001,
-    "temperature": 0.07,
-    "num_workers": 10,
+    "temperature": 0.1,
+    "num_workers": 20,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
-    "batch_size": 16,
+    "batch_size": 32,
     "pin_memory": true,
     "clip_config": "openai/clip-vit-base-patch16",
     "clip_weights": "openai/clip-vit-base-patch16",
@@ -30,11 +31,8 @@
     },
     "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
 }
-2023-11-21 18:11:31,548 - INFO - Training classifiers...
-2023-11-21 18:11:31,651 - INFO - Training on the following GPUs [0, 1]
-2023-11-21 20:37:08,145 - INFO - Epoch [1/10]
-2023-11-21 20:37:08,146 - INFO - Modality: rgb, Loss: 3.6343, Accuracy: 0.1966
-2023-11-21 20:37:08,146 - INFO - Modality: ir, Loss: 4.9345, Accuracy: 0.0175
-2023-11-21 20:57:04,107 - INFO - Validation/Test Epoch [1/10]
-2023-11-21 20:57:04,107 - INFO - Modality: rgb, Loss: 3.2768, Accuracy: 0.2921
-2023-11-21 20:57:04,107 - INFO - Modality: ir, Loss: 4.4525, Accuracy: 0.0165
+2023-12-01 16:00:03,430 - INFO - Aligning modalities...
+2023-12-01 16:00:06,118 - INFO - Training on the following GPUs [0, 1, 2, 3]
+2023-12-01 16:00:16,632 - INFO - Resuming from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_CV_20231201_011114.pth
+2023-12-01 16:00:27,289 - INFO - Starting training loop
+2023-12-01 16:00:27,291 - INFO - Epoch 9/10 - Training

@@ -1,0 +1,51 @@
+2023-12-04 01:11:03,883 - INFO - Configuration:
+{
+    "task": "2",
+    "number_gpus": "4",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20231201_161654.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2023-12-04 01:11:03,921 - INFO - Training classifiers...
+2023-12-04 01:11:04,942 - INFO - Training on the following GPUs [0, 1, 2, 3]
+2023-12-04 01:11:16,241 - INFO - Resuming from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classefier_checkpoints/checkpoint_rgb_ir_20231203_145327.pth
+2023-12-04 03:06:23,958 - INFO - Epoch [9/10]
+2023-12-04 03:06:23,959 - INFO - Modality: rgb, Loss: 2.6588, Accuracy: 0.3292
+2023-12-04 03:06:23,959 - INFO - Modality: ir, Loss: 2.3417, Accuracy: 0.2990
+2023-12-04 03:09:31,440 - INFO - Validation/Test Epoch [9/10]
+2023-12-04 03:09:31,441 - INFO - Modality: rgb, Loss: 2.7281, Accuracy: 0.3017
+2023-12-04 03:09:31,441 - INFO - Modality: ir, Loss: 2.9098, Accuracy: 0.1661
+2023-12-04 05:00:11,654 - INFO - Epoch [10/10]
+2023-12-04 05:00:11,655 - INFO - Modality: rgb, Loss: 2.6298, Accuracy: 0.3324
+2023-12-04 05:00:11,655 - INFO - Modality: ir, Loss: 2.3269, Accuracy: 0.3021
+2023-12-04 05:03:11,615 - INFO - Validation/Test Epoch [10/10]
+2023-12-04 05:03:11,616 - INFO - Modality: rgb, Loss: 2.6989, Accuracy: 0.3238
+2023-12-04 05:03:11,616 - INFO - Modality: ir, Loss: 2.9148, Accuracy: 0.1861
+2023-12-04 05:03:13,897 - INFO - New best model saved at epoch 10 with val loss: 2.8069
+2023-12-04 05:03:13,902 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20231204_011116.json
+2023-12-04 05:03:13,903 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_CV_20231201_161654.pth

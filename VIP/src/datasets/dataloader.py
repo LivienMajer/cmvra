@@ -170,7 +170,8 @@ class InfiniteIterator(object):
                 batch = next(self.iterator)
             except StopIteration:
                 self.epoch += 1
-                self.iterable.sampler.set_epoch(self.epoch)
+                if hasattr(self.iterable.sampler, 'set_epoch'):
+                    self.iterable.sampler.set_epoch(self.epoch)
                 self.iterator = iter(self.iterable)
                 batch = next(self.iterator)
             yield batch

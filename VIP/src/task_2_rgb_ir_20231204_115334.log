@@ -1,7 +1,11 @@
+2023-12-04 11:53:34,143 - INFO - Configuration:
 {
     "task": "2",
     "number_gpus": "4",
-    "modalities": ["rgb", "ir"],
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
     "split": "CV",
     "num_classes": 60,
     "in_features": 512,
@@ -22,8 +26,13 @@
         "type": "ViP",
         "temporal_size": 12,
         "if_use_temporal_embed": true,
-        "logit_scale_init_value": 4.60,
+        "logit_scale_init_value": 4.6,
         "add_cls_num": 3
     },
     "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
 }
+2023-12-04 11:53:34,202 - INFO - Training classifiers...
+2023-12-04 11:53:35,141 - INFO - Training on the following GPUs [0, 1, 2, 3]
+2023-12-04 11:53:46,575 - INFO - Resuming from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classefier_checkpoints/checkpoint_rgb_ir_20231204_011116.pth
+2023-12-04 11:53:57,322 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20231204_115346.json
+2023-12-04 11:53:57,323 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_CV_20231201_161654.pth

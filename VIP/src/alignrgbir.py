@@ -4,6 +4,7 @@ import torch
 import getpass
 import sys
 import os
+from zeta.loss import InfoNCELoss1, SigmoidContrastiveMultiModalLoss
 
 def setup_ccname():
     user = getpass.getuser()
@@ -237,10 +238,10 @@ import torch.optim as optim
 from tqdm import tqdm
 from info_nce_pytorch import InfoNCE
 print('count',torch.cuda.device_count())
-model = model.cuda(4)
-ir_model = ir_model.cuda(4)
-model = torch.nn.DataParallel(model, device_ids=[4,5,6,7])  # Assuming GPUs 3 and 4 are available
-ir_model = torch.nn.DataParallel(ir_model, device_ids=[4,5,6,7])
+model = model.cuda(0)
+ir_model = ir_model.cuda(0)
+model = torch.nn.DataParallel(model, device_ids=[0,1,2,3])  # Assuming GPUs 3 and 4 are available
+ir_model = torch.nn.DataParallel(ir_model, device_ids=[0,1,2,3])
 #for name, param in model.module.named_parameters():
  #       print(name, param.device)
 # Hyperparameters
@@ -251,7 +252,7 @@ temperature = 0.1  # Temperature parameter for InfoNCE loss
 # Initialize the optimizer
 optimizer = optim.Adam(ir_model.parameters(), lr=learning_rate)
 
-info_nce_loss = InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
+info_nce_loss = SigmoidContrastiveMultiModalLoss()#InfoNCELoss1(temperature=temperature)#InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
 
 # Placeholder for best validation loss
 best_val_loss = float('inf')
@@ -274,8 +275,9 @@ for epoch in range(num_epochs):
         rgb_emb  = model(rgb_data)
         ir_emb  = ir_model(ir_data)
 
+        loss = info_nce_loss(*[F.normalize(rgb_emb, p=2, dim=1),F.normalize(ir_emb, p=2, dim=1)])
         # Compute the contrastive loss
-        loss = info_nce_loss(ir_emb, rgb_emb)
+        #loss = info_nce_loss(ir_emb, rgb_emb)
 
         # Backward pass
         loss.backward()
@@ -296,7 +298,8 @@ for epoch in range(num_epochs):
             ir_data = batch_data['ir'].cuda() #.to('cuda:3')
             rgb_emb  = model(rgb_data)
             ir_emb  = ir_model(ir_data)
-            loss = info_nce_loss(ir_emb, rgb_emb)
+            loss = info_nce_loss(*[F.normalize(rgb_emb, p=2, dim=1),F.normalize(ir_emb, p=2, dim=1)])
+            #loss = info_nce_loss(ir_emb, rgb_emb)
             val_loss += loss.item()
             #break
         avg_val_loss = val_loss / len(val_loader)

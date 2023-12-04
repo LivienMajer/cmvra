@@ -17,14 +17,14 @@
     "train_n_clips": 1,
     "score_agg_func": "mean",
     "random_sample_clips": 1,
-    "train_batch_size": 64,
+    "train_batch_size": 16,
     "val_batch_size": 128,
     "gradient_accumulation_steps": 1,
     "learning_rate": 1e-06,
     "num_valid": 1,
     "min_valid_steps": 1,
     "save_steps_ratio": 0.9,
-    "num_train_epochs": 100,
+    "num_train_epochs": 5,
     "optim": "adamw",
     "betas": [
         0.9,
@@ -32,9 +32,9 @@
     ],
     "decay": "cosine",
     "dropout": 0.1,
-    "weight_decay": 0.2,
+    "weight_decay": 0.1,
     "grad_norm": 1.0,
-    "warmup_ratio": 0.01,
+    "warmup_ratio": 1,
     "transformer_lr_mul": 1.0,
     "transformer_lr_mul_prefix": "",
     "step_decay_epochs": null,
@@ -61,7 +61,7 @@
     "seed": 42,
     "fp16": true,
     "amp_level": "O2",
-    "n_workers": 8,
+    "n_workers": 20,
     "pin_mem": true,
     "img_aug": 0,
     "local_rank": -1,
@@ -75,14 +75,14 @@
     "train_datasets": {
         "name": "ntu_train",
         "vis_format": "video",
-        "txt": "/home/bas06400/Thesis/annotations_train.jsonl",
+        "txt": "/home/bas06400/Thesis/annotations_rgb_comp_CV_training_set.jsonl",
         "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb"
     },
     "val_datasets": [
         {
             "name": "ntu_val",
             "vis_format": "video",
-            "txt": "/home/bas06400/Thesis/annotations_val.jsonl",
+            "txt": "/home/bas06400/Thesis/annotaations_rgb_comp_test.jsonl",
             "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb"
         }
     ],
@@ -90,7 +90,7 @@
         {
             "name": "ntu_test",
             "vis_format": "video",
-            "txt": "/home/bas06400/Thesis/annotations_test.jsonl",
+            "txt": "/home/bas06400/Thesis/annotaations_rgb_comp_test.jsonl",
             "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb"
         }
     ],
@@ -120,7 +120,7 @@
     "lr_mul": 1,
     "lr_mul_prefix": "",
     "loss_config": {
-        "loss_name": "NCELearnableTempLoss",
+        "loss_name": "NCELearnableTempDSLLoss",
         "if_gather": 1
     },
     "only_valid_steps": 160,
@@ -128,6 +128,6 @@
     "if_model_saver": 1,
     "if_log2file": 1,
     "dummy_data": 0,
-    "num_train_steps": 71063,
-    "valid_steps": 71063
+    "num_train_steps": 11850,
+    "valid_steps": 11850
 }

@@ -33,7 +33,7 @@ def align_modalities_process(multi_modality_model,
     """
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
+    checkpoint_filename = f"checkpoint_{modalities}_{config['split']}_{timestamp}.pth"
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
 
@@ -77,7 +77,7 @@ def align_modalities_process(multi_modality_model,
         multi_modality_model.train()
         logging.info(f"Epoch {epoch+1}/{num_epochs} - Training")
 
-        for batch_data, _, _ in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
+        for batch_data, _ in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
             optimizer.zero_grad()
 
             embeddings = {}
@@ -103,7 +103,7 @@ def align_modalities_process(multi_modality_model,
         logging.info(f"Epoch {epoch+1}/{num_epochs} - Validation")
 
         with torch.no_grad():
-            for batch_data, _, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
+            for batch_data, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
                 embeddings = {}
                 for modality in batch_data.keys():
                     if modality in multi_modality_model.module.modalities_encoders:

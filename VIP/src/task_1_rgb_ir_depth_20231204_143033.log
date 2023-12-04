@@ -1,11 +1,13 @@
-2023-11-23 15:30:01,129 - INFO - Configuration:
+2023-12-04 14:30:33,217 - INFO - Configuration:
 {
     "task": "1",
-    "number_gpus": "4",
+    "number_gpus": "2",
     "modalities": [
         "rgb",
-        "ir"
+        "ir",
+        "depth"
     ],
+    "split": "CV",
     "num_classes": 60,
     "in_features": 512,
     "epochs": 10,
@@ -30,8 +32,8 @@
     },
     "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
 }
-2023-11-23 15:30:01,166 - INFO - Aligning modalities...
-2023-11-23 15:30:02,098 - INFO - Training on the following GPUs [0, 1, 2, 3]
-2023-11-23 15:30:13,559 - INFO - Resuming from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_20231122_174011.pth
-2023-11-23 15:30:16,852 - INFO - Starting training loop
-2023-11-23 15:30:16,853 - INFO - Epoch 3/10 - Training
+2023-12-04 14:30:33,260 - INFO - Aligning modalities...
+2023-12-04 14:30:35,028 - INFO - Training on the following GPUs [1, 2]
+2023-12-04 14:30:47,383 - INFO - No checkpoint found, starting training from scratch.
+2023-12-04 14:30:47,383 - INFO - Starting training loop
+2023-12-04 14:30:47,384 - INFO - Epoch 1/10 - Training
