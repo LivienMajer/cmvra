@@ -5,3 +5,4 @@ best_model.pth
 pretrain_clipvip_base_16.pt
 pretrain_clipvip_base_32.pt
 VIP/src/align_checkpoints
+VIP/src/align_checkpoints/vidclip_data
