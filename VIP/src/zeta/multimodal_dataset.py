@@ -6,16 +6,21 @@ from typing import Optional
 from PIL import Image
 from torchvision import transforms
 import cv2
+import decord
+from decord import VideoReader
+from decord import cpu, gpu
+from torchvision.io import read_video
+from zeta.skeleton_transforms import RandomGaussianNoise, RandomRot, RandomScale, PreNormalize3D
 
 class MultiModalVideoDataset(torch.utils.data.Dataset):
-    def __init__(self, list_path: str, data_root: str, modalities: list, active_modalities: Optional[list] = None, mean=None, std=None, spatial_size=224, use_advanced_processing=False):
+    def __init__(self, list_path: str, data_root: str, modalities: list, active_modalities: Optional[list] = None, mean=None, std=None, spatial_size=224, use_advanced_processing=False, random_sample=False):
         with open(list_path) as f:
             self.data_list = f.read().splitlines()
 
         self.data_root = data_root
         self.modalities = modalities
         self.active_modalities = active_modalities if active_modalities else modalities
-        self.random_sample = False
+        self.random_sample = random_sample
         self.mean = mean if mean else torch.tensor([0.5, 0.5, 0.5])
         self.std = std if std else torch.tensor([0.5, 0.5, 0.5])
         self.spatial_size = spatial_size
@@ -28,16 +33,21 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         line = self.data_list[idx]
         paths = line.split(' ')
         label = int(paths[-1])
-        modality_frames = {}
-        
-        # Determine frame indices to sample
-        sample_indices = self._determine_sample_indices(os.path.join(self.data_root, paths[0]))
 
-        for modality, path in zip(self.modalities, paths[:-1]):
-            if modality in self.active_modalities:
+        modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3}
+        
+
+        modality_frames = {}
+        # Determine frame indices to sample
+        sample_indices = self._determine_sample_indices(os.path.join(self.data_root, paths[0]),use_random_sampling=self.random_sample)
+
+        for modality in self.modalities:
+            index = modality_indices[modality]
+            path = paths[index]
+            if path != 'None':  # Checking if the modality is available
                 full_path = os.path.join(self.data_root, path)
                 modality_frames[modality] = self._extract_frames(full_path, sample_indices)
-                
+
                 if self.use_advanced_processing:
                     frames_tensor = self._advanced_processing(modality_frames[modality])
                     modality_frames[modality] = frames_tensor
@@ -45,7 +55,7 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         return modality_frames, label
     
 
-    def _determine_sample_indices(self, sample_path):
+    def _determine_sample_indices(self, sample_path, use_random_sampling=True):
         # Open the video file with OpenCV
         cap = cv2.VideoCapture(sample_path)
 
@@ -54,36 +64,39 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
 
         # Release the video capture object
         cap.release()
-        
-        # determine sampling procedure
-        if True:
+
+        # Choose the sampling method based on the flag
+        if use_random_sampling:
             return self._random_sample_frame_idx(total_frames)
         else:
-            # Implement a method to determine fixed frame indices if desired
-            pass
+            return self._deterministic_sample_frame_idx(total_frames)
     
     def _random_sample_frame_idx(self, length):
-        frame_indices = np.linspace(0, length-1, 12).astype(int).tolist()
-        return frame_indices
-    """
-    def _random_sample_frame_idx(self, length):
-        frame_indices = []
-        # Implement your random sampling logic here
-        # For example:
-        if length >= 7:
-            frame_indices = list(range(0, length, length//7))
-        else:
-            frame_indices = list(range(length))
-        return frame_indices
-    """
+        # Ensure the random selection does not exceed the number of frames
+        num_samples = min(12, length)
+
+        # Randomly select unique frame indices
+        frame_indices = np.random.choice(length, num_samples, replace=False)
+
+        # Sort the indices to maintain correct sequence
+        frame_indices.sort()
+
+        return frame_indices.tolist()
+
+    def _deterministic_sample_frame_idx(self, length):
+        # Evenly sample 12 frames throughout the video
+        return np.linspace(0, length-1, 12).astype(int).tolist()
+    
     def _extract_frames(self, path, sample_indices):
         if 'depth' in path:
             # Handling depth data
+            #print(path)
             depth_images = sorted(os.listdir(path))
             # Ensure that the sample_indices are within the range of available images
             sample_indices = [i for i in sample_indices if i < len(depth_images)]
             
             extracted_frames = [self._load_depth_image(os.path.join(path, depth_images[idx])) for idx in sample_indices]
+            #print(len(extracted_frames))
             del sample_indices, depth_images
             frames_tensor = torch.stack(extracted_frames)
             del extracted_frames
@@ -149,7 +162,156 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
 
         return frames_tensor
 
+class MultiModalVideoDataset3(torch.utils.data.Dataset):
+    def __init__(self, list_path: str, data_root: str, modalities: list, random_sample=False, mode='train'):
+        with open(list_path) as f:
+            self.data_list = f.read().splitlines()
 
+        self.data_root = data_root
+        self.modalities = modalities
+        
+        self.random_sample = random_sample
+        
+        
+        
+        self.transform = init_transform_dict_simple(video_res=[1080, 1920],
+                                             input_res=[224, 224])[mode]
+        self.transform_grey = init_transform_dict_simple(video_res=[1080, 1920],
+                                             input_res=[224, 224], grey=True)[mode] 
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, idx):
+        line = self.data_list[idx]
+        paths = line.split(' ')
+        label = int(paths[-1])
+
+        modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3}
+        
+
+        modality_frames = {}
+        full_path = os.path.join(self.data_root, paths[0])
+        sample_indices = self._determine_sample_indices(full_path, use_random_sampling=self.random_sample)
+
+        for modality in self.modalities:
+            index = modality_indices[modality]
+            path = paths[index]
+            if path != 'None':  # Checking if the modality is available
+                if modality == 'skeleton':
+                    full_path = os.path.join(self.data_root, path)
+                    skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
+                    
+                    # Apply transformations
+                    random_rot = RandomRot(theta=0.3)
+                    random_scale = RandomScale(scale=0.2)
+                    random_noise = RandomGaussianNoise(sigma=0.01)
+                    pre_normalize = PreNormalize3D()
+
+                    skeleton_data = pre_normalize({'keypoint': skeleton_data})['keypoint']
+                    skeleton_data = random_rot({'keypoint': skeleton_data})['keypoint']
+                    skeleton_data = random_scale({'keypoint': skeleton_data})['keypoint']
+                    skeleton_data = random_noise({'keypoint': skeleton_data})['keypoint']
+                    
+
+                    # Convert to tensor and integrate
+                    skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32)
+                    modality_frames['skeleton'] = skeleton_tensor.permute(1, 0, 2, 3)
+                else:
+                    full_path = os.path.join(self.data_root, path)
+                    modality_frames[modality] = self._extract_frames(full_path, sample_indices)
+
+
+        return modality_frames, label
+    
+
+    def _determine_sample_indices(self, sample_path, use_random_sampling=True):
+        # Open the video file with OpenCV
+        cap = cv2.VideoCapture(sample_path)
+
+        # Get the total number of frames in the video
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        # Release the video capture object
+        cap.release()
+
+        # Choose the sampling method based on the flag
+        if use_random_sampling:
+            return self._random_sample_frame_idx(total_frames)
+        else:
+            return self._deterministic_sample_frame_idx(total_frames)
+    
+    def _random_sample_frame_idx(self, length):
+        # Ensure the random selection does not exceed the number of frames
+        num_samples = min(12, length)
+
+        # Randomly select unique frame indices
+        frame_indices = np.random.choice(length, num_samples, replace=False)
+
+        # Sort the indices to maintain correct sequence
+        frame_indices.sort()
+
+        return frame_indices.tolist()
+
+    def _deterministic_sample_frame_idx(self, length):
+        # Evenly sample 12 frames throughout the video
+        return np.linspace(0, length-1, 12).astype(int).tolist()
+    
+    def _extract_frames(self, path, sample_indices):
+        if 'depth' in path:
+            # Handling depth data
+            depth_images = sorted(os.listdir(path))
+            # Ensure that the sample_indices are within the range of available images
+            sample_indices = [i for i in sample_indices if i < len(depth_images)]
+            
+            extracted_frames = [self._load_depth_image(os.path.join(path, depth_images[idx])) for idx in sample_indices]
+            del sample_indices, depth_images
+            frames_tensor = torch.stack(extracted_frames)
+            del extracted_frames
+            frames_tensor = self.transform_grey(frames_tensor)
+        elif 'ir' in path:
+            frames_tensor = self.load_video(path, sample_indices, is_ir=True) # From NHWC to NCHW format
+        else:
+            frames_tensor = self.load_video(path, sample_indices)
+            
+
+        return frames_tensor
+    
+    def _load_skeleton_data(self, skeleton_path):
+        skeleton_data = np.load(skeleton_path, allow_pickle=True).item()
+        # Assume using RGB skeleton data from the first body
+        skel_body0 = skeleton_data.get('skel_body0', np.zeros((1, 25, 3)))
+        return skel_body0[np.newaxis, ...]
+
+    def _load_depth_image(self, img_path):
+        # Load a single depth image as a grayscale tensor
+        image = Image.open(img_path).convert('L')  # Convert to grayscale ('L' mode)
+        tensor_image = transforms.ToTensor()(image)
+        return tensor_image
+    
+    def load_video(self, vis_path, sample_idx, is_ir=False):
+        #vr = VideoReader(vis_path, ctx=cpu(0))
+        
+
+        #img_array = vr.get_batch(sample_idx) # (n_clips*num_frm, H, W, 3)
+
+        video_tensor, _, _ = read_video(vis_path, start_pts=0, end_pts=None, pts_unit='sec')
+        # video_tensor shape: (T, H, W, C)
+
+        # Select frames based on sample_idx
+        img_array = video_tensor[sample_idx]
+        img_array = img_array.permute(0, 3, 1, 2).float() / 255.
+
+        #img_array = img_array.asnumpy()  # Convert from MXNet NDArray to NumPy array
+        #img_array = torch.from_numpy(img_array).permute(0, 3, 1, 2).float() / 255.
+        if False:#is_ir:
+            grayscale_transform = transforms.Grayscale(num_output_channels=1)
+            img_array = grayscale_transform(img_array)
+            img_array = self.transform_grey(img_array)
+        else:
+            img_array = self.transform(img_array)
+
+        return img_array
 
 
 
@@ -440,3 +602,66 @@ class SingleFrameVideoDataset(MultiModalVideoDataset):
                 modality_frame[modality] = frame
 
         return modality_frame, label
+    
+
+def init_transform_dict(video_res=(240, 320),
+                        input_res=(224, 224),
+                        randcrop_scale=(0.8, 1.0),
+                        color_jitter=(0, 0, 0),
+                        norm_mean=(0.48145466, 0.4578275, 0.40821073),
+                        norm_std=(0.26862954, 0.26130258, 0.27577711)):
+    normalize = transforms.Normalize(mean=norm_mean, std=norm_std)
+    transform_dict = {
+        'train': transforms.Compose([
+            transforms.RandomResizedCrop(input_res, scale=randcrop_scale, interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=color_jitter[0], saturation=color_jitter[1], hue=color_jitter[2]),
+            normalize,
+        ]),
+        'val': transforms.Compose([
+            transforms.Resize([video_res[0], video_res[1]], antialias=True),
+            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.Resize(input_res, antialias=True),
+            normalize,
+        ]),
+        'test': transforms.Compose([
+            transforms.Resize([video_res[0], video_res[1]], antialias=True),
+            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.Resize(input_res, antialias=True),
+            normalize,
+        ])
+    }
+    return transform_dict
+
+
+def init_transform_dict_simple(video_res=(240, 320),
+                        input_res=(224, 224),
+                        randcrop_scale=(0.8, 1.0),
+                        color_jitter=(0, 0, 0),
+                        norm_mean=(0.48145466, 0.4578275, 0.40821073),
+                        norm_std=(0.26862954, 0.26130258, 0.27577711),
+                        grey=False):
+    normalize = transforms.Normalize(mean=norm_mean, std=norm_std)
+    if grey:
+        norm_mean_gray = [0.5]
+        norm_std_gray = [0.5]
+
+        normalize = transforms.Normalize(mean=norm_mean_gray, std=norm_std_gray)
+    transform_dict = {
+        'train': transforms.Compose([
+            transforms.Resize(input_res, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
+            transforms.CenterCrop(input_res),
+            normalize,
+        ]),
+        'val': transforms.Compose([
+            transforms.Resize(input_res, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
+            transforms.CenterCrop(input_res),
+            normalize,
+        ]),
+        'test': transforms.Compose([
+            transforms.Resize(input_res, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
+            transforms.CenterCrop(input_res),
+            normalize,
+        ])
+    }
+    return transform_dict

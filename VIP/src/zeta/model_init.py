@@ -11,6 +11,16 @@ class SimpleNamespace:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+def adjust_state_dict_for_finetuning(state_dict):
+    """ Adjusts the state dictionary by removing 'module.' prefix from keys. """
+    new_state_dict = {}
+    for k, v in state_dict.items():
+        if k.startswith("module."):
+            new_state_dict[k[7:]] = v  # Remove 'module.' from key
+        else:
+            new_state_dict[k] = v
+    return new_state_dict        
+
 def initialize_vip_encoder(config, modality='rgb', freeze=True):
 
     # Create an 'args' object from the configuration
@@ -27,7 +37,20 @@ def initialize_vip_encoder(config, modality='rgb', freeze=True):
 
     # Load model weights
     ckpt = torch.load(config["e2e_weights_path"])
-    model_instance.load_state_dict(ckpt)
+        # Check if the model is fine-tuned and adjust state dictionary if necessary
+    #if config.get("is_finetuned", False):
+     #   ckpt = adjust_state_dict_for_finetuning(ckpt)
+
+    try:
+        model_instance.load_state_dict(ckpt)
+    except RuntimeError as e:
+        if "Missing key(s) in state_dict" in str(e):
+            # Retry with adjusted state dictionary
+            print("Adjusting state dictionary for fine-tuned model.")
+            ckpt = adjust_state_dict_for_finetuning(ckpt)
+            model_instance.load_state_dict(ckpt)
+        else:
+            raise e  # Reraise the exception if it's a different error
 
     # Load the base CLIPConfig
     clipconfig = CLIPVisionConfig.from_pretrained(args.clip_config)
@@ -57,6 +80,11 @@ def initialize_vip_encoder(config, modality='rgb', freeze=True):
     # adjust channel dim in patch projection layer
     if modality in ['ir', 'depth', 'skeleton']:
         model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
+
+    if modality in ['skeleton']:
+        model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(1, 3), stride=(1, 3), bias=False)
+        model.vision_model.embeddings.position_embedding = nn.Embedding(26, 768)
+        model.vision_model.embeddings.register_buffer("position_ids", torch.arange(26).expand((1, -1)))
 
     return model
 

@@ -1,0 +1,52 @@
+2023-12-14 16:06:48,699 - INFO - Configuration:
+{
+    "task": "3",
+    "number_gpus": "4",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 20,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
+    "learning_rate": 0.0001,
+    "gradient_accumulation_steps": 4,
+    "scheduler_config": {
+        "type": "exponential",
+        "params": {
+            "gamma": 0.98
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_depth_skeleton_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": true,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2023-12-14 16:06:48,745 - INFO - Evaluing Loss...
+2023-12-14 16:06:49,285 - INFO - Training on the following GPUs [2, 3, 4, 5]
+2023-12-14 16:06:56,933 - INFO - Starting training loop
+2023-12-14 16:06:56,934 - INFO - Epoch set to one because it is just eval
+2023-12-14 16:06:56,938 - INFO - Epoch 1/20 - Training
+2023-12-14 18:14:44,205 - INFO - Epoch [1/20], modality_0_to_modality_1 Avg Loss: 43.4166
+2023-12-14 18:14:44,206 - INFO - Epoch [1/20], Avg Loss: 43.4166
+2023-12-14 18:14:44,207 - INFO - Epoch 1/20 - Validation
+2023-12-14 18:18:08,056 - INFO - Epoch [1/20], Validation Loss: 41.2625
+2023-12-14 18:18:08,062 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_CV_20231214_160656
+2023-12-14 18:18:08,062 - INFO - Training complete!

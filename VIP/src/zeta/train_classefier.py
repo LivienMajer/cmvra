@@ -9,6 +9,7 @@ import os
 import json 
 import logging
 from glob import glob
+import math
 
 
 
@@ -29,6 +30,10 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
 
     # to do implement learning rate sceduler
     criterion = torch.nn.CrossEntropyLoss()
+
+    # Initialize Step LR learning rate scheduler
+    step_size = int(math.floor(num_epochs * 0.4))
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.5)
     best_val_loss = float('inf')
     epoch = 10
     
@@ -59,6 +64,8 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
         # Train and validate for each epoch
         train_losses, train_accuracies = train_epoch(multi_modality_model, device, train_loader, criterion, optimizer, epoch, num_epochs)
         val_losses, val_accuracies = evaluate_model(multi_modality_model, device, val_loader, criterion, epoch, num_epochs)
+
+        lr_scheduler.step()
 
         # Update training stats
         training_stats["epochs"].append(epoch + 1)

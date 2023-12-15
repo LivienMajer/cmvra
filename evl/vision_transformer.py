@@ -105,7 +105,7 @@ class PatchEmbed2D(nn.Module):
     def forward(self, x: torch.Tensor):
         B, C, H, W = x.size()
         pH, pW = self.patch_size
-
+        
         assert C == self.in_channels and H % pH == 0 and W % pW == 0
 
         x = x.view(B, C, H // pH, pH, W // pW, pW).permute(0, 2, 4, 1, 3, 5).flatten(3).flatten(1, 2)

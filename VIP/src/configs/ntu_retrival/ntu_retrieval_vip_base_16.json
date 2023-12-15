@@ -45,11 +45,11 @@
         "add_cls_num": 3
     },
   
-    "train_batch_size": 16,
+    "train_batch_size": 8,
     "test_batch_size": 128,
     "max_n_example_per_group": 1,
     "gradient_accumulation_steps": 1,
-    "n_workers": 20,
+    "n_workers": 10,
     "pin_mem": 1,
     "fp16": 1,
     "amp_level": "O2",
@@ -65,13 +65,13 @@
       "loss_name": "NCELearnableTempDSLLoss",
       "if_gather": 1
     },
-    "warmup_ratio": 1,
+    "warmup_ratio": 0.01,
     "decay": "cosine",
     "grad_norm": 1.0,
   
-    "num_train_epochs": 5,
+    "num_train_epochs": 10,
     "min_valid_steps": 1,
-    "num_valid": 1,
+    "num_valid": 5,
     "only_valid_steps": 160,
     "save_steps_ratio": 0.9,
     "output_dir": "vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16",

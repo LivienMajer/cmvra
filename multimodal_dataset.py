@@ -6,6 +6,7 @@ from typing import Optional
 from torchvision import transforms
 from PIL import Image
 import cv2
+import torchvision
 
 from evl.video_dataset.transform import create_random_augment, random_resized_crop
 
@@ -41,10 +42,10 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
             if modality in self.active_modalities:
                 if modality == 'skeleton':
                     skeleton_data = self.load_skeleton_data(full_path)
-                    scaled_skeleton_data = self.scale_skeleton_data(skeleton_data)
-                    # Apply any skeleton-specific processing if needed
-                    processed_skeleton_data = self.advanced_processing_skeleton(scaled_skeleton_data)
-                    modality_frames[modality] = processed_skeleton_data
+                    sampled_skeleton_data = skeleton_data[sample_indices, :, :]
+                    scaled_skeleton_data = self.scale_skeleton_data(sampled_skeleton_data)
+                    normalized_skeleton_data = self.normalize_skeleton_data(scaled_skeleton_data)
+                    modality_frames[modality] = normalized_skeleton_data.unsqueeze(1)
                 else:
                     modality_frames[modality] = self._extract_frames(full_path, sample_indices)
                     if self.use_advanced_processing:
@@ -72,7 +73,7 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
             pass
     
     def _random_sample_frame_idx(self, length):
-        frame_indices = np.linspace(0, length-1, 12).astype(int).tolist()
+        frame_indices = np.linspace(0, length-1, 8).astype(int).tolist()
         return frame_indices
     """
     def _random_sample_frame_idx(self, length):
@@ -97,8 +98,9 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
             frames_tensor = torch.stack(extracted_frames)
             del extracted_frames
             #print('depth',frames_tensor.shape)
+            # Handling RGB and IR videos using torchvision
         else:
-            # Handling RGB and IR videos using OpenCV
+             # Handling RGB and IR videos using OpenCV
             cap = cv2.VideoCapture(path)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -132,9 +134,20 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
 
     def scale_skeleton_data(self, skeleton_data):
         original_width, original_height = self.original_video_size
-        scale_factor = self.spatial_size / max(original_width, original_height)
-        return skeleton_data * scale_factor
+        target_width, target_height = self.spatial_size, self.spatial_size
 
+        # Calculate separate scaling factors for width and height
+        scale_factor_x = target_width / original_width
+        scale_factor_y = target_height / original_height
+
+        # Apply scaling factors to x and y coordinates directly
+        # Assuming skeleton_data shape is [nframes, njoints, 2] with last dimension being (x, y)
+        skeleton_data[:, :, 0] *= scale_factor_x  # Scale x coordinates
+        skeleton_data[:, :, 1] *= scale_factor_y  # Scale y coordinates
+
+        return skeleton_data
+
+    
     def _load_depth_image(self, img_path):
         # Load a single depth image as a grayscale tensor
         image = Image.open(img_path).convert('L')  # Convert to grayscale ('L' mode)
@@ -144,7 +157,7 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
     def normalize_skeleton_data(self, skeleton_data):
         # Assuming skeleton_data is scaled to have coordinates in the range [0, 224]
         # Normalize to the range [0, 1]
-        normalized_data = skeleton_data / 224.0
+        normalized_data = ((skeleton_data / 224.0) - 0.5) * 2
         return normalized_data
     
     def _advanced_processing(self, frames_tensor):

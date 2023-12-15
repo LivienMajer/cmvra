@@ -11,9 +11,12 @@ import re
 import subprocess
 import torch
 
+import multiprocessing
+import time
+
 from zeta.data_loader import load_dataloaders
 from zeta.model_init import initialize_vip_encoder, MultiModalityModel
-from zeta.align_process import align_modalities_process
+from zeta.align_process import align_modalities_process, eval_loss_process
 from zeta.train_classefier import train_classefier_process
 
 def setup_ccname():
@@ -31,6 +34,14 @@ def setup_ccname():
     except:
         sys.stderr.write("Unable to setup KRB5CCNAME!\nmaybe k5start not running?\n")
         sys.exit(1)
+
+
+
+
+def worker(num):
+    """thread worker function"""
+    print(f'Worker: {num}')
+    time.sleep(2)
 
 def get_gpu_memory_map():
     """Returns a dictionary of GPU ID to memory available in MB"""
@@ -84,8 +95,8 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
             freeze = True
         else:
             freeze = False
-        encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
-        # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
+        encoder = initialize_vip_encoder(config, modality='rgb', freeze=freeze)
+        # for some reason my encoders have to be a Dataparallel object too otherwise they dodge the wrapping of the parent model
         encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
         modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
 
@@ -177,6 +188,38 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
                             test_loader, 
                             config)
 
+# task 3 evaluate loss for unchanged VIP encoders. Expand ir and depth dims
+def eval_loss(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
+    logging.info("Evaluing Loss...")
+    
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Training on the following GPUs {selected_gpu_ids}")
+    
+
+    modalities_encoders = {}
+    for modality in modalities:
+        encoder = initialize_vip_encoder(config, modality=modality, freeze=True)
+        # for some reason my encoders have to be a Dataparallel object too otherwise they dodge the wrapping of the parent model
+        encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
+        modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
+
+    
+    multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
+
+    multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
+
+    eval_loss_process(multi_modality_model,
+                            train_loader,
+                            val_loader, 
+                            num_epochs, 
+                            learning_rate, 
+                            temperature,
+                            resume_from_checkpoint,
+                            checkpoint_dir,
+                            sorted(selected_gpu_ids)[0],
+                            config
+                            )
+    
 def evaluate_knn():
     logging.info("Evaluating KNN...")
     # Your code for task 4
@@ -208,12 +251,16 @@ def main():
     batch_size= config['batch_size']
     pin_memory= config['pin_memory']
 
+    
+    torch.set_num_threads(num_workers)
+
     train_data, val_data, test_data = load_dataloaders(data_root=data_root,
                                                        modalities=modalities,
                                                         batch_size=batch_size,
                                                         num_workers=num_workers,
                                                         pin_memory=pin_memory,
-                                                        split=config['split'])
+                                                        split=config['split'],
+                                                        random_sample=config['random_sample'])
     # Task executions
     if task == '1':
         align_modalities(modalities, 
@@ -231,9 +278,18 @@ def main():
                         test_data, 
                         config)
     elif task == '3':
-        evaluate_text_encoder()
+        eval_loss(modalities, 
+        train_data, 
+        val_data, 
+        epochs, 
+        learning_rate, 
+        temperature,
+        res_ckpt,
+        cktp_dir,
+        config)
     elif task == '4':
         evaluate_knn()
 
 if __name__ == "__main__":
+    
     main()

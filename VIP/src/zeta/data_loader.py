@@ -3,16 +3,11 @@ import torch
 from torch.utils.data import DataLoader, random_split
 
 # Assuming MultiModalVideoDataset is defined elsewhere, import it
-from multimodal_dataset import MultiModalVideoDataset
+from zeta.multimodal_dataset import MultiModalVideoDataset, MultiModalVideoDataset3
 
-import random
-import torch
-from torch.utils.data import DataLoader, random_split
 
-# Assuming MultiModalVideoDataset is defined elsewhere, import it
-from multimodal_dataset import MultiModalVideoDataset
 
-def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_workers=10, pin_memory=True, split='CS'):
+def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_workers=10, pin_memory=True, split='CS', random_sample= False):
     # Set the seed for reproducibility
     seed = 42
     random.seed(seed)  # Seed for Python's random module
@@ -29,9 +24,11 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
 
     # Load the datasets
-    train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True)
-    test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True)
+    #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+    #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
 
+    train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, random_sample=random_sample)
+    test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, random_sample=random_sample)
     # Calculate lengths of splits for training and validation
     train_len = int(0.98 * len(train_data))
     val_len = len(train_data) - train_len

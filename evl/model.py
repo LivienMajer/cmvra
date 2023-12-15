@@ -61,7 +61,7 @@ class TemporalCrossAttention(nn.Module):
         N, T, L, H, D = q.size()
         assert L == np.prod(self.spatial_size) + 1
 
-        ret = torch.zeros([N, T, L, self.w1.size(-1)], device='cuda:3')
+        ret = torch.zeros([N, T, L, self.w1.size(-1)], device='cuda:7')
         ret[:, 1:, 1:, :] += self.forward_half(q[:, 1:, :, :, :], k[:, :-1, :, :, :], self.w1)
         ret[:, :-1, 1:, :] += self.forward_half(q[:, :-1, :, :, :], k[:, 1:, :, :, :], self.w2)
 
