@@ -13,13 +13,16 @@ class NCEContrastiveLoss(nn.Module):
 
     def forward(self, vis_feat, text_feat):
 
+        vis_feat, text_feat = normalize(vis_feat, text_feat)
         t2v = torch.matmul(vis_feat, text_feat.permute(1, 0)) / self.temp  # temperature
         v2t = t2v.permute(1, 0)
         t2v_label = torch.arange(t2v.shape[0], device=t2v.device)
         v2t_label = t2v_label
-        loss = (F.cross_entropy(t2v, t2v_label) + F.cross_entropy(v2t, v2t_label)).mean()
+        loss = (F.cross_entropy(t2v, t2v_label) + F.cross_entropy(v2t, v2t_label)) / 2
         return loss
 
+def normalize(*xs):
+    return [None if x is None else F.normalize(x, dim=-1) for x in xs]
 
 class InfoNCELoss1(nn.Module):
     def __init__(self, temperature=0.1):

@@ -1,0 +1,51 @@
+2024-01-03 00:18:04,080 - INFO - Configuration:
+{
+    "task": "4",
+    "number_gpus": "2",
+    "modalities": [
+        "rgb",
+        "ir",
+        "depth",
+        "skeleton"
+    ],
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_CV_20231223_023129.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/model_step_47400.pt"
+}
+2024-01-03 00:18:04,124 - INFO - Evaluing alginment with VIP text encoder...
+2024-01-03 00:18:04,217 - INFO - Evaluing on the following GPUs [0, 5]
+2024-01-03 00:22:40,777 - INFO - Val Set: Modality: rgb, Accuracy: 0.2332
+2024-01-03 00:22:40,778 - INFO - Val Set: Modality: ir, Accuracy: 0.3093
+2024-01-03 00:22:40,778 - INFO - Val Set: Modality: depth, Accuracy: 0.2627
+2024-01-03 00:22:40,778 - INFO - Val Set: Modality: skeleton, Accuracy: 0.2942
+2024-01-03 03:21:41,795 - INFO - Train Set: Modality: rgb, Accuracy: 0.2139
+2024-01-03 03:21:41,796 - INFO - Train Set: Modality: ir, Accuracy: 0.3394
+2024-01-03 03:21:41,797 - INFO - Train Set: Modality: depth, Accuracy: 0.2771
+2024-01-03 03:21:41,797 - INFO - Train Set: Modality: skeleton, Accuracy: 0.3035
+2024-01-03 05:06:31,056 - INFO - Test Set: Modality: rgb, Accuracy: 0.2538
+2024-01-03 05:06:31,057 - INFO - Test Set: Modality: ir, Accuracy: 0.3118
+2024-01-03 05:06:31,057 - INFO - Test Set: Modality: depth, Accuracy: 0.2590
+2024-01-03 05:06:31,057 - INFO - Test Set: Modality: skeleton, Accuracy: 0.3181

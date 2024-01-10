@@ -1,0 +1,114 @@
+2024-01-09 22:27:32,306 - INFO - Configuration:
+{
+    "task": "2",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "skeleton"
+    ],
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "full_train_classifiers": false,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_0_20240109_192842.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 16,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-01-09 22:27:32,350 - INFO - Training classifiers...
+2024-01-09 22:27:32,399 - INFO - Training on the following GPUs [1]
+2024-01-09 22:34:56,576 - INFO - Epoch [1/10]
+2024-01-09 22:34:56,609 - INFO - Modality: rgb, Loss: 2.7905, Accuracy: 0.2698
+2024-01-09 22:34:56,609 - INFO - Modality: skeleton, Loss: 2.8480, Accuracy: 0.2692
+2024-01-09 22:36:18,630 - INFO - Validation/Test Epoch [1/10]
+2024-01-09 22:36:18,631 - INFO - Modality: rgb, Loss: 2.6921, Accuracy: 0.1944
+2024-01-09 22:36:18,631 - INFO - Modality: skeleton, Loss: 2.9122, Accuracy: 0.1944
+2024-01-09 22:36:26,633 - INFO - New best model saved at epoch 1 with val loss: 2.8021
+2024-01-09 22:43:44,696 - INFO - Epoch [2/10]
+2024-01-09 22:43:44,697 - INFO - Modality: rgb, Loss: 2.4307, Accuracy: 0.3108
+2024-01-09 22:43:44,697 - INFO - Modality: skeleton, Loss: 2.7764, Accuracy: 0.2730
+2024-01-09 22:45:05,356 - INFO - Validation/Test Epoch [2/10]
+2024-01-09 22:45:05,357 - INFO - Modality: rgb, Loss: 2.4731, Accuracy: 0.3132
+2024-01-09 22:45:05,357 - INFO - Modality: skeleton, Loss: 2.9107, Accuracy: 0.1944
+2024-01-09 22:45:08,304 - INFO - New best model saved at epoch 2 with val loss: 2.6919
+2024-01-09 22:52:33,205 - INFO - Epoch [3/10]
+2024-01-09 22:52:33,205 - INFO - Modality: rgb, Loss: 2.2373, Accuracy: 0.3978
+2024-01-09 22:52:33,205 - INFO - Modality: skeleton, Loss: 2.7748, Accuracy: 0.2730
+2024-01-09 22:53:55,922 - INFO - Validation/Test Epoch [3/10]
+2024-01-09 22:53:55,922 - INFO - Modality: rgb, Loss: 2.3027, Accuracy: 0.4146
+2024-01-09 22:53:55,922 - INFO - Modality: skeleton, Loss: 2.9125, Accuracy: 0.1944
+2024-01-09 22:54:05,139 - INFO - New best model saved at epoch 3 with val loss: 2.6076
+2024-01-09 23:01:33,139 - INFO - Epoch [4/10]
+2024-01-09 23:01:33,140 - INFO - Modality: rgb, Loss: 2.0818, Accuracy: 0.4501
+2024-01-09 23:01:33,140 - INFO - Modality: skeleton, Loss: 2.7765, Accuracy: 0.2719
+2024-01-09 23:02:55,586 - INFO - Validation/Test Epoch [4/10]
+2024-01-09 23:02:55,586 - INFO - Modality: rgb, Loss: 2.1630, Accuracy: 0.4688
+2024-01-09 23:02:55,586 - INFO - Modality: skeleton, Loss: 2.9064, Accuracy: 0.1944
+2024-01-09 23:03:03,333 - INFO - New best model saved at epoch 4 with val loss: 2.5347
+2024-01-09 23:10:31,437 - INFO - Epoch [5/10]
+2024-01-09 23:10:31,437 - INFO - Modality: rgb, Loss: 1.9809, Accuracy: 0.4799
+2024-01-09 23:10:31,437 - INFO - Modality: skeleton, Loss: 2.7737, Accuracy: 0.2719
+2024-01-09 23:11:55,398 - INFO - Validation/Test Epoch [5/10]
+2024-01-09 23:11:55,398 - INFO - Modality: rgb, Loss: 2.1069, Accuracy: 0.4875
+2024-01-09 23:11:55,398 - INFO - Modality: skeleton, Loss: 2.9165, Accuracy: 0.1944
+2024-01-09 23:12:01,234 - INFO - New best model saved at epoch 5 with val loss: 2.5117
+2024-01-09 23:19:29,008 - INFO - Epoch [6/10]
+2024-01-09 23:19:29,008 - INFO - Modality: rgb, Loss: 1.9213, Accuracy: 0.4998
+2024-01-09 23:19:29,008 - INFO - Modality: skeleton, Loss: 2.7730, Accuracy: 0.2730
+2024-01-09 23:20:52,523 - INFO - Validation/Test Epoch [6/10]
+2024-01-09 23:20:52,523 - INFO - Modality: rgb, Loss: 2.0528, Accuracy: 0.4931
+2024-01-09 23:20:52,523 - INFO - Modality: skeleton, Loss: 2.9134, Accuracy: 0.1944
+2024-01-09 23:21:01,774 - INFO - New best model saved at epoch 6 with val loss: 2.4831
+2024-01-09 23:28:30,740 - INFO - Epoch [7/10]
+2024-01-09 23:28:30,740 - INFO - Modality: rgb, Loss: 1.8649, Accuracy: 0.5102
+2024-01-09 23:28:30,740 - INFO - Modality: skeleton, Loss: 2.7723, Accuracy: 0.2730
+2024-01-09 23:29:53,706 - INFO - Validation/Test Epoch [7/10]
+2024-01-09 23:29:53,707 - INFO - Modality: rgb, Loss: 2.0048, Accuracy: 0.5088
+2024-01-09 23:29:53,707 - INFO - Modality: skeleton, Loss: 2.9086, Accuracy: 0.1944
+2024-01-09 23:30:00,138 - INFO - New best model saved at epoch 7 with val loss: 2.4567
+2024-01-09 23:37:30,194 - INFO - Epoch [8/10]
+2024-01-09 23:37:30,195 - INFO - Modality: rgb, Loss: 1.8184, Accuracy: 0.5255
+2024-01-09 23:37:30,195 - INFO - Modality: skeleton, Loss: 2.7748, Accuracy: 0.2730
+2024-01-09 23:38:53,345 - INFO - Validation/Test Epoch [8/10]
+2024-01-09 23:38:53,346 - INFO - Modality: rgb, Loss: 1.9598, Accuracy: 0.5199
+2024-01-09 23:38:53,346 - INFO - Modality: skeleton, Loss: 2.9161, Accuracy: 0.1944
+2024-01-09 23:38:58,375 - INFO - New best model saved at epoch 8 with val loss: 2.4380
+2024-01-09 23:46:24,435 - INFO - Epoch [9/10]
+2024-01-09 23:46:24,435 - INFO - Modality: rgb, Loss: 1.7808, Accuracy: 0.5340
+2024-01-09 23:46:24,435 - INFO - Modality: skeleton, Loss: 2.7721, Accuracy: 0.2730
+2024-01-09 23:47:42,767 - INFO - Validation/Test Epoch [9/10]
+2024-01-09 23:47:42,767 - INFO - Modality: rgb, Loss: 1.9391, Accuracy: 0.5275
+2024-01-09 23:47:42,767 - INFO - Modality: skeleton, Loss: 2.9119, Accuracy: 0.1944
+2024-01-09 23:47:53,425 - INFO - New best model saved at epoch 9 with val loss: 2.4255
+2024-01-09 23:54:58,970 - INFO - Epoch [10/10]
+2024-01-09 23:54:58,970 - INFO - Modality: rgb, Loss: 1.7585, Accuracy: 0.5364
+2024-01-09 23:54:58,970 - INFO - Modality: skeleton, Loss: 2.7726, Accuracy: 0.2719
+2024-01-09 23:56:17,512 - INFO - Validation/Test Epoch [10/10]
+2024-01-09 23:56:17,513 - INFO - Modality: rgb, Loss: 1.9199, Accuracy: 0.5324
+2024-01-09 23:56:17,513 - INFO - Modality: skeleton, Loss: 2.9049, Accuracy: 0.1944
+2024-01-09 23:56:19,970 - INFO - New best model saved at epoch 10 with val loss: 2.4124
+2024-01-09 23:56:19,975 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_skeleton_20240109_222738.json
+2024-01-09 23:56:19,976 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_skeleton_20240109_222738.pth
+2024-01-09 23:58:23,683 - INFO - Validation/Test Epoch [10/10]
+2024-01-09 23:58:23,683 - INFO - Modality: rgb, Loss: 1.7863, Accuracy: 0.5854
+2024-01-09 23:58:23,683 - INFO - Modality: skeleton, Loss: 2.6493, Accuracy: 0.3183
+2024-01-09 23:58:23,683 - INFO - Test Loss: {'rgb': 1.786309058288876, 'skeleton': 2.6492670131244247}, Test Accuracy: {'rgb': 0.585431654676259, 'skeleton': 0.3182810894141829}

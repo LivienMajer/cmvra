@@ -1,0 +1,38 @@
+2023-12-16 22:58:16,112 - INFO - Configuration:
+{
+    "task": "2",
+    "number_gpus": "4",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/classefier_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_20231216_014028.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 20,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 64,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2023-12-16 22:58:16,179 - INFO - Training classifiers...
+2023-12-16 22:58:20,606 - INFO - Training on the following GPUs [0, 1, 2, 3]
+2023-12-16 22:58:32,836 - INFO - Evaluing the rgb classefier on ir
+2023-12-17 00:02:26,814 - INFO - {'rgb': 0.0, 'ir': 0.17303600289660384}

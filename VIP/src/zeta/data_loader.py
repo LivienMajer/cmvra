@@ -1,5 +1,6 @@
 import random
 import torch
+import logging
 from torch.utils.data import DataLoader, random_split
 
 # Assuming MultiModalVideoDataset is defined elsewhere, import it
@@ -7,45 +8,73 @@ from zeta.multimodal_dataset import MultiModalVideoDataset, MultiModalVideoDatas
 
 
 
-def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_workers=10, pin_memory=True, split='CS', random_sample= False):
+def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_workers=10, pin_memory=True, split='CS', random_sample= False, config=None):
     # Set the seed for reproducibility
     seed = 42
     random.seed(seed)  # Seed for Python's random module
     torch.manual_seed(seed)  # Seed for PyTorch random number generators
+    if config['dataset'] == 'NTU':
+        # Define file paths for datasets based on mode
+        if split == 'CS':
+            train_data_list = '/home/bas06400/Thesis/CS_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/CS_testing_set.txt'
+        elif split == 'CV':
+            train_data_list = '/home/bas06400/Thesis/CV_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/CV_testing_set.txt'
+        else:
+            raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
+        
+        # Load the datasets
+        #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+        #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
 
-    # Define file paths for datasets based on mode
-    if split == 'CS':
-        train_data_list = '/home/bas06400/Thesis/CS_training_set.txt'
-        test_data_list = '/home/bas06400/Thesis/CS_testing_set.txt'
-    elif split == 'CV':
-        train_data_list = '/home/bas06400/Thesis/CV_training_set.txt'
-        test_data_list = '/home/bas06400/Thesis/CV_testing_set.txt'
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, random_sample=random_sample)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, random_sample=random_sample)
+        # Calculate lengths of splits for training and validation
+        train_len = int(0.98 * len(train_data))
+        val_len = len(train_data) - train_len
+
+        # Split the training dataset into training and validation sets
+        train_data, val_data = random_split(train_data, [train_len, val_len])
+
+        
+    elif config['dataset'] == 'DAA':
+        # Define file paths for datasets based on mode
+        if split == '0':
+            train_data_list = '/home/bas06400/daa/daa_split0train.txt'
+            val_data_list = '/home/bas06400/daa/daa_split0val.txt'
+            test_data_list = '/home/bas06400/daa/daa_split0test.txt'
+        elif split == '1':
+            train_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+            val_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+            test_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+        elif split == '2':
+            train_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+            val_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+            test_data_list = '/home/bas06400/daa/daa_split0test1.txt'
+        else:
+            raise ValueError("Invalid mode. Choose '0', '1' or '2'.")
+        
+        data_root = '/home/bas06400/daa'
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, random_sample=random_sample)
+        val_data = MultiModalVideoDataset3(val_data_list, data_root, modalities, random_sample=random_sample)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, random_sample=random_sample)
+
+
     else:
-        raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
-
-    # Load the datasets
-    #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
-    #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
-
-    train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, random_sample=random_sample)
-    test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, random_sample=random_sample)
-    # Calculate lengths of splits for training and validation
-    train_len = int(0.98 * len(train_data))
-    val_len = len(train_data) - train_len
-
-    # Split the training dataset into training and validation sets
-    train_data, val_data = random_split(train_data, [train_len, val_len])
-
-    
-
-    # Create the DataLoaders
+        logging.info('Currently only DAA or NTU are supported dataset options')
+    shift_label = False
+    if config['dataset'] =='NTU':
+        shift_label = True
+     # Create the DataLoaders
     train_loader = DataLoader(
         train_data,
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        collate_fn=custom_collate_fn
+        prefetch_factor=2,
+        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
     )
 
     val_loader = DataLoader(
@@ -54,7 +83,8 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         shuffle=False,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        collate_fn=custom_collate_fn
+        prefetch_factor=2,
+        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
     )
 
     test_loader = DataLoader(
@@ -63,13 +93,13 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         shuffle=False,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        collate_fn=custom_collate_fn
+        prefetch_factor=2,
+        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
     )
-
     return train_loader, val_loader, test_loader
 
 
-def custom_collate_fn(batch):
+def custom_collate_fn1(batch, shift_label=False):
     """
     Custom collate function to handle batches of data from MultiModalVideoDataset.
     
@@ -99,4 +129,19 @@ def custom_collate_fn(batch):
     
     collated_labels = torch.tensor(collated_labels)
     
+    return collated_data, collated_labels
+
+def custom_collate_fn(batch, shift_label=False):
+    modalities_shapes = {modality: (len(batch),) + frames.shape for modality, frames in batch[0][0].items()}
+    collated_data = {modality: torch.empty(shape) for modality, shape in modalities_shapes.items()}
+    collated_labels = torch.empty(len(batch), dtype=torch.long)
+
+    for i, (data, label) in enumerate(batch):
+        if shift_label:
+            collated_labels[i] = label - 1
+        else:
+            collated_labels[i] = label
+        for modality in data:
+            collated_data[modality][i] = data[modality]
+
     return collated_data, collated_labels

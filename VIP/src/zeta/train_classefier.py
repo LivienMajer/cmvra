@@ -21,7 +21,7 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
-    checkpoint_path = os.path.join(checkpoint_dir, 'classefier_checkpoints/', checkpoint_filename)
+    checkpoint_path = os.path.join(checkpoint_dir, 'classifier_checkpoints/', checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, f"stats_{modalities}_{timestamp}.json")
     resume_from_checkpoint = config['res_cktp']
 
@@ -35,10 +35,10 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
     step_size = int(math.floor(num_epochs * 0.4))
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.5)
     best_val_loss = float('inf')
-    epoch = 10
+    epoch = 5
     
     def find_latest_checkpoint():
-        list_of_files = glob(os.path.join(checkpoint_dir,'classefier_checkpoints', f'checkpoint_{modalities}_*.pth'))
+        list_of_files = glob(os.path.join(checkpoint_dir,'classifier_checkpoints', f'checkpoint_{modalities}_*.pth'))
         if list_of_files:
             return max(list_of_files, key=os.path.getctime)
         return None
@@ -125,14 +125,17 @@ def train_epoch(model, device, train_loader, criterion, optimizer, epoch, num_ep
             if modality in model.module.modalities_encoders:
                 data = batch_data[modality].cuda(device)
                 labels = batch_labels.cuda(device)
-
+                #print(modality)
                 optimizer.zero_grad()
                 outputs = model.module.forward_classifier(modality, data)
+                #print(f"Outputs {outputs}")
+                #print(f"Labels {labels}")
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
 
                 accuracy = compute_accuracy(outputs, labels)
+                #print(f"accuracy {accuracy}")
                 epoch_losses[modality] += loss.item()
                 epoch_accuracies[modality] += accuracy
 
@@ -188,3 +191,29 @@ def clear_memory():
     gc.collect()
     torch.cuda.empty_cache()
 
+def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_loader, config):
+    logging.info('Evaluing the rgb classefier on ir')
+    
+    accuracies = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
+    modality = 'ir'
+    model.eval()
+    with torch.no_grad():
+        for batch_data, batch_labels in tqdm(test_loader, desc=f"Validation/Test Epoch"):
+            
+            if modality in model.module.modalities_encoders:
+                data = batch_data[modality].cuda(device)
+                labels = batch_labels.cuda(device)
+
+                outputs = model.module.forward_encoder(modality, data)
+                outputs = model.module.forward_classifier_only('rgb', outputs)
+                
+
+                
+                accuracies[modality] += compute_accuracy(outputs, labels)
+
+                    
+
+    # Calculate average loss and accuracy for each modality
+    
+    avg_val_accuracies = {modality: accuracies[modality] / len(test_loader) for modality in accuracies}
+    logging.info(avg_val_accuracies)

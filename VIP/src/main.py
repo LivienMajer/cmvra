@@ -15,9 +15,10 @@ import multiprocessing
 import time
 
 from zeta.data_loader import load_dataloaders
-from zeta.model_init import initialize_vip_encoder, MultiModalityModel
+from zeta.model_init import initialize_vip_encoder, MultiModalityModel, initialize_vip_text_encoder
 from zeta.align_process import align_modalities_process, eval_loss_process
-from zeta.train_classefier import train_classefier_process
+from zeta.train_classefier import train_classefier_process, eval_rgb_classefier_on_ir
+from zeta.eval_vip_textencoder import eval_text_encoder_process
 
 def setup_ccname():
     user = getpass.getuser()
@@ -83,7 +84,7 @@ def setup_logging(config):
 # task 1 algin modalities 
 
 def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
-    logging.info("Aligning modalities...")
+    logging.info("Aligning modalities......")
     
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
     logging.info(f"Training on the following GPUs {selected_gpu_ids}")
@@ -95,7 +96,7 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
             freeze = True
         else:
             freeze = False
-        encoder = initialize_vip_encoder(config, modality='rgb', freeze=freeze)
+        encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
         # for some reason my encoders have to be a Dataparallel object too otherwise they dodge the wrapping of the parent model
         encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
         modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
@@ -132,6 +133,9 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     for modality in config['modalities']:
         
         freeze = True
+        if config['full_train_classifiers']:
+            logging.info("Encoders are now trainable")
+            freeze = False
         encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
         # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
         encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
@@ -177,8 +181,20 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     """
     
     
-    
-    multi_modality_model.load_state_dict(cktp['model_state_dict'])
+    if not config['full_train_classifiers']:
+        # Prepare a new state_dict for the model
+        new_state_dict = {}
+
+        for name, param in cktp['model_state_dict'].items():
+            # If the shape of the pretrained parameter doesn't match the model, skip it
+            if name in multi_modality_model.state_dict() and param.size() == multi_modality_model.state_dict()[name].size():
+                new_state_dict[name] = param
+            else:
+                # Log or print the mismatch information for debugging
+                logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
+
+        # Load the updated state_dict
+        multi_modality_model.load_state_dict(new_state_dict, strict=False)
 
     #multi_modality_model = multi_modality_model.cuda(sorted(selected_gpu_ids)[0])
     train_classefier_process(multi_modality_model, 
@@ -219,18 +235,60 @@ def eval_loss(modalities, train_loader, val_loader, num_epochs, learning_rate, t
                             sorted(selected_gpu_ids)[0],
                             config
                             )
+
+
+#task 4
+def eval_text_encoder(train_data, 
+                        val_data, 
+                        test_data,
+                        config):
     
+    logging.info("Evaluing alginment with VIP text encoder...")
+
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Evaluing on the following GPUs {selected_gpu_ids}")
+    
+    
+    
+
+    modalities_encoders = {}
+    for modality in config['modalities']:
+        
+        freeze = True
+        encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
+        # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
+        encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
+        modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
+
+    
+    
+    multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
+    multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
+
+    target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
+    text_model = initialize_vip_text_encoder(config, target_device)
+    text_model = text_model.to(target_device)
+    cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
+    #print(cktp['model_state_dict'].keys())
+    multi_modality_model.load_state_dict(cktp['model_state_dict'])
+
+    eval_text_encoder_process(visual_model=multi_modality_model,
+                              text_model=text_model,
+                              train_data=train_data,
+                              val_data=val_data,
+                              test_data=test_data,
+                              device=target_device,
+                              config=config
+                              )
+
+# task 4 evealuate knn
 def evaluate_knn():
     logging.info("Evaluating KNN...")
     # Your code for task 4
 
-# task 3 evaluate on text encoder
 
-def evaluate_text_encoder():
-    logging.info("Evaluating text encoder...")
-    # Your code for task 3
 
-# task 4 evealuate knn
+
 
 def main():
     setup_ccname()
@@ -260,7 +318,8 @@ def main():
                                                         num_workers=num_workers,
                                                         pin_memory=pin_memory,
                                                         split=config['split'],
-                                                        random_sample=config['random_sample'])
+                                                        random_sample=config['random_sample'],
+                                                        config=config)
     # Task executions
     if task == '1':
         align_modalities(modalities, 
@@ -288,7 +347,10 @@ def main():
         cktp_dir,
         config)
     elif task == '4':
-        evaluate_knn()
+        eval_text_encoder(train_data, 
+                        val_data, 
+                        test_data,
+                        config)
 
 if __name__ == "__main__":
     

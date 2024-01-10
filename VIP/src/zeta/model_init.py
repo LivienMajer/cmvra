@@ -1,11 +1,14 @@
 import json
 import torch
 from easydict import EasyDict as edict
-from modeling.CLIP_ViP import CLIPVisionModel, CLIPVisionTransformer
-from transformers.models.clip.configuration_clip import CLIPConfig, CLIPVisionConfig
+from modeling.CLIP_ViP import CLIPVisionModel, CLIPVisionTransformer, CLIPTextModel, CLIPTextTransformer
+from transformers.models.clip.configuration_clip import CLIPConfig, CLIPVisionConfig, CLIPTextConfig
 from transformers import CLIPPreTrainedModel
 from torch import nn
 from modeling.VidCLIP import VidCLIP
+from typing import Any, Optional, Tuple, Union
+from transformers.modeling_outputs import BaseModelOutput, BaseModelOutputWithPooling
+import logging
 
 class SimpleNamespace:
     def __init__(self, **kwargs):
@@ -76,10 +79,14 @@ def initialize_vip_encoder(config, modality='rgb', freeze=True):
         # Freeze the parameters if required
         for param in model.parameters():
             param.requires_grad_(False)
+    else:
+        # Freeze the parameters if required
+        for param in model.parameters():
+            param.requires_grad_(True)
 
     # adjust channel dim in patch projection layer
-    if modality in ['ir', 'depth', 'skeleton']:
-        model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
+    #if modality in ['ir', 'depth', 'skeleton']:
+      #  model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
 
     if modality in ['skeleton']:
         model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(1, 3), stride=(1, 3), bias=False)
@@ -111,6 +118,87 @@ def initalize_aligned_encoder(config_path, weights_path, modality='rgb', freeze=
 
     # Initialize the CLIPVisionModel
     model = CLIPVisionModel(clipconfig)
+
+
+def initialize_vip_text_encoder(config, device):
+    ckpt = torch.load(config["e2e_weights_path"], map_location=device)
+
+    # Prepare a dictionary to hold the relevant weights
+    state_dict = {}
+    
+    # Copy weights from the vidclip_model_weights to state_dict
+    for name, param in ckpt.items():
+        if "text_model" in name or "text_projection" in name:
+            new_name = name.replace("clipmodel.", "")  # remove the prefix
+            state_dict[new_name] = param
+    #print(state_dict)
+    # Initialize your custom CLIP text model
+    clip_text_config = CLIPTextConfig.from_pretrained("openai/clip-vit-base-patch16")
+    text_model = CustomCLIPTextModel(clip_text_config)  # Replace with your model initialization if different
+
+    try:
+        text_model.load_state_dict(state_dict)
+    except RuntimeError as e:
+        if "Missing key(s) in state_dict" in str(e):
+            # Retry with adjusted state dictionary
+            print("Adjusting state dictionary for fine-tuned model.")
+            state_dict = adjust_state_dict_for_finetuning(state_dict)
+            text_model.load_state_dict(state_dict)
+        else:
+            raise e  # Reraise the exception if it's a different error
+
+    return text_model
+
+
+
+
+class CustomCLIPTextModel(CLIPTextModel):
+    def __init__(self, config: CLIPTextConfig):
+        super().__init__(config)
+        # No additional text config passed here as it's not provided
+        self.text_model = CLIPTextTransformer(config)
+        
+        self.text_projection = nn.Linear(in_features=512, out_features=512, bias=False)
+    def forward(
+        self,
+        input_ids: Optional[torch.Tensor] = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        position_ids: Optional[torch.Tensor] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        return_dict: Optional[bool] = None,
+    ) -> Union[Tuple, BaseModelOutputWithPooling]:
+        # Call the original forward method to get the model outputs
+        outputs = super().forward(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            return_dict=return_dict
+        )
+        
+        # Apply the text_projection layer to the pooled_output (assuming you want to project the pooled output)
+        projected_output = self.text_projection(outputs.pooler_output)
+        
+        if not return_dict:
+            # If not returning a dict, convert the BaseModelOutputWithPooling to a tuple,
+            # append the projected_output to the tuple, and return
+            outputs_tuple = (
+                outputs.last_hidden_state,
+                projected_output,
+                outputs.hidden_states,
+                outputs.attentions
+            )
+            return outputs_tuple
+        
+        # Otherwise, create a new BaseModelOutputWithPooling containing the projected_output and return
+        return BaseModelOutputWithPooling(
+            last_hidden_state=outputs.last_hidden_state,
+            pooler_output=projected_output,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions,
+        )
 
 
 
@@ -175,3 +263,7 @@ class MultiModalityModel(nn.Module):
         encoder_output = self.forward_encoder(modality, x)
         classifier = getattr(self, f"{modality}_classifier")
         return classifier(encoder_output)
+    
+    def forward_classifier_only(self, modality, x):
+        classifier = getattr(self, f"{modality}_classifier")
+        return classifier(x)

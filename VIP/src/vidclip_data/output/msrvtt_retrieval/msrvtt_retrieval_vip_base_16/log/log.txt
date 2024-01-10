@@ -12488,3 +12488,1296 @@
 12/06/2023 16:36:09 - INFO - __main__ -   Evaluate under setting: DSL.
 12/06/2023 16:36:09 - INFO - __main__ -   validation finished in 58 seconds, validated on 60 videosntu_test t2v recall@1: 96.6667 ntu_test t2v recall@5: 100.0000 ntu_test t2v recall@10: 100.0000 ntu_test t2v recall_med: 1.0 ntu_test t2v recall_mean: 1.0 ntu_test v2t recall@1: 85.0000 ntu_test v2t recall@5: 100.0000 ntu_test v2t recall@10: 100.0000 ntu_test v2t recall_med: 1.0 ntu_test v2t recall_mean: 1.2 
 12/06/2023 16:36:09 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 01:49:59 - INFO - __main__ -   {'blob_mount_dir': '/blob_mount', 'debug': False, 'data_ratio': 1.0, 'model_config': None, 'tokenizer_dir': None, 'output_dir': 'vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16', 'max_txt_len': 50, 'max_img_size': 448, 'img_pixel_mean': None, 'img_pixel_std': None, 'img_input_format': 'RGB', 'max_n_example_per_group': 1, 'fps': 1, 'num_frm': 3, 'frm_sampling_strategy': 'rand', 'train_n_clips': 1, 'score_agg_func': 'mean', 'random_sample_clips': 1, 'train_batch_size': 8, 'val_batch_size': 128, 'gradient_accumulation_steps': 1, 'learning_rate': 1e-06, 'num_valid': 5, 'min_valid_steps': 1, 'save_steps_ratio': 0.9, 'num_train_epochs': 10, 'optim': 'adamw', 'betas': [0.9, 0.98], 'decay': 'cosine', 'dropout': 0.1, 'weight_decay': 0.1, 'grad_norm': 1.0, 'warmup_ratio': 0.01, 'transformer_lr_mul': 1.0, 'transformer_lr_mul_prefix': '', 'step_decay_epochs': None, 'cnn_optim': 'adamw', 'cnn_learning_rate': 5e-05, 'cnn_weight_decay': 0.001, 'cnn_sgd_momentum': 0.9, 'cnn_lr_mul': 1.0, 'cnn_lr_mul_prefix': 'grid_encoder', 'cnn_lr_decay': 'linear', 'cnn_step_decay_epochs': None, 'freeze_cnn': False, 'detectron2_model_cfg': '', 'e2e_weights_path': '/home/bas06400/Thesis/pretrain_clipvip_base_16.pt', 'detectron2_weights_path': None, 'bert_weights_path': None, 'inference_model_step': -1, 'do_inference': False, 'inference_split': 'val', 'inference_txt_db': None, 'inference_img_db': None, 'inference_batch_size': 64, 'inference_n_clips': 1, 'seed': 42, 'fp16': True, 'amp_level': 'O2', 'n_workers': 10, 'pin_mem': True, 'img_aug': 0, 'local_rank': -1, 'n_gpu': 2, 'deepspeed_config': 'src/configs/deepspeed_test.json', 'config': '/home/bas06400/Thesis/VIP/src/configs/daa_retrival/daa_retrieval_vip_base_16.json', 'itm_neg_prob': 0.5, 'use_itm': False, 'use_mlm': False, 'use_itc': 0, 'pixel_random_sampling_size': 0, 'train_datasets': {'name': 'daa_train', 'vis_format': 'video', 'txt': '/home/bas06400/traindaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/train'}, 'val_datasets': [{'name': 'daa_val', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'inference_datasets': [{'name': 'daa_test', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'train_num_frms': 12, 'test_n_clips': 1, 'test_num_frms': 12, 'sample_rate': 0, 'sample_jitter': 1, 'video_res': [240, 320], 'input_res': [224, 224], 'clip_weights': 'openai/clip-vit-base-patch16', 'clip_config': 'openai/clip-vit-base-patch16', 'clip_vision_additional_config': {'type': 'ViP', 'temporal_size': 12, 'if_use_temporal_embed': 1, 'logit_scale_init_value': 4.6, 'add_cls_num': 3}, 'test_batch_size': 128, 'lr_mul': 1, 'lr_mul_prefix': '', 'loss_config': {'loss_name': 'NCELearnableTempDSLLoss', 'if_gather': 1}, 'only_valid_steps': 160, 'if_tb_log': 0, 'if_model_saver': 1, 'if_log2file': 1, 'dummy_data': 0, 'num_train_steps': 8303, 'valid_steps': 1661}
+01/08/2024 01:49:59 - INFO - __main__ -   Starting training...
+01/08/2024 01:49:59 - INFO - __main__ -     Single-GPU Non-Accumulated batch size = 8
+01/08/2024 01:49:59 - INFO - __main__ -     max_n_example_per_group = 1
+01/08/2024 01:49:59 - INFO - __main__ -     Accumulate steps = 1
+01/08/2024 01:49:59 - INFO - __main__ -     Total batch size = #GPUs * Single-GPU batch size * max_n_example_per_group * Accumulate steps [Image] = 8
+01/08/2024 01:49:59 - INFO - __main__ -     Total #epochs = 10
+01/08/2024 01:49:59 - INFO - __main__ -     Total #steps = 8303
+01/08/2024 01:49:59 - INFO - __main__ -     Validate and Save every 1661 steps, in total 5 times
+01/08/2024 01:49:59 - INFO - __main__ -     Only Validate every 160 steps
+01/08/2024 01:49:59 - INFO - __main__ -   Step zero: start inference
+01/08/2024 01:49:59 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 01:50:02 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 01:50:02 - INFO - __main__ -   validation finished in 3 seconds, validated on 20 videosdaa_test t2v recall@1: 25.0000 daa_test t2v recall@5: 50.0000 daa_test t2v recall@10: 65.0000 daa_test t2v recall_med: 5.5 daa_test t2v recall_mean: 7.0 daa_test v2t recall@1: 8.6957 daa_test v2t recall@5: 34.7826 daa_test v2t recall@10: 69.5652 daa_test v2t recall_med: 8.0 daa_test v2t recall_mean: 8.7 
+01/08/2024 01:50:02 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 01:50:02 - INFO - __main__ -   validation finished in 3 seconds, validated on 20 videosdaa_test t2v recall@1: 30.0000 daa_test t2v recall@5: 50.0000 daa_test t2v recall@10: 85.0000 daa_test t2v recall_med: 5.5 daa_test t2v recall_mean: 6.6 daa_test v2t recall@1: 8.6957 daa_test v2t recall@5: 34.7826 daa_test v2t recall@10: 69.5652 daa_test v2t recall_med: 8.0 daa_test v2t recall_mean: 8.7 
+01/08/2024 01:50:04 - INFO - __main__ -   Step 0: loss 4.767805099487305 lr 1e-06 logit_scale 4.64453125
+01/08/2024 01:50:12 - INFO - __main__ -   Step 10: loss 3.7666373252868652 lr 1.2048192771084337e-07 logit_scale 4.64453125
+01/08/2024 01:50:20 - INFO - __main__ -   Step 20: loss 3.3066272735595703 lr 2.4096385542168674e-07 logit_scale 4.64453125
+01/08/2024 01:50:27 - INFO - __main__ -   Step 30: loss 3.423145294189453 lr 3.614457831325301e-07 logit_scale 4.644530296325684
+01/08/2024 01:50:34 - INFO - __main__ -   Step 40: loss 3.6503891944885254 lr 4.819277108433735e-07 logit_scale 4.644525527954102
+01/08/2024 01:50:41 - INFO - __main__ -   Step 50: loss 3.2358155250549316 lr 6.024096385542169e-07 logit_scale 4.6445207595825195
+01/08/2024 01:50:48 - INFO - __main__ -   Step 60: loss 3.8081846237182617 lr 7.228915662650602e-07 logit_scale 4.6445159912109375
+01/08/2024 01:50:55 - INFO - __main__ -   Step 70: loss 2.104921817779541 lr 8.433734939759036e-07 logit_scale 4.6445112228393555
+01/08/2024 01:51:02 - INFO - __main__ -   Step 80: loss 2.788069725036621 lr 9.63855421686747e-07 logit_scale 4.644506454467773
+01/08/2024 01:51:09 - INFO - __main__ -   Step 90: loss 1.8872528076171875 lr 9.99998210663834e-07 logit_scale 4.644502639770508
+01/08/2024 01:51:16 - INFO - __main__ -   Step 100: loss 2.555356502532959 lr 9.999894465991572e-07 logit_scale 4.644500732421875
+01/08/2024 01:51:23 - INFO - __main__ -   Step 110: loss 3.2978200912475586 lr 9.999733792802434e-07 logit_scale 4.644498825073242
+01/08/2024 01:51:30 - INFO - __main__ -   Step 120: loss 1.6805036067962646 lr 9.999500089417847e-07 logit_scale 4.644494533538818
+01/08/2024 01:51:37 - INFO - __main__ -   Step 130: loss 4.128318786621094 lr 9.999193359251477e-07 logit_scale 4.644493103027344
+01/08/2024 01:51:44 - INFO - __main__ -   Step 140: loss 1.749230980873108 lr 9.998813606783672e-07 logit_scale 4.6444926261901855
+01/08/2024 01:51:51 - INFO - __main__ -   Step 150: loss 1.9840025901794434 lr 9.998360837561409e-07 logit_scale 4.6444926261901855
+01/08/2024 01:51:58 - INFO - __main__ -   Step 160: start inference
+01/08/2024 01:51:58 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 01:52:00 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 01:52:00 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 30.0000 daa_test t2v recall@5: 75.0000 daa_test t2v recall@10: 90.0000 daa_test t2v recall_med: 2.5 daa_test t2v recall_mean: 4.2 daa_test v2t recall@1: 20.8333 daa_test v2t recall@5: 83.3333 daa_test v2t recall@10: 91.6667 daa_test v2t recall_med: 4.0 daa_test v2t recall_mean: 4.4 
+01/08/2024 01:52:00 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 01:52:00 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 85.0000 daa_test t2v recall@10: 95.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.8 daa_test v2t recall@1: 20.8333 daa_test v2t recall@5: 83.3333 daa_test v2t recall@10: 91.6667 daa_test v2t recall_med: 4.0 daa_test v2t recall_mean: 4.4 
+01/08/2024 01:52:01 - INFO - __main__ -   Step 160: loss 1.9130496978759766 lr 9.997835058198202e-07 logit_scale 4.6444902420043945
+01/08/2024 01:52:08 - INFO - __main__ -   Step 170: loss 1.1696431636810303 lr 9.997236276374018e-07 logit_scale 4.644487380981445
+01/08/2024 01:52:15 - INFO - __main__ -   Step 180: loss 2.842642307281494 lr 9.996564500835153e-07 logit_scale 4.644485950469971
+01/08/2024 01:52:22 - INFO - __main__ -   Step 190: loss 2.320150375366211 lr 9.995819741394104e-07 logit_scale 4.644484519958496
+01/08/2024 01:52:29 - INFO - __main__ -   Step 200: loss 1.6994192600250244 lr 9.99500200892944e-07 logit_scale 4.644479751586914
+01/08/2024 01:52:36 - INFO - __main__ -   Step 210: loss 1.0094366073608398 lr 9.99411131538563e-07 logit_scale 4.644476890563965
+01/08/2024 01:54:32 - INFO - __main__ -   {'blob_mount_dir': '/blob_mount', 'debug': False, 'data_ratio': 1.0, 'model_config': None, 'tokenizer_dir': None, 'output_dir': 'vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16', 'max_txt_len': 50, 'max_img_size': 448, 'img_pixel_mean': None, 'img_pixel_std': None, 'img_input_format': 'RGB', 'max_n_example_per_group': 1, 'fps': 1, 'num_frm': 3, 'frm_sampling_strategy': 'rand', 'train_n_clips': 1, 'score_agg_func': 'mean', 'random_sample_clips': 1, 'train_batch_size': 32, 'val_batch_size': 128, 'gradient_accumulation_steps': 1, 'learning_rate': 1e-06, 'num_valid': 5, 'min_valid_steps': 1, 'save_steps_ratio': 0.9, 'num_train_epochs': 10, 'optim': 'adamw', 'betas': [0.9, 0.98], 'decay': 'cosine', 'dropout': 0.1, 'weight_decay': 0.1, 'grad_norm': 1.0, 'warmup_ratio': 0.01, 'transformer_lr_mul': 1.0, 'transformer_lr_mul_prefix': '', 'step_decay_epochs': None, 'cnn_optim': 'adamw', 'cnn_learning_rate': 5e-05, 'cnn_weight_decay': 0.001, 'cnn_sgd_momentum': 0.9, 'cnn_lr_mul': 1.0, 'cnn_lr_mul_prefix': 'grid_encoder', 'cnn_lr_decay': 'linear', 'cnn_step_decay_epochs': None, 'freeze_cnn': False, 'detectron2_model_cfg': '', 'e2e_weights_path': '/home/bas06400/Thesis/pretrain_clipvip_base_16.pt', 'detectron2_weights_path': None, 'bert_weights_path': None, 'inference_model_step': -1, 'do_inference': False, 'inference_split': 'val', 'inference_txt_db': None, 'inference_img_db': None, 'inference_batch_size': 64, 'inference_n_clips': 1, 'seed': 42, 'fp16': True, 'amp_level': 'O2', 'n_workers': 10, 'pin_mem': True, 'img_aug': 0, 'local_rank': -1, 'n_gpu': 2, 'deepspeed_config': 'src/configs/deepspeed_test.json', 'config': '/home/bas06400/Thesis/VIP/src/configs/daa_retrival/daa_retrieval_vip_base_16.json', 'itm_neg_prob': 0.5, 'use_itm': False, 'use_mlm': False, 'use_itc': 0, 'pixel_random_sampling_size': 0, 'train_datasets': {'name': 'daa_train', 'vis_format': 'video', 'txt': '/home/bas06400/traindaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/train'}, 'val_datasets': [{'name': 'daa_val', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'inference_datasets': [{'name': 'daa_test', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'train_num_frms': 12, 'test_n_clips': 1, 'test_num_frms': 12, 'sample_rate': 0, 'sample_jitter': 1, 'video_res': [240, 320], 'input_res': [224, 224], 'clip_weights': 'openai/clip-vit-base-patch16', 'clip_config': 'openai/clip-vit-base-patch16', 'clip_vision_additional_config': {'type': 'ViP', 'temporal_size': 12, 'if_use_temporal_embed': 1, 'logit_scale_init_value': 4.6, 'add_cls_num': 3}, 'test_batch_size': 128, 'lr_mul': 1, 'lr_mul_prefix': '', 'loss_config': {'loss_name': 'NCELearnableTempDSLLoss', 'if_gather': 1}, 'only_valid_steps': 160, 'if_tb_log': 0, 'if_model_saver': 1, 'if_log2file': 1, 'dummy_data': 0, 'num_train_steps': 2076, 'valid_steps': 416}
+01/08/2024 01:54:32 - INFO - __main__ -   Starting training...
+01/08/2024 01:54:32 - INFO - __main__ -     Single-GPU Non-Accumulated batch size = 32
+01/08/2024 01:54:32 - INFO - __main__ -     max_n_example_per_group = 1
+01/08/2024 01:54:32 - INFO - __main__ -     Accumulate steps = 1
+01/08/2024 01:54:32 - INFO - __main__ -     Total batch size = #GPUs * Single-GPU batch size * max_n_example_per_group * Accumulate steps [Image] = 32
+01/08/2024 01:54:32 - INFO - __main__ -     Total #epochs = 10
+01/08/2024 01:54:32 - INFO - __main__ -     Total #steps = 2076
+01/08/2024 01:54:32 - INFO - __main__ -     Validate and Save every 416 steps, in total 5 times
+01/08/2024 01:54:32 - INFO - __main__ -     Only Validate every 160 steps
+01/08/2024 01:54:32 - INFO - __main__ -   Step zero: start inference
+01/08/2024 01:54:32 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 01:54:37 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 01:54:37 - INFO - __main__ -   validation finished in 4 seconds, validated on 20 videosdaa_test t2v recall@1: 25.0000 daa_test t2v recall@5: 50.0000 daa_test t2v recall@10: 65.0000 daa_test t2v recall_med: 5.5 daa_test t2v recall_mean: 7.0 daa_test v2t recall@1: 8.0000 daa_test v2t recall@5: 40.0000 daa_test v2t recall@10: 68.0000 daa_test v2t recall_med: 8.0 daa_test v2t recall_mean: 8.4 
+01/08/2024 01:54:37 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 01:54:37 - INFO - __main__ -   validation finished in 4 seconds, validated on 20 videosdaa_test t2v recall@1: 30.0000 daa_test t2v recall@5: 50.0000 daa_test t2v recall@10: 85.0000 daa_test t2v recall_med: 5.5 daa_test t2v recall_mean: 6.6 daa_test v2t recall@1: 8.0000 daa_test v2t recall@5: 40.0000 daa_test v2t recall@10: 68.0000 daa_test v2t recall_med: 8.0 daa_test v2t recall_mean: 8.4 
+01/08/2024 01:54:46 - INFO - __main__ -   Step 0: loss 6.627813339233398 lr 1e-06 logit_scale 4.64453125
+01/08/2024 01:54:59 - INFO - __main__ -   Step 10: loss 5.916803359985352 lr 5e-07 logit_scale 4.644528865814209
+01/08/2024 01:55:12 - INFO - __main__ -   Step 20: loss 5.762916564941406 lr 1e-06 logit_scale 4.644522666931152
+01/08/2024 01:55:25 - INFO - __main__ -   Step 30: loss 4.734039306640625 lr 9.999416306195775e-07 logit_scale 4.644517421722412
+01/08/2024 01:55:37 - INFO - __main__ -   Step 40: loss 6.344018936157227 lr 9.997665361062479e-07 logit_scale 4.644516468048096
+01/08/2024 01:55:48 - INFO - __main__ -   Step 50: loss 5.101921081542969 lr 9.994747573406444e-07 logit_scale 4.644514083862305
+01/08/2024 01:56:00 - INFO - __main__ -   Step 60: loss 5.122010231018066 lr 9.990663624465503e-07 logit_scale 4.644514083862305
+01/08/2024 01:56:11 - INFO - __main__ -   Step 70: loss 4.4343461990356445 lr 9.985414467749928e-07 logit_scale 4.644513130187988
+01/08/2024 01:56:23 - INFO - __main__ -   Step 80: loss 5.0603532791137695 lr 9.979001328819826e-07 logit_scale 4.644509315490723
+01/08/2024 01:56:35 - INFO - __main__ -   Step 90: loss 3.596619129180908 lr 9.971425704998979e-07 logit_scale 4.644506931304932
+01/08/2024 01:56:46 - INFO - __main__ -   Step 100: loss 3.3532118797302246 lr 9.962689365025259e-07 logit_scale 4.644506931304932
+01/08/2024 01:56:58 - INFO - __main__ -   Step 110: loss 4.54599666595459 lr 9.952794348637673e-07 logit_scale 4.644506454467773
+01/08/2024 01:57:09 - INFO - __main__ -   Step 120: loss 3.5496792793273926 lr 9.941742966100127e-07 logit_scale 4.644506454467773
+01/08/2024 01:57:21 - INFO - __main__ -   Step 130: loss 4.559785842895508 lr 9.929537797662023e-07 logit_scale 4.644505977630615
+01/08/2024 01:57:33 - INFO - __main__ -   Step 140: loss 3.137004852294922 lr 9.916181692955841e-07 logit_scale 4.644504547119141
+01/08/2024 01:57:44 - INFO - __main__ -   Step 150: loss 3.8952255249023438 lr 9.901677770331808e-07 logit_scale 4.644503116607666
+01/08/2024 01:57:55 - INFO - __main__ -   Step 160: start inference
+01/08/2024 01:57:55 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 01:57:58 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 01:57:58 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 35.0000 daa_test t2v recall@5: 90.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 2.0 daa_test t2v recall_mean: 2.2 daa_test v2t recall@1: 45.8333 daa_test v2t recall@5: 87.5000 daa_test v2t recall@10: 95.8333 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 3.0 
+01/08/2024 01:57:58 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 01:57:58 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 55.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 45.8333 daa_test v2t recall@5: 87.5000 daa_test v2t recall@10: 95.8333 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 3.0 
+01/08/2024 01:57:58 - INFO - __main__ -   Step 160: loss 3.899383544921875 lr 9.886029416129835e-07 logit_scale 4.644505023956299
+01/08/2024 01:58:10 - INFO - __main__ -   Step 170: loss 4.230779647827148 lr 9.869240283888878e-07 logit_scale 4.64450740814209
+01/08/2024 01:58:22 - INFO - __main__ -   Step 180: loss 2.866057872772217 lr 9.851314293493923e-07 logit_scale 4.644504547119141
+01/08/2024 01:58:33 - INFO - __main__ -   Step 190: loss 3.9291906356811523 lr 9.832255630260779e-07 logit_scale 4.644501686096191
+01/08/2024 01:58:45 - INFO - __main__ -   Step 200: loss 3.7925376892089844 lr 9.81206874395891e-07 logit_scale 4.644501686096191
+01/08/2024 01:59:00 - INFO - __main__ -   Step 210: loss 3.3466858863830566 lr 9.790758347772496e-07 logit_scale 4.644501209259033
+01/08/2024 01:59:12 - INFO - __main__ -   Step 220: loss 3.5722365379333496 lr 9.768329417200026e-07 logit_scale 4.644502639770508
+01/08/2024 01:59:23 - INFO - __main__ -   Step 230: loss 3.520944118499756 lr 9.744787188892629e-07 logit_scale 4.644504070281982
+01/08/2024 01:59:35 - INFO - __main__ -   Step 240: loss 2.93344783782959 lr 9.720137159431416e-07 logit_scale 4.644504070281982
+01/08/2024 01:59:46 - INFO - __main__ -   Step 250: loss 3.4321229457855225 lr 9.694385084044183e-07 logit_scale 4.644506931304932
+01/08/2024 01:59:58 - INFO - __main__ -   Step 260: loss 3.9903500080108643 lr 9.667536975261666e-07 logit_scale 4.644510269165039
+01/08/2024 02:00:09 - INFO - __main__ -   Step 270: loss 3.8789968490600586 lr 9.639599101513767e-07 logit_scale 4.644511699676514
+01/08/2024 02:00:21 - INFO - __main__ -   Step 280: loss 2.7694215774536133 lr 9.610577985666009e-07 logit_scale 4.644511699676514
+01/08/2024 02:00:33 - INFO - __main__ -   Step 290: loss 2.4065542221069336 lr 9.580480403496598e-07 logit_scale 4.644515037536621
+01/08/2024 02:00:44 - INFO - __main__ -   Step 300: loss 3.388381242752075 lr 9.549313382114426e-07 logit_scale 4.644515037536621
+01/08/2024 02:00:56 - INFO - __main__ -   Step 310: loss 3.2573699951171875 lr 9.517084198318405e-07 logit_scale 4.644515037536621
+01/08/2024 02:01:07 - INFO - __main__ -   Step 320: start inference
+01/08/2024 02:01:07 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:01:09 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:01:09 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 43.4783 daa_test v2t recall@5: 86.9565 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 02:01:09 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:01:09 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 55.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 43.4783 daa_test v2t recall@5: 86.9565 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 02:01:09 - INFO - __main__ -   Step 320: loss 2.6755852699279785 lr 9.483800376898496e-07 logit_scale 4.644515037536621
+01/08/2024 02:01:21 - INFO - __main__ -   Step 330: loss 3.4206881523132324 lr 9.449469688878832e-07 logit_scale 4.64451789855957
+01/08/2024 02:01:33 - INFO - __main__ -   Step 340: loss 3.220672130584717 lr 9.414100149703372e-07 logit_scale 4.6445183753967285
+01/08/2024 02:01:44 - INFO - __main__ -   Step 350: loss 3.282163143157959 lr 9.377700017364467e-07 logit_scale 4.6445183753967285
+01/08/2024 02:01:56 - INFO - __main__ -   Step 360: loss 3.072275161743164 lr 9.340277790474803e-07 logit_scale 4.644516944885254
+01/08/2024 02:02:07 - INFO - __main__ -   Step 370: loss 3.3544814586639404 lr 9.301842206283171e-07 logit_scale 4.644516944885254
+01/08/2024 02:02:19 - INFO - __main__ -   Step 380: loss 2.5023481845855713 lr 9.262402238634513e-07 logit_scale 4.64451789855957
+01/08/2024 02:02:31 - INFO - __main__ -   Step 390: loss 3.1129469871520996 lr 9.221967095874732e-07 logit_scale 4.644517421722412
+01/08/2024 02:02:42 - INFO - __main__ -   Step 400: loss 2.5693750381469727 lr 9.180546218700747e-07 logit_scale 4.644517421722412
+01/08/2024 02:02:54 - INFO - __main__ -   Step 410: loss 3.039698600769043 lr 9.138149277956306e-07 logit_scale 4.644519329071045
+01/08/2024 02:03:00 - INFO - __main__ -   Step 416: start validation and Save
+01/08/2024 02:03:00 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:03:02 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:03:02 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 52.1739 daa_test v2t recall@5: 95.6522 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 02:03:02 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:03:02 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 52.1739 daa_test v2t recall@5: 95.6522 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 02:03:03 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 02:03:15 - INFO - __main__ -   Step 420: loss 4.107204437255859 lr 9.094786172374065e-07 logit_scale 4.644516468048096
+01/08/2024 02:03:27 - INFO - __main__ -   Step 430: loss 2.3585214614868164 lr 9.050467026264445e-07 logit_scale 4.644518852233887
+01/08/2024 02:03:38 - INFO - __main__ -   Step 440: loss 3.5398454666137695 lr 9.005202187151845e-07 logit_scale 4.644522190093994
+01/08/2024 02:03:50 - INFO - __main__ -   Step 450: loss 3.0550498962402344 lr 8.959002223358718e-07 logit_scale 4.644522666931152
+01/08/2024 02:04:01 - INFO - __main__ -   Step 460: loss 2.862271785736084 lr 8.911877921538116e-07 logit_scale 4.644524574279785
+01/08/2024 02:04:13 - INFO - __main__ -   Step 470: loss 3.185710906982422 lr 8.863840284155237e-07 logit_scale 4.644522666931152
+01/08/2024 02:04:24 - INFO - __main__ -   Step 480: start inference
+01/08/2024 02:04:24 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:04:26 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:04:26 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 60.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 52.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:04:26 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:04:26 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 52.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:04:27 - INFO - __main__ -   Step 480: loss 3.4388208389282227 lr 8.814900526918606e-07 logit_scale 4.644522666931152
+01/08/2024 02:04:38 - INFO - __main__ -   Step 490: loss 3.409804105758667 lr 8.765070076161456e-07 logit_scale 4.644524574279785
+01/08/2024 02:04:50 - INFO - __main__ -   Step 500: loss 2.666576862335205 lr 8.714360566173931e-07 logit_scale 4.644524574279785
+01/08/2024 02:05:02 - INFO - __main__ -   Step 510: loss 3.427219867706299 lr 8.662783836486751e-07 logit_scale 4.644525051116943
+01/08/2024 02:05:13 - INFO - __main__ -   Step 520: loss 2.6556296348571777 lr 8.610351929106942e-07 logit_scale 4.644526481628418
+01/08/2024 02:05:24 - INFO - __main__ -   Step 530: loss 2.499560832977295 lr 8.557077085706295e-07 logit_scale 4.644527912139893
+01/08/2024 02:05:36 - INFO - __main__ -   Step 540: loss 3.2792775630950928 lr 8.502971744763214e-07 logit_scale 4.644527912139893
+01/08/2024 02:05:48 - INFO - __main__ -   Step 550: loss 3.241028308868408 lr 8.448048538658616e-07 logit_scale 4.644530296325684
+01/08/2024 02:05:59 - INFO - __main__ -   Step 560: loss 3.2721190452575684 lr 8.392320290726542e-07 logit_scale 4.644530296325684
+01/08/2024 02:06:11 - INFO - __main__ -   Step 570: loss 2.9626102447509766 lr 8.33580001226021e-07 logit_scale 4.644533157348633
+01/08/2024 02:06:22 - INFO - __main__ -   Step 580: loss 2.7278759479522705 lr 8.278500899474161e-07 logit_scale 4.644537448883057
+01/08/2024 02:06:34 - INFO - __main__ -   Step 590: loss 3.235522985458374 lr 8.220436330423242e-07 logit_scale 4.644540786743164
+01/08/2024 02:06:45 - INFO - __main__ -   Step 600: loss 2.7760682106018066 lr 8.161619861879135e-07 logit_scale 4.644543170928955
+01/08/2024 02:06:57 - INFO - __main__ -   Step 610: loss 3.8399534225463867 lr 8.102065226165149e-07 logit_scale 4.644543170928955
+01/08/2024 02:07:08 - INFO - __main__ -   Step 620: loss 2.6086385250091553 lr 8.041786327950036e-07 logit_scale 4.644540786743164
+01/08/2024 02:07:24 - INFO - __main__ -   Step 630: loss 3.039595603942871 lr 7.980797241001562e-07 logit_scale 4.644539833068848
+01/08/2024 02:07:35 - INFO - __main__ -   Step 640: start inference
+01/08/2024 02:07:35 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:07:38 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:07:38 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 60.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 60.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.1 
+01/08/2024 02:07:38 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:07:38 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 75.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 60.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.1 
+01/08/2024 02:07:38 - INFO - __main__ -   Step 640: loss 3.1209967136383057 lr 7.919112204900596e-07 logit_scale 4.644540786743164
+01/08/2024 02:07:50 - INFO - __main__ -   Step 650: loss 2.354377508163452 lr 7.856745621716494e-07 logit_scale 4.644542694091797
+01/08/2024 02:08:01 - INFO - __main__ -   Step 660: loss 3.1555557250976562 lr 7.793712052644535e-07 logit_scale 4.644543647766113
+01/08/2024 02:08:13 - INFO - __main__ -   Step 670: loss 2.7963311672210693 lr 7.730026214606207e-07 logit_scale 4.64454460144043
+01/08/2024 02:08:24 - INFO - __main__ -   Step 680: loss 2.705446243286133 lr 7.665702976813142e-07 logit_scale 4.64454460144043
+01/08/2024 02:08:36 - INFO - __main__ -   Step 690: loss 2.8185203075408936 lr 7.60075735729549e-07 logit_scale 4.64454460144043
+01/08/2024 02:08:47 - INFO - __main__ -   Step 700: loss 3.6046648025512695 lr 7.535204519395538e-07 logit_scale 4.644546031951904
+01/08/2024 02:08:59 - INFO - __main__ -   Step 710: loss 3.0312907695770264 lr 7.469059768227418e-07 logit_scale 4.64454984664917
+01/08/2024 02:09:11 - INFO - __main__ -   Step 720: loss 3.320038318634033 lr 7.402338547103706e-07 logit_scale 4.6445512771606445
+01/08/2024 02:09:22 - INFO - __main__ -   Step 730: loss 2.69711971282959 lr 7.335056433929757e-07 logit_scale 4.644550323486328
+01/08/2024 02:09:34 - INFO - __main__ -   Step 740: loss 2.748310089111328 lr 7.267229137566606e-07 logit_scale 4.644550800323486
+01/08/2024 02:09:45 - INFO - __main__ -   Step 750: loss 2.9724295139312744 lr 7.198872494163312e-07 logit_scale 4.6445512771606445
+01/08/2024 02:09:57 - INFO - __main__ -   Step 760: loss 3.6788759231567383 lr 7.130002463459568e-07 logit_scale 4.644551753997803
+01/08/2024 02:10:08 - INFO - __main__ -   Step 770: loss 3.271714210510254 lr 7.06063512505946e-07 logit_scale 4.644551753997803
+01/08/2024 02:10:20 - INFO - __main__ -   Step 780: loss 3.397796154022217 lr 6.990786674677245e-07 logit_scale 4.644552707672119
+01/08/2024 02:10:31 - INFO - __main__ -   Step 790: loss 2.5884861946105957 lr 6.920473420356012e-07 logit_scale 4.644552707672119
+01/08/2024 02:10:43 - INFO - __main__ -   Step 800: start inference
+01/08/2024 02:10:43 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:10:45 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:10:45 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 55.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 58.3333 daa_test v2t recall@5: 95.8333 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.8 
+01/08/2024 02:10:45 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:10:45 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 75.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 58.3333 daa_test v2t recall@5: 95.8333 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.8 
+01/08/2024 02:10:45 - INFO - __main__ -   Step 800: loss 2.522616147994995 lr 6.849711778660124e-07 logit_scale 4.644552707672119
+01/08/2024 02:10:57 - INFO - __main__ -   Step 810: loss 2.7144017219543457 lr 6.778518270842309e-07 logit_scale 4.644552707672119
+01/08/2024 02:11:09 - INFO - __main__ -   Step 820: loss 3.0147314071655273 lr 6.70690951898634e-07 logit_scale 4.6445512771606445
+01/08/2024 02:11:20 - INFO - __main__ -   Step 830: loss 3.302335739135742 lr 6.634902242126127e-07 logit_scale 4.64454984664917
+01/08/2024 02:11:22 - INFO - __main__ -   Step 832: start validation and Save
+01/08/2024 02:11:22 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:11:24 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:11:24 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 55.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 44.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 02:11:24 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:11:24 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 44.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 02:11:25 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 02:11:43 - INFO - __main__ -   Step 840: loss 2.546356678009033 lr 6.562513252342216e-07 logit_scale 4.64454984664917
+01/08/2024 02:11:54 - INFO - __main__ -   Step 850: loss 2.492396831512451 lr 6.489759450836541e-07 logit_scale 4.644549369812012
+01/08/2024 02:12:06 - INFO - __main__ -   Step 860: loss 2.934292793273926 lr 6.416657823986369e-07 logit_scale 4.644549369812012
+01/08/2024 02:12:17 - INFO - __main__ -   Step 870: loss 3.007338523864746 lr 6.343225439378369e-07 logit_scale 4.644549369812012
+01/08/2024 02:12:29 - INFO - __main__ -   Step 880: loss 2.6035563945770264 lr 6.269479441823711e-07 logit_scale 4.644551753997803
+01/08/2024 02:12:41 - INFO - __main__ -   Step 890: loss 2.542860984802246 lr 6.195437049355141e-07 logit_scale 4.644551753997803
+01/08/2024 02:12:52 - INFO - __main__ -   Step 900: loss 3.2024927139282227 lr 6.121115549206949e-07 logit_scale 4.644554138183594
+01/08/2024 02:13:04 - INFO - __main__ -   Step 910: loss 4.090659141540527 lr 6.046532293778799e-07 logit_scale 4.644554138183594
+01/08/2024 02:13:15 - INFO - __main__ -   Step 920: loss 2.233280658721924 lr 5.971704696584331e-07 logit_scale 4.644554138183594
+01/08/2024 02:13:27 - INFO - __main__ -   Step 930: loss 2.1634817123413086 lr 5.896650228185488e-07 logit_scale 4.64455509185791
+01/08/2024 02:13:38 - INFO - __main__ -   Step 940: loss 3.512707233428955 lr 5.821386412113545e-07 logit_scale 4.64455509185791
+01/08/2024 02:13:50 - INFO - __main__ -   Step 950: loss 3.340517997741699 lr 5.745930820777753e-07 logit_scale 4.644557476043701
+01/08/2024 02:14:01 - INFO - __main__ -   Step 960: start inference
+01/08/2024 02:14:01 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:14:03 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:14:03 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 54.5455 daa_test v2t recall@5: 95.4545 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:14:03 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:14:03 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 54.5455 daa_test v2t recall@5: 95.4545 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:14:04 - INFO - __main__ -   Step 960: loss 2.0915863513946533 lr 5.670301071362571e-07 logit_scale 4.644562244415283
+01/08/2024 02:14:15 - INFO - __main__ -   Step 970: loss 2.974012851715088 lr 5.594514821714461e-07 logit_scale 4.6445631980896
+01/08/2024 02:14:27 - INFO - __main__ -   Step 980: loss 3.3511509895324707 lr 5.518589766219171e-07 logit_scale 4.6445631980896
+01/08/2024 02:14:39 - INFO - __main__ -   Step 990: loss 2.538804054260254 lr 5.442543631670489e-07 logit_scale 4.6445631980896
+01/08/2024 02:14:50 - INFO - __main__ -   Step 1000: loss 2.8627848625183105 lr 5.366394173131444e-07 logit_scale 4.6445631980896
+01/08/2024 02:15:02 - INFO - __main__ -   Step 1010: loss 2.564746379852295 lr 5.290159169788895e-07 logit_scale 4.6445631980896
+01/08/2024 02:15:13 - INFO - __main__ -   Step 1020: loss 2.911684989929199 lr 5.21385642080249e-07 logit_scale 4.6445631980896
+01/08/2024 02:15:25 - INFO - __main__ -   Step 1030: loss 3.168504238128662 lr 5.137503741148956e-07 logit_scale 4.6445631980896
+01/08/2024 02:15:40 - INFO - __main__ -   Step 1040: loss 2.569995403289795 lr 5.061118957462716e-07 logit_scale 4.6445631980896
+01/08/2024 02:15:52 - INFO - __main__ -   Step 1050: loss 2.208542585372925 lr 4.98471990387376e-07 logit_scale 4.644563674926758
+01/08/2024 02:16:03 - INFO - __main__ -   Step 1060: loss 2.335601806640625 lr 4.908324417843778e-07 logit_scale 4.644565105438232
+01/08/2024 02:16:15 - INFO - __main__ -   Step 1070: loss 2.5167899131774902 lr 4.831950336001517e-07 logit_scale 4.644565105438232
+01/08/2024 02:16:26 - INFO - __main__ -   Step 1080: loss 3.352858543395996 lr 4.755615489978327e-07 logit_scale 4.644565105438232
+01/08/2024 02:16:38 - INFO - __main__ -   Step 1090: loss 2.2803478240966797 lr 4.6793377022448766e-07 logit_scale 4.644565105438232
+01/08/2024 02:16:49 - INFO - __main__ -   Step 1100: loss 1.9865646362304688 lr 4.6031347819500063e-07 logit_scale 4.644565105438232
+01/08/2024 02:17:01 - INFO - __main__ -   Step 1110: loss 3.342559814453125 lr 4.527024520762692e-07 logit_scale 4.644565105438232
+01/08/2024 02:17:12 - INFO - __main__ -   Step 1120: start inference
+01/08/2024 02:17:12 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:17:14 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:17:14 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 60.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:17:14 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:17:14 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:17:15 - INFO - __main__ -   Step 1120: loss 2.7789132595062256 lr 4.4510246887180897e-07 logit_scale 4.644565105438232
+01/08/2024 02:17:26 - INFO - __main__ -   Step 1130: loss 2.5275325775146484 lr 4.375153030068635e-07 logit_scale 4.644565105438232
+01/08/2024 02:17:38 - INFO - __main__ -   Step 1140: loss 2.3157224655151367 lr 4.299427259141155e-07 logit_scale 4.644565105438232
+01/08/2024 02:17:49 - INFO - __main__ -   Step 1150: loss 2.234415054321289 lr 4.2238650562009735e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:01 - INFO - __main__ -   Step 1160: loss 2.17740535736084 lr 4.1484840633239693e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:13 - INFO - __main__ -   Step 1170: loss 2.4709784984588623 lr 4.073301880277539e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:24 - INFO - __main__ -   Step 1180: loss 2.0551958084106445 lr 3.9983360604114585e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:36 - INFO - __main__ -   Step 1190: loss 2.4085946083068848 lr 3.9236041065595587e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:47 - INFO - __main__ -   Step 1200: loss 2.7596235275268555 lr 3.849123466953217e-07 logit_scale 4.644565105438232
+01/08/2024 02:18:59 - INFO - __main__ -   Step 1210: loss 2.8118934631347656 lr 3.7749115311475817e-07 logit_scale 4.644565105438232
+01/08/2024 02:19:11 - INFO - __main__ -   Step 1220: loss 2.182196855545044 lr 3.7009856259615067e-07 logit_scale 4.644565105438232
+01/08/2024 02:19:22 - INFO - __main__ -   Step 1230: loss 2.9140048027038574 lr 3.627363011432122e-07 logit_scale 4.644565105438232
+01/08/2024 02:19:34 - INFO - __main__ -   Step 1240: loss 2.9157562255859375 lr 3.55406087678501e-07 logit_scale 4.644565105438232
+01/08/2024 02:19:42 - INFO - __main__ -   Step 1248: start validation and Save
+01/08/2024 02:19:42 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:19:44 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:19:44 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 54.5455 daa_test v2t recall@5: 95.4545 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:19:44 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:19:44 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 54.5455 daa_test v2t recall@5: 95.4545 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:19:45 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 02:19:54 - INFO - __main__ -   Step 1250: loss 2.4298343658447266 lr 3.4810963364209005e-07 logit_scale 4.644565105438232
+01/08/2024 02:20:06 - INFO - __main__ -   Step 1260: loss 3.5629963874816895 lr 3.4084864259198496e-07 logit_scale 4.644565105438232
+01/08/2024 02:20:17 - INFO - __main__ -   Step 1270: loss 2.6740951538085938 lr 3.336248098063812e-07 logit_scale 4.644565105438232
+01/08/2024 02:20:29 - INFO - __main__ -   Step 1280: start inference
+01/08/2024 02:20:29 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:20:31 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:20:31 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 55.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:20:31 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:20:31 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:20:31 - INFO - __main__ -   Step 1280: loss 2.685678482055664 lr 3.264398218878545e-07 logit_scale 4.644565105438232
+01/08/2024 02:20:43 - INFO - __main__ -   Step 1290: loss 2.402907371520996 lr 3.1929535636957773e-07 logit_scale 4.644565105438232
+01/08/2024 02:20:55 - INFO - __main__ -   Step 1300: loss 2.285234212875366 lr 3.121930813236536e-07 logit_scale 4.644565105438232
+01/08/2024 02:21:06 - INFO - __main__ -   Step 1310: loss 2.0594444274902344 lr 3.051346549716586e-07 logit_scale 4.644565105438232
+01/08/2024 02:21:18 - INFO - __main__ -   Step 1320: loss 1.9622312784194946 lr 2.9812172529748394e-07 logit_scale 4.644565105438232
+01/08/2024 02:21:29 - INFO - __main__ -   Step 1330: loss 2.0173001289367676 lr 2.9115592966257005e-07 logit_scale 4.644565105438232
+01/08/2024 02:21:41 - INFO - __main__ -   Step 1340: loss 2.9490342140197754 lr 2.8423889442361793e-07 logit_scale 4.644565105438232
+01/08/2024 02:21:52 - INFO - __main__ -   Step 1350: loss 2.196234703063965 lr 2.773722345528734e-07 logit_scale 4.644565105438232
+01/08/2024 02:22:04 - INFO - __main__ -   Step 1360: loss 2.580688953399658 lr 2.705575532610649e-07 logit_scale 4.644565105438232
+01/08/2024 02:22:16 - INFO - __main__ -   Step 1370: loss 2.975277900695801 lr 2.6379644162309133e-07 logit_scale 4.644565105438232
+01/08/2024 02:22:27 - INFO - __main__ -   Step 1380: loss 2.149296760559082 lr 2.5709047820654234e-07 logit_scale 4.644565105438232
+01/08/2024 02:22:39 - INFO - __main__ -   Step 1390: loss 2.187734842300415 lr 2.5044122870313647e-07 logit_scale 4.644565105438232
+01/08/2024 02:22:50 - INFO - __main__ -   Step 1400: loss 2.7716052532196045 lr 2.438502455631692e-07 logit_scale 4.644565105438232
+01/08/2024 02:23:02 - INFO - __main__ -   Step 1410: loss 2.4246535301208496 lr 2.3731906763304938e-07 logit_scale 4.644565105438232
+01/08/2024 02:23:14 - INFO - __main__ -   Step 1420: loss 3.221287727355957 lr 2.3084921979601407e-07 logit_scale 4.644565105438232
+01/08/2024 02:23:25 - INFO - __main__ -   Step 1430: loss 2.3097047805786133 lr 2.2444221261610164e-07 logit_scale 4.644565105438232
+01/08/2024 02:23:36 - INFO - __main__ -   Step 1440: start inference
+01/08/2024 02:23:36 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:23:39 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:23:39 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 56.5217 daa_test v2t recall@5: 95.6522 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:23:39 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:23:39 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 56.5217 daa_test v2t recall@5: 95.6522 daa_test v2t recall@10: 95.6522 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:23:39 - INFO - __main__ -   Step 1440: loss 3.0938003063201904 lr 2.1809954198547027e-07 logit_scale 4.644565105438232
+01/08/2024 02:23:51 - INFO - __main__ -   Step 1450: loss 2.6438846588134766 lr 2.1182268877513937e-07 logit_scale 4.644565105438232
+01/08/2024 02:24:06 - INFO - __main__ -   Step 1460: loss 2.389073371887207 lr 2.0561311848924078e-07 logit_scale 4.644565105438232
+01/08/2024 02:24:17 - INFO - __main__ -   Step 1470: loss 2.123192310333252 lr 1.9947228092285535e-07 logit_scale 4.644565105438232
+01/08/2024 02:24:29 - INFO - __main__ -   Step 1480: loss 3.424691677093506 lr 1.9340160982351932e-07 logit_scale 4.644565105438232
+01/08/2024 02:24:41 - INFO - __main__ -   Step 1490: loss 2.375901222229004 lr 1.8740252255647615e-07 logit_scale 4.644565105438232
+01/08/2024 02:24:52 - INFO - __main__ -   Step 1500: loss 2.7094318866729736 lr 1.814764197737531e-07 logit_scale 4.644565105438232
+01/08/2024 02:25:04 - INFO - __main__ -   Step 1510: loss 2.167940616607666 lr 1.7562468508714112e-07 logit_scale 4.644565105438232
+01/08/2024 02:25:15 - INFO - __main__ -   Step 1520: loss 2.209138870239258 lr 1.698486847451527e-07 logit_scale 4.644565105438232
+01/08/2024 02:25:27 - INFO - __main__ -   Step 1530: loss 3.3023838996887207 lr 1.6414976731403262e-07 logit_scale 4.644565105438232
+01/08/2024 02:25:39 - INFO - __main__ -   Step 1540: loss 2.53727388381958 lr 1.5852926336289923e-07 logit_scale 4.644565105438232
+01/08/2024 02:25:50 - INFO - __main__ -   Step 1550: loss 2.8222248554229736 lr 1.5298848515308583e-07 logit_scale 4.644565105438232
+01/08/2024 02:26:02 - INFO - __main__ -   Step 1560: loss 1.9380667209625244 lr 1.475287263317569e-07 logit_scale 4.644565105438232
+01/08/2024 02:26:14 - INFO - __main__ -   Step 1570: loss 2.8319034576416016 lr 1.4215126162987097e-07 logit_scale 4.644565105438232
+01/08/2024 02:26:25 - INFO - __main__ -   Step 1580: loss 2.1493642330169678 lr 1.3685734656455988e-07 logit_scale 4.644565105438232
+01/08/2024 02:26:37 - INFO - __main__ -   Step 1590: loss 2.2808854579925537 lr 1.3164821714599294e-07 logit_scale 4.644565105438232
+01/08/2024 02:26:48 - INFO - __main__ -   Step 1600: start inference
+01/08/2024 02:26:48 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:26:50 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:26:50 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 60.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 53.8462 daa_test v2t recall@5: 96.1538 daa_test v2t recall@10: 96.1538 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:26:50 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:26:50 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 70.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 53.8462 daa_test v2t recall@5: 96.1538 daa_test v2t recall@10: 96.1538 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:26:51 - INFO - __main__ -   Step 1600: loss 2.6003470420837402 lr 1.265250895887967e-07 logit_scale 4.644565105438232
+01/08/2024 02:27:02 - INFO - __main__ -   Step 1610: loss 2.814955234527588 lr 1.2148916002809718e-07 logit_scale 4.644565105438232
+01/08/2024 02:27:14 - INFO - __main__ -   Step 1620: loss 2.5389156341552734 lr 1.1654160424024718e-07 logit_scale 4.644565105438232
+01/08/2024 02:27:26 - INFO - __main__ -   Step 1630: loss 3.468475818634033 lr 1.1168357736831041e-07 logit_scale 4.644565105438232
+01/08/2024 02:27:37 - INFO - __main__ -   Step 1640: loss 2.1854395866394043 lr 1.0691621365236153e-07 logit_scale 4.644565105438232
+01/08/2024 02:27:49 - INFO - __main__ -   Step 1650: loss 2.710322618484497 lr 1.0224062616466562e-07 logit_scale 4.644565105438232
+01/08/2024 02:28:00 - INFO - __main__ -   Step 1660: loss 2.212507724761963 lr 9.765790654980194e-08 logit_scale 4.644565105438232
+01/08/2024 02:28:04 - INFO - __main__ -   Step 1664: start validation and Save
+01/08/2024 02:28:04 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:28:07 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:28:07 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 60.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:28:07 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:28:07 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 75.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.3 daa_test v2t recall@1: 60.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 1.9 
+01/08/2024 02:28:07 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 02:28:21 - INFO - __main__ -   Step 1670: loss 2.713676929473877 lr 9.316912476978888e-08 logit_scale 4.644565105438232
+01/08/2024 02:28:33 - INFO - __main__ -   Step 1680: loss 2.8339717388153076 lr 8.877532885427169e-08 logit_scale 4.644565105438232
+01/08/2024 02:28:44 - INFO - __main__ -   Step 1690: loss 2.8034238815307617 lr 8.44775446558314e-08 logit_scale 4.644565105438232
+01/08/2024 02:28:56 - INFO - __main__ -   Step 1700: loss 2.2634754180908203 lr 8.027677561047175e-08 logit_scale 4.644565105438232
+01/08/2024 02:29:08 - INFO - __main__ -   Step 1710: loss 2.2488014698028564 lr 7.617400250333833e-08 logit_scale 4.644565105438232
+01/08/2024 02:29:20 - INFO - __main__ -   Step 1720: loss 2.429084300994873 lr 7.217018323972851e-08 logit_scale 4.644565105438232
+01/08/2024 02:29:31 - INFO - __main__ -   Step 1730: loss 3.5885374546051025 lr 6.826625262144103e-08 logit_scale 4.644565105438232
+01/08/2024 02:29:43 - INFO - __main__ -   Step 1740: loss 2.839381694793701 lr 6.446312212852162e-08 logit_scale 4.644565105438232
+01/08/2024 02:29:54 - INFO - __main__ -   Step 1750: loss 2.6113815307617188 lr 6.076167970645252e-08 logit_scale 4.644565105438232
+01/08/2024 02:30:05 - INFO - __main__ -   Step 1760: start inference
+01/08/2024 02:30:05 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:30:08 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:30:08 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:30:08 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:30:08 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 56.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 96.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:30:08 - INFO - __main__ -   Step 1760: loss 3.0040833950042725 lr 5.7162789558837024e-08 logit_scale 4.644565105438232
+01/08/2024 02:30:20 - INFO - __main__ -   Step 1770: loss 2.363574981689453 lr 5.366729194562747e-08 logit_scale 4.644565105438232
+01/08/2024 02:30:31 - INFO - __main__ -   Step 1780: loss 2.0554678440093994 lr 5.027600298694396e-08 logit_scale 4.644565105438232
+01/08/2024 02:30:43 - INFO - __main__ -   Step 1790: loss 2.451228141784668 lr 4.69897144725277e-08 logit_scale 4.644565105438232
+01/08/2024 02:30:54 - INFO - __main__ -   Step 1800: loss 2.1298136711120605 lr 4.380919367687658e-08 logit_scale 4.644565105438232
+01/08/2024 02:31:06 - INFO - __main__ -   Step 1810: loss 2.5499629974365234 lr 4.0735183180103884e-08 logit_scale 4.644565105438232
+01/08/2024 02:31:18 - INFO - __main__ -   Step 1820: loss 2.5422310829162598 lr 3.776840069456189e-08 logit_scale 4.644565105438232
+01/08/2024 02:31:29 - INFO - __main__ -   Step 1830: loss 3.216740131378174 lr 3.490953889727261e-08 logit_scale 4.644565105438232
+01/08/2024 02:31:41 - INFO - __main__ -   Step 1840: loss 2.3917183876037598 lr 3.2159265268203505e-08 logit_scale 4.644565105438232
+01/08/2024 02:31:52 - INFO - __main__ -   Step 1850: loss 2.8641858100891113 lr 2.9518221934425437e-08 logit_scale 4.644565105438232
+01/08/2024 02:32:04 - INFO - __main__ -   Step 1860: loss 2.477576494216919 lr 2.6987025520190442e-08 logit_scale 4.644565105438232
+01/08/2024 02:32:15 - INFO - __main__ -   Step 1870: loss 2.234525680541992 lr 2.4566267002964548e-08 logit_scale 4.644565105438232
+01/08/2024 02:32:30 - INFO - __main__ -   Step 1880: loss 2.895446300506592 lr 2.2256511575446836e-08 logit_scale 4.644565105438232
+01/08/2024 02:32:42 - INFO - __main__ -   Step 1890: loss 2.554450035095215 lr 2.0058298513610183e-08 logit_scale 4.644565105438232
+01/08/2024 02:32:53 - INFO - __main__ -   Step 1900: loss 2.784447193145752 lr 1.797214105079248e-08 logit_scale 4.644565105438232
+01/08/2024 02:33:05 - INFO - __main__ -   Step 1910: loss 2.4377822875976562 lr 1.599852625786785e-08 logit_scale 4.644565105438232
+01/08/2024 02:33:16 - INFO - __main__ -   Step 1920: start inference
+01/08/2024 02:33:16 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:33:18 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:33:18 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 52.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:33:18 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:33:18 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 52.0000 daa_test v2t recall@5: 96.0000 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:33:19 - INFO - __main__ -   Step 1920: loss 2.551689624786377 lr 1.4137914929527095e-08 logit_scale 4.644565105438232
+01/08/2024 02:33:30 - INFO - __main__ -   Step 1930: loss 2.685608148574829 lr 1.2390741476692001e-08 logit_scale 4.644565105438232
+01/08/2024 02:33:42 - INFO - __main__ -   Step 1940: loss 2.2467875480651855 lr 1.075741382509021e-08 logit_scale 4.644565105438232
+01/08/2024 02:33:53 - INFO - __main__ -   Step 1950: loss 2.0861363410949707 lr 9.238313320013902e-09 logit_scale 4.644565105438232
+01/08/2024 02:34:05 - INFO - __main__ -   Step 1960: loss 2.4995651245117188 lr 7.83379463728423e-09 logit_scale 4.644565105438232
+01/08/2024 02:34:17 - INFO - __main__ -   Step 1970: loss 3.0251412391662598 lr 6.544185700442406e-09 logit_scale 4.644565105438232
+01/08/2024 02:34:28 - INFO - __main__ -   Step 1980: loss 2.619605541229248 lr 5.369787604186993e-09 logit_scale 4.644565105438232
+01/08/2024 02:34:40 - INFO - __main__ -   Step 1990: loss 3.041259765625 lr 4.310874544074972e-09 logit_scale 4.644565105438232
+01/08/2024 02:34:51 - INFO - __main__ -   Step 2000: loss 2.3440799713134766 lr 3.3676937525032313e-09 logit_scale 4.644565105438232
+01/08/2024 02:35:03 - INFO - __main__ -   Step 2010: loss 2.817887783050537 lr 2.5404654409856287e-09 logit_scale 4.644565105438232
+01/08/2024 02:35:14 - INFO - __main__ -   Step 2020: loss 2.0003814697265625 lr 1.829382748738062e-09 logit_scale 4.644565105438232
+01/08/2024 02:35:26 - INFO - __main__ -   Step 2030: loss 2.5074877738952637 lr 1.2346116975853194e-09 logit_scale 4.644565105438232
+01/08/2024 02:35:37 - INFO - __main__ -   Step 2040: loss 2.0361404418945312 lr 7.562911531983629e-10 logit_scale 4.644565105438232
+01/08/2024 02:35:49 - INFO - __main__ -   Step 2050: loss 1.778212308883667 lr 3.945327926724862e-10 logit_scale 4.644565105438232
+01/08/2024 02:36:00 - INFO - __main__ -   Step 2060: loss 1.8614015579223633 lr 1.4942107845317131e-10 logit_scale 4.644565105438232
+01/08/2024 02:36:12 - INFO - __main__ -   Step 2070: loss 2.0827393531799316 lr 2.1013238615974482e-11 logit_scale 4.644565105438232
+01/08/2024 02:36:19 - INFO - __main__ -   Step 2076: start validation
+01/08/2024 02:36:19 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 02:36:21 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 02:36:21 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 54.1667 daa_test v2t recall@5: 95.8333 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:36:21 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 02:36:21 - INFO - __main__ -   validation finished in 2 seconds, validated on 20 videosdaa_test t2v recall@1: 65.0000 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 54.1667 daa_test v2t recall@5: 95.8333 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 02:36:21 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 12:08:03 - INFO - __main__ -   {'blob_mount_dir': '/blob_mount', 'debug': False, 'data_ratio': 1.0, 'model_config': None, 'tokenizer_dir': None, 'output_dir': 'vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16', 'max_txt_len': 50, 'max_img_size': 448, 'img_pixel_mean': None, 'img_pixel_std': None, 'img_input_format': 'RGB', 'max_n_example_per_group': 1, 'fps': 1, 'num_frm': 3, 'frm_sampling_strategy': 'rand', 'train_n_clips': 1, 'score_agg_func': 'mean', 'random_sample_clips': 1, 'train_batch_size': 32, 'val_batch_size': 128, 'gradient_accumulation_steps': 1, 'learning_rate': 1e-06, 'num_valid': 5, 'min_valid_steps': 1, 'save_steps_ratio': 0.9, 'num_train_epochs': 100, 'optim': 'adamw', 'betas': [0.9, 0.98], 'decay': 'cosine', 'dropout': 0.1, 'weight_decay': 0.1, 'grad_norm': 1.0, 'warmup_ratio': 0.01, 'transformer_lr_mul': 1.0, 'transformer_lr_mul_prefix': '', 'step_decay_epochs': None, 'cnn_optim': 'adamw', 'cnn_learning_rate': 5e-05, 'cnn_weight_decay': 0.001, 'cnn_sgd_momentum': 0.9, 'cnn_lr_mul': 1.0, 'cnn_lr_mul_prefix': 'grid_encoder', 'cnn_lr_decay': 'linear', 'cnn_step_decay_epochs': None, 'freeze_cnn': False, 'detectron2_model_cfg': '', 'e2e_weights_path': '/home/bas06400/Thesis/pretrain_clipvip_base_16.pt', 'detectron2_weights_path': None, 'bert_weights_path': None, 'inference_model_step': -1, 'do_inference': False, 'inference_split': 'val', 'inference_txt_db': None, 'inference_img_db': None, 'inference_batch_size': 64, 'inference_n_clips': 1, 'seed': 42, 'fp16': True, 'amp_level': 'O2', 'n_workers': 10, 'pin_mem': True, 'img_aug': 0, 'local_rank': -1, 'n_gpu': 2, 'deepspeed_config': 'src/configs/deepspeed_test.json', 'config': '/home/bas06400/Thesis/VIP/src/configs/daa_retrival/daa_retrieval_vip_base_16.json', 'itm_neg_prob': 0.5, 'use_itm': False, 'use_mlm': False, 'use_itc': 0, 'pixel_random_sampling_size': 0, 'train_datasets': {'name': 'daa_train', 'vis_format': 'video', 'txt': '/home/bas06400/traindaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/train'}, 'val_datasets': [{'name': 'daa_val', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'inference_datasets': [{'name': 'daa_test', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'train_num_frms': 12, 'test_n_clips': 1, 'test_num_frms': 12, 'sample_rate': 0, 'sample_jitter': 1, 'video_res': [240, 320], 'input_res': [224, 224], 'clip_weights': 'openai/clip-vit-base-patch16', 'clip_config': 'openai/clip-vit-base-patch16', 'clip_vision_additional_config': {'type': 'ViP', 'temporal_size': 12, 'if_use_temporal_embed': 1, 'logit_scale_init_value': 4.6, 'add_cls_num': 3}, 'test_batch_size': 128, 'lr_mul': 1, 'lr_mul_prefix': '', 'loss_config': {'loss_name': 'NCELearnableTempDSLLoss', 'if_gather': 1}, 'only_valid_steps': 160, 'if_tb_log': 0, 'if_model_saver': 1, 'if_log2file': 1, 'dummy_data': 0, 'num_train_steps': 20757, 'valid_steps': 4152}
+01/08/2024 12:08:03 - INFO - __main__ -   Starting training...
+01/08/2024 12:08:03 - INFO - __main__ -     Single-GPU Non-Accumulated batch size = 32
+01/08/2024 12:08:03 - INFO - __main__ -     max_n_example_per_group = 1
+01/08/2024 12:08:03 - INFO - __main__ -     Accumulate steps = 1
+01/08/2024 12:08:03 - INFO - __main__ -     Total batch size = #GPUs * Single-GPU batch size * max_n_example_per_group * Accumulate steps [Image] = 32
+01/08/2024 12:08:03 - INFO - __main__ -     Total #epochs = 100
+01/08/2024 12:08:03 - INFO - __main__ -     Total #steps = 20757
+01/08/2024 12:08:03 - INFO - __main__ -     Validate and Save every 4152 steps, in total 5 times
+01/08/2024 12:08:03 - INFO - __main__ -     Only Validate every 160 steps
+01/08/2024 12:08:03 - INFO - __main__ -   Step zero: start inference
+01/08/2024 12:08:03 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:10:05 - INFO - __main__ -   {'blob_mount_dir': '/blob_mount', 'debug': False, 'data_ratio': 1.0, 'model_config': None, 'tokenizer_dir': None, 'output_dir': 'vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16', 'max_txt_len': 50, 'max_img_size': 448, 'img_pixel_mean': None, 'img_pixel_std': None, 'img_input_format': 'RGB', 'max_n_example_per_group': 1, 'fps': 1, 'num_frm': 3, 'frm_sampling_strategy': 'rand', 'train_n_clips': 1, 'score_agg_func': 'mean', 'random_sample_clips': 1, 'train_batch_size': 32, 'val_batch_size': 128, 'gradient_accumulation_steps': 1, 'learning_rate': 1e-06, 'num_valid': 5, 'min_valid_steps': 1, 'save_steps_ratio': 0.9, 'num_train_epochs': 100, 'optim': 'adamw', 'betas': [0.9, 0.98], 'decay': 'cosine', 'dropout': 0.1, 'weight_decay': 0.1, 'grad_norm': 1.0, 'warmup_ratio': 0.01, 'transformer_lr_mul': 1.0, 'transformer_lr_mul_prefix': '', 'step_decay_epochs': None, 'cnn_optim': 'adamw', 'cnn_learning_rate': 5e-05, 'cnn_weight_decay': 0.001, 'cnn_sgd_momentum': 0.9, 'cnn_lr_mul': 1.0, 'cnn_lr_mul_prefix': 'grid_encoder', 'cnn_lr_decay': 'linear', 'cnn_step_decay_epochs': None, 'freeze_cnn': False, 'detectron2_model_cfg': '', 'e2e_weights_path': '/home/bas06400/Thesis/pretrain_clipvip_base_16.pt', 'detectron2_weights_path': None, 'bert_weights_path': None, 'inference_model_step': -1, 'do_inference': False, 'inference_split': 'val', 'inference_txt_db': None, 'inference_img_db': None, 'inference_batch_size': 64, 'inference_n_clips': 1, 'seed': 42, 'fp16': True, 'amp_level': 'O2', 'n_workers': 10, 'pin_mem': True, 'img_aug': 0, 'local_rank': -1, 'n_gpu': 2, 'deepspeed_config': 'src/configs/deepspeed_test.json', 'config': '/home/bas06400/Thesis/VIP/src/configs/daa_retrival/daa_retrieval_vip_base_16.json', 'itm_neg_prob': 0.5, 'use_itm': False, 'use_mlm': False, 'use_itc': 0, 'pixel_random_sampling_size': 0, 'train_datasets': {'name': 'daa_train', 'vis_format': 'video', 'txt': '/home/bas06400/traindaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/train'}, 'val_datasets': [{'name': 'daa_val', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'inference_datasets': [{'name': 'daa_test', 'vis_format': 'video', 'txt': '/home/bas06400/testdaa.jsonl', 'vis': '/home/bas06400/daa/kinect_color/clips/test'}], 'train_num_frms': 12, 'test_n_clips': 1, 'test_num_frms': 12, 'sample_rate': 0, 'sample_jitter': 1, 'video_res': [240, 320], 'input_res': [224, 224], 'clip_weights': 'openai/clip-vit-base-patch16', 'clip_config': 'openai/clip-vit-base-patch16', 'clip_vision_additional_config': {'type': 'ViP', 'temporal_size': 12, 'if_use_temporal_embed': 1, 'logit_scale_init_value': 4.6, 'add_cls_num': 3}, 'test_batch_size': 128, 'lr_mul': 1, 'lr_mul_prefix': '', 'loss_config': {'loss_name': 'NCELearnableTempDSLLoss', 'if_gather': 1}, 'only_valid_steps': 160, 'if_tb_log': 0, 'if_model_saver': 1, 'if_log2file': 1, 'dummy_data': 0, 'num_train_steps': 20757, 'valid_steps': 4152}
+01/08/2024 12:10:05 - INFO - __main__ -   Starting training...
+01/08/2024 12:10:05 - INFO - __main__ -     Single-GPU Non-Accumulated batch size = 32
+01/08/2024 12:10:05 - INFO - __main__ -     max_n_example_per_group = 1
+01/08/2024 12:10:05 - INFO - __main__ -     Accumulate steps = 1
+01/08/2024 12:10:05 - INFO - __main__ -     Total batch size = #GPUs * Single-GPU batch size * max_n_example_per_group * Accumulate steps [Image] = 32
+01/08/2024 12:10:05 - INFO - __main__ -     Total #epochs = 100
+01/08/2024 12:10:05 - INFO - __main__ -     Total #steps = 20757
+01/08/2024 12:10:05 - INFO - __main__ -     Validate and Save every 4152 steps, in total 5 times
+01/08/2024 12:10:05 - INFO - __main__ -     Only Validate every 160 steps
+01/08/2024 12:10:05 - INFO - __main__ -   Step zero: start inference
+01/08/2024 12:10:05 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:10:09 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:10:09 - INFO - __main__ -   validation finished in 4 seconds, validated on 34 videosdaa_test t2v recall@1: 14.7059 daa_test t2v recall@5: 52.9412 daa_test t2v recall@10: 67.6471 daa_test t2v recall_med: 4.0 daa_test t2v recall_mean: 8.6 daa_test v2t recall@1: 8.8235 daa_test v2t recall@5: 23.5294 daa_test v2t recall@10: 47.0588 daa_test v2t recall_med: 11.0 daa_test v2t recall_mean: 13.0 
+01/08/2024 12:10:09 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:10:09 - INFO - __main__ -   validation finished in 4 seconds, validated on 34 videosdaa_test t2v recall@1: 17.6471 daa_test t2v recall@5: 50.0000 daa_test t2v recall@10: 64.7059 daa_test t2v recall_med: 5.0 daa_test t2v recall_mean: 9.0 daa_test v2t recall@1: 8.8235 daa_test v2t recall@5: 23.5294 daa_test v2t recall@10: 47.0588 daa_test v2t recall_med: 11.0 daa_test v2t recall_mean: 13.0 
+01/08/2024 12:10:15 - INFO - __main__ -   Step 0: loss 6.627811431884766 lr 1e-06 logit_scale 4.64453125
+01/08/2024 12:10:33 - INFO - __main__ -   Step 10: loss 6.152912616729736 lr 4.830917874396135e-08 logit_scale 4.64453125
+01/08/2024 12:10:52 - INFO - __main__ -   Step 20: loss 6.482076644897461 lr 9.66183574879227e-08 logit_scale 4.64453125
+01/08/2024 12:11:09 - INFO - __main__ -   Step 30: loss 5.27978515625 lr 1.4492753623188405e-07 logit_scale 4.64453125
+01/08/2024 12:11:26 - INFO - __main__ -   Step 40: loss 7.270923137664795 lr 1.932367149758454e-07 logit_scale 4.64453125
+01/08/2024 12:11:42 - INFO - __main__ -   Step 50: loss 6.6321210861206055 lr 2.4154589371980677e-07 logit_scale 4.64453125
+01/08/2024 12:11:59 - INFO - __main__ -   Step 60: loss 6.190332889556885 lr 2.898550724637681e-07 logit_scale 4.64453125
+01/08/2024 12:12:15 - INFO - __main__ -   Step 70: loss 6.58790397644043 lr 3.3816425120772945e-07 logit_scale 4.64453125
+01/08/2024 12:12:32 - INFO - __main__ -   Step 80: loss 6.019304275512695 lr 3.864734299516908e-07 logit_scale 4.64453125
+01/08/2024 12:12:48 - INFO - __main__ -   Step 90: loss 4.55275297164917 lr 4.3478260869565214e-07 logit_scale 4.64453125
+01/08/2024 12:13:05 - INFO - __main__ -   Step 100: loss 4.654538154602051 lr 4.830917874396135e-07 logit_scale 4.64453125
+01/08/2024 12:13:21 - INFO - __main__ -   Step 110: loss 5.674983978271484 lr 5.314009661835749e-07 logit_scale 4.64453125
+01/08/2024 12:13:38 - INFO - __main__ -   Step 120: loss 4.766213417053223 lr 5.797101449275362e-07 logit_scale 4.64453125
+01/08/2024 12:13:55 - INFO - __main__ -   Step 130: loss 5.211831092834473 lr 6.280193236714976e-07 logit_scale 4.64453125
+01/08/2024 12:14:11 - INFO - __main__ -   Step 140: loss 4.144397258758545 lr 6.763285024154589e-07 logit_scale 4.64453125
+01/08/2024 12:14:28 - INFO - __main__ -   Step 150: loss 4.290270805358887 lr 7.246376811594203e-07 logit_scale 4.64453125
+01/08/2024 12:14:44 - INFO - __main__ -   Step 160: start inference
+01/08/2024 12:14:44 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:14:48 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:14:48 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 41.1765 daa_test t2v recall@5: 70.5882 daa_test t2v recall@10: 85.2941 daa_test t2v recall_med: 2.0 daa_test t2v recall_mean: 5.0 daa_test v2t recall@1: 35.2941 daa_test v2t recall@5: 64.7059 daa_test v2t recall@10: 73.5294 daa_test v2t recall_med: 2.5 daa_test v2t recall_mean: 7.8 
+01/08/2024 12:14:48 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:14:48 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 79.4118 daa_test t2v recall@10: 91.1765 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 3.8 daa_test v2t recall@1: 35.2941 daa_test v2t recall@5: 64.7059 daa_test v2t recall@10: 73.5294 daa_test v2t recall_med: 2.5 daa_test v2t recall_mean: 7.8 
+01/08/2024 12:14:48 - INFO - __main__ -   Step 160: loss 4.745305061340332 lr 7.729468599033816e-07 logit_scale 4.64453125
+01/08/2024 12:15:05 - INFO - __main__ -   Step 170: loss 4.5826334953308105 lr 8.21256038647343e-07 logit_scale 4.64453125
+01/08/2024 12:15:22 - INFO - __main__ -   Step 180: loss 3.748952865600586 lr 8.695652173913043e-07 logit_scale 4.644529342651367
+01/08/2024 12:15:39 - INFO - __main__ -   Step 190: loss 4.180081844329834 lr 9.178743961352657e-07 logit_scale 4.644525527954102
+01/08/2024 12:15:55 - INFO - __main__ -   Step 200: loss 4.120096683502197 lr 9.66183574879227e-07 logit_scale 4.6445231437683105
+01/08/2024 12:16:14 - INFO - __main__ -   Step 210: loss 3.8544788360595703 lr 9.999999474153965e-07 logit_scale 4.644522190093994
+01/08/2024 12:16:31 - INFO - __main__ -   Step 220: loss 3.7508111000061035 lr 9.99999012578309e-07 logit_scale 4.644522666931152
+01/08/2024 12:16:48 - INFO - __main__ -   Step 230: loss 3.7586722373962402 lr 9.99996909196992e-07 logit_scale 4.644524574279785
+01/08/2024 12:17:05 - INFO - __main__ -   Step 240: loss 3.2766175270080566 lr 9.999936372763615e-07 logit_scale 4.644525527954102
+01/08/2024 12:17:22 - INFO - __main__ -   Step 250: loss 3.718278408050537 lr 9.999891968240643e-07 logit_scale 4.644525527954102
+01/08/2024 12:17:39 - INFO - __main__ -   Step 260: loss 4.135056495666504 lr 9.999835878504783e-07 logit_scale 4.64452600479126
+01/08/2024 12:17:56 - INFO - __main__ -   Step 270: loss 4.0856852531433105 lr 9.999768103687119e-07 logit_scale 4.644527435302734
+01/08/2024 12:18:13 - INFO - __main__ -   Step 280: loss 2.869447708129883 lr 9.999688643946048e-07 logit_scale 4.644527435302734
+01/08/2024 12:18:29 - INFO - __main__ -   Step 290: loss 2.585038661956787 lr 9.999597499467274e-07 logit_scale 4.644530773162842
+01/08/2024 12:18:46 - INFO - __main__ -   Step 300: loss 3.681260585784912 lr 9.999494670463813e-07 logit_scale 4.644530773162842
+01/08/2024 12:19:03 - INFO - __main__ -   Step 310: loss 3.786193370819092 lr 9.999380157175984e-07 logit_scale 4.644529819488525
+01/08/2024 12:19:20 - INFO - __main__ -   Step 320: start inference
+01/08/2024 12:19:20 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:19:23 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:19:23 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 44.1176 daa_test t2v recall@5: 88.2353 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 2.0 daa_test t2v recall_mean: 2.8 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 76.4706 daa_test v2t recall@10: 88.2353 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 4.7 
+01/08/2024 12:19:23 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:19:23 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 44.1176 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 2.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 76.4706 daa_test v2t recall@10: 88.2353 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 4.7 
+01/08/2024 12:19:24 - INFO - __main__ -   Step 320: loss 2.779448986053467 lr 9.999253959871411e-07 logit_scale 4.644528865814209
+01/08/2024 12:19:41 - INFO - __main__ -   Step 330: loss 3.6214871406555176 lr 9.999116078845038e-07 logit_scale 4.644531726837158
+01/08/2024 12:19:58 - INFO - __main__ -   Step 340: loss 3.2766566276550293 lr 9.9989665144191e-07 logit_scale 4.644531726837158
+01/08/2024 12:20:14 - INFO - __main__ -   Step 350: loss 3.473019599914551 lr 9.998805266943142e-07 logit_scale 4.64453125
+01/08/2024 12:20:31 - INFO - __main__ -   Step 360: loss 3.2985339164733887 lr 9.998632336794018e-07 logit_scale 4.644528865814209
+01/08/2024 12:20:48 - INFO - __main__ -   Step 370: loss 3.503340482711792 lr 9.99844772437588e-07 logit_scale 4.644527912139893
+01/08/2024 12:21:05 - INFO - __main__ -   Step 380: loss 2.4752163887023926 lr 9.998251430120183e-07 logit_scale 4.644529342651367
+01/08/2024 12:21:22 - INFO - __main__ -   Step 390: loss 3.1726512908935547 lr 9.998043454485689e-07 logit_scale 4.644529342651367
+01/08/2024 12:21:39 - INFO - __main__ -   Step 400: loss 2.8341574668884277 lr 9.997823797958451e-07 logit_scale 4.644529342651367
+01/08/2024 12:21:56 - INFO - __main__ -   Step 410: loss 3.087848663330078 lr 9.997592461051832e-07 logit_scale 4.644526481628418
+01/08/2024 12:22:16 - INFO - __main__ -   Step 420: loss 3.033630609512329 lr 9.997349444306486e-07 logit_scale 4.6445231437683105
+01/08/2024 12:22:33 - INFO - __main__ -   Step 430: loss 3.275580406188965 lr 9.997094748290362e-07 logit_scale 4.644526958465576
+01/08/2024 12:22:49 - INFO - __main__ -   Step 440: loss 2.602510452270508 lr 9.996828373598715e-07 logit_scale 4.644529819488525
+01/08/2024 12:23:06 - INFO - __main__ -   Step 450: loss 3.7790732383728027 lr 9.996550320854083e-07 logit_scale 4.644532680511475
+01/08/2024 12:23:23 - INFO - __main__ -   Step 460: loss 3.700601100921631 lr 9.9962605907063e-07 logit_scale 4.644532680511475
+01/08/2024 12:23:40 - INFO - __main__ -   Step 470: loss 2.934770107269287 lr 9.995959183832497e-07 logit_scale 4.644533157348633
+01/08/2024 12:23:56 - INFO - __main__ -   Step 480: start inference
+01/08/2024 12:23:56 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:23:59 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:23:59 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.4 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 3.4 
+01/08/2024 12:23:59 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:23:59 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 52.9412 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 3.4 
+01/08/2024 12:24:00 - INFO - __main__ -   Step 480: loss 3.2684214115142822 lr 9.995646100937086e-07 logit_scale 4.64453649520874
+01/08/2024 12:24:17 - INFO - __main__ -   Step 490: loss 2.884366035461426 lr 9.995321342751773e-07 logit_scale 4.644540786743164
+01/08/2024 12:24:33 - INFO - __main__ -   Step 500: loss 3.177257537841797 lr 9.994984910035546e-07 logit_scale 4.644540786743164
+01/08/2024 12:24:50 - INFO - __main__ -   Step 510: loss 3.760434627532959 lr 9.994636803574683e-07 logit_scale 4.6445417404174805
+01/08/2024 12:25:07 - INFO - __main__ -   Step 520: loss 3.307590961456299 lr 9.994277024182738e-07 logit_scale 4.6445417404174805
+01/08/2024 12:25:24 - INFO - __main__ -   Step 530: loss 3.4679183959960938 lr 9.993905572700551e-07 logit_scale 4.6445393562316895
+01/08/2024 12:25:41 - INFO - __main__ -   Step 540: loss 3.054438591003418 lr 9.993522449996237e-07 logit_scale 4.6445393562316895
+01/08/2024 12:25:58 - INFO - __main__ -   Step 550: loss 3.0373268127441406 lr 9.99312765696519e-07 logit_scale 4.644538402557373
+01/08/2024 12:26:15 - INFO - __main__ -   Step 560: loss 3.7895326614379883 lr 9.99272119453008e-07 logit_scale 4.644538402557373
+01/08/2024 12:26:32 - INFO - __main__ -   Step 570: loss 3.413682460784912 lr 9.992303063640843e-07 logit_scale 4.644540786743164
+01/08/2024 12:26:49 - INFO - __main__ -   Step 580: loss 2.5288009643554688 lr 9.991873265274693e-07 logit_scale 4.6445417404174805
+01/08/2024 12:27:05 - INFO - __main__ -   Step 590: loss 2.6761586666107178 lr 9.991431800436108e-07 logit_scale 4.64454460144043
+01/08/2024 12:27:22 - INFO - __main__ -   Step 600: loss 3.1823291778564453 lr 9.990978670156835e-07 logit_scale 4.6445488929748535
+01/08/2024 12:27:39 - INFO - __main__ -   Step 610: loss 3.4821605682373047 lr 9.990513875495878e-07 logit_scale 4.644548416137695
+01/08/2024 12:27:56 - INFO - __main__ -   Step 620: loss 3.5302162170410156 lr 9.990037417539508e-07 logit_scale 4.644543647766113
+01/08/2024 12:28:15 - INFO - __main__ -   Step 630: loss 2.9794111251831055 lr 9.989549297401247e-07 logit_scale 4.644542694091797
+01/08/2024 12:28:31 - INFO - __main__ -   Step 640: start inference
+01/08/2024 12:28:31 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:28:35 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:28:35 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 47.0588 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 2.0 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 85.2941 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 3.5 
+01/08/2024 12:28:35 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:28:35 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 85.2941 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 3.5 
+01/08/2024 12:28:35 - INFO - __main__ -   Step 640: loss 3.1207070350646973 lr 9.989049516221884e-07 logit_scale 4.644546985626221
+01/08/2024 12:28:52 - INFO - __main__ -   Step 650: loss 3.8782715797424316 lr 9.98853807516945e-07 logit_scale 4.6445488929748535
+01/08/2024 12:29:09 - INFO - __main__ -   Step 660: loss 2.979496479034424 lr 9.98801497543923e-07 logit_scale 4.6445488929748535
+01/08/2024 12:29:26 - INFO - __main__ -   Step 670: loss 2.7119760513305664 lr 9.987480218253759e-07 logit_scale 4.6445512771606445
+01/08/2024 12:29:42 - INFO - __main__ -   Step 680: loss 3.2562317848205566 lr 9.986933804862812e-07 logit_scale 4.644554138183594
+01/08/2024 12:29:59 - INFO - __main__ -   Step 690: loss 2.411986827850342 lr 9.986375736543409e-07 logit_scale 4.644557952880859
+01/08/2024 12:30:16 - INFO - __main__ -   Step 700: loss 2.359243631362915 lr 9.98580601459981e-07 logit_scale 4.644559383392334
+01/08/2024 12:30:33 - INFO - __main__ -   Step 710: loss 3.179940700531006 lr 9.985224640363502e-07 logit_scale 4.644559383392334
+01/08/2024 12:30:50 - INFO - __main__ -   Step 720: loss 2.6625752449035645 lr 9.984631615193218e-07 logit_scale 4.644559860229492
+01/08/2024 12:31:06 - INFO - __main__ -   Step 730: loss 2.905766010284424 lr 9.984026940474907e-07 logit_scale 4.644564151763916
+01/08/2024 12:31:23 - INFO - __main__ -   Step 740: loss 3.2244300842285156 lr 9.983410617621755e-07 logit_scale 4.64456844329834
+01/08/2024 12:31:40 - INFO - __main__ -   Step 750: loss 2.613067150115967 lr 9.982782648074163e-07 logit_scale 4.644567012786865
+01/08/2024 12:31:57 - INFO - __main__ -   Step 760: loss 2.734315872192383 lr 9.982143033299754e-07 logit_scale 4.644562244415283
+01/08/2024 12:32:14 - INFO - __main__ -   Step 770: loss 2.6780219078063965 lr 9.98149177479337e-07 logit_scale 4.644561767578125
+01/08/2024 12:32:31 - INFO - __main__ -   Step 780: loss 2.950784683227539 lr 9.980828874077059e-07 logit_scale 4.644557952880859
+01/08/2024 12:32:48 - INFO - __main__ -   Step 790: loss 3.197265148162842 lr 9.980154332700085e-07 logit_scale 4.644554615020752
+01/08/2024 12:33:04 - INFO - __main__ -   Step 800: start inference
+01/08/2024 12:33:04 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:33:08 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:33:08 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 12:33:08 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:33:08 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 12:33:08 - INFO - __main__ -   Step 800: loss 3.069646120071411 lr 9.97946815223891e-07 logit_scale 4.644554615020752
+01/08/2024 12:33:25 - INFO - __main__ -   Step 810: loss 2.476166248321533 lr 9.978770334297206e-07 logit_scale 4.644554615020752
+01/08/2024 12:33:42 - INFO - __main__ -   Step 820: loss 3.629661798477173 lr 9.978060880505836e-07 logit_scale 4.644554615020752
+01/08/2024 12:33:59 - INFO - __main__ -   Step 830: loss 2.83768367767334 lr 9.97733979252286e-07 logit_scale 4.644556045532227
+01/08/2024 12:34:19 - INFO - __main__ -   Step 840: loss 2.8227388858795166 lr 9.976607072033528e-07 logit_scale 4.644560813903809
+01/08/2024 12:34:36 - INFO - __main__ -   Step 850: loss 2.510885715484619 lr 9.975862720750276e-07 logit_scale 4.644565582275391
+01/08/2024 12:34:52 - INFO - __main__ -   Step 860: loss 3.6198129653930664 lr 9.975106740412723e-07 logit_scale 4.64456844329834
+01/08/2024 12:35:09 - INFO - __main__ -   Step 870: loss 2.33945631980896 lr 9.974339132787662e-07 logit_scale 4.644570827484131
+01/08/2024 12:35:26 - INFO - __main__ -   Step 880: loss 2.842996120452881 lr 9.973559899669068e-07 logit_scale 4.644574165344238
+01/08/2024 12:35:43 - INFO - __main__ -   Step 890: loss 2.7363293170928955 lr 9.972769042878079e-07 logit_scale 4.644577980041504
+01/08/2024 12:36:00 - INFO - __main__ -   Step 900: loss 2.716071605682373 lr 9.971966564263001e-07 logit_scale 4.644579887390137
+01/08/2024 12:36:17 - INFO - __main__ -   Step 910: loss 2.431828022003174 lr 9.971152465699301e-07 logit_scale 4.644579887390137
+01/08/2024 12:36:34 - INFO - __main__ -   Step 920: loss 3.0946850776672363 lr 9.970326749089605e-07 logit_scale 4.644582271575928
+01/08/2024 12:36:51 - INFO - __main__ -   Step 930: loss 2.7485580444335938 lr 9.969489416363686e-07 logit_scale 4.644582271575928
+01/08/2024 12:37:07 - INFO - __main__ -   Step 940: loss 2.8153305053710938 lr 9.968640469478472e-07 logit_scale 4.6445841789245605
+01/08/2024 12:37:24 - INFO - __main__ -   Step 950: loss 2.404684543609619 lr 9.967779910418028e-07 logit_scale 4.644585609436035
+01/08/2024 12:37:41 - INFO - __main__ -   Step 960: start inference
+01/08/2024 12:37:41 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:37:44 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:37:44 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 52.9412 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.4 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 12:37:44 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:37:44 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 12:37:45 - INFO - __main__ -   Step 960: loss 2.4269745349884033 lr 9.966907741193564e-07 logit_scale 4.644585609436035
+01/08/2024 12:38:02 - INFO - __main__ -   Step 970: loss 3.3834710121154785 lr 9.966023963843418e-07 logit_scale 4.644585609436035
+01/08/2024 12:38:18 - INFO - __main__ -   Step 980: loss 2.8957250118255615 lr 9.96512858043306e-07 logit_scale 4.64458703994751
+01/08/2024 12:38:35 - INFO - __main__ -   Step 990: loss 2.960909366607666 lr 9.964221593055086e-07 logit_scale 4.6445841789245605
+01/08/2024 12:38:52 - INFO - __main__ -   Step 1000: loss 2.5355324745178223 lr 9.963303003829208e-07 logit_scale 4.6445841789245605
+01/08/2024 12:39:09 - INFO - __main__ -   Step 1010: loss 3.2606348991394043 lr 9.962372814902255e-07 logit_scale 4.644586086273193
+01/08/2024 12:39:26 - INFO - __main__ -   Step 1020: loss 2.981278419494629 lr 9.961431028448168e-07 logit_scale 4.644590377807617
+01/08/2024 12:39:43 - INFO - __main__ -   Step 1030: loss 2.9082798957824707 lr 9.960477646667986e-07 logit_scale 4.644588470458984
+01/08/2024 12:40:02 - INFO - __main__ -   Step 1040: loss 2.0883829593658447 lr 9.95951267178985e-07 logit_scale 4.644583702087402
+01/08/2024 12:40:19 - INFO - __main__ -   Step 1050: loss 3.123155117034912 lr 9.958536106069003e-07 logit_scale 4.644582271575928
+01/08/2024 12:40:36 - INFO - __main__ -   Step 1060: loss 2.693556785583496 lr 9.957547951787761e-07 logit_scale 4.644584655761719
+01/08/2024 12:40:53 - INFO - __main__ -   Step 1070: loss 3.4301624298095703 lr 9.95654821125554e-07 logit_scale 4.644588947296143
+01/08/2024 12:41:10 - INFO - __main__ -   Step 1080: loss 2.4925384521484375 lr 9.955536886808821e-07 logit_scale 4.644587993621826
+01/08/2024 12:41:27 - INFO - __main__ -   Step 1090: loss 3.0390214920043945 lr 9.954513980811167e-07 logit_scale 4.64458703994751
+01/08/2024 12:41:43 - INFO - __main__ -   Step 1100: loss 2.8397045135498047 lr 9.953479495653204e-07 logit_scale 4.64458703994751
+01/08/2024 12:42:00 - INFO - __main__ -   Step 1110: loss 2.8560938835144043 lr 9.952433433752617e-07 logit_scale 4.64458703994751
+01/08/2024 12:42:16 - INFO - __main__ -   Step 1120: start inference
+01/08/2024 12:42:16 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:42:20 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:42:20 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 52.9412 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 12:42:20 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:42:20 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 12:42:20 - INFO - __main__ -   Step 1120: loss 2.906507968902588 lr 9.951375797554154e-07 logit_scale 4.64458703994751
+01/08/2024 12:42:37 - INFO - __main__ -   Step 1130: loss 3.78355073928833 lr 9.950306589529606e-07 logit_scale 4.644588947296143
+01/08/2024 12:42:54 - INFO - __main__ -   Step 1140: loss 3.172524929046631 lr 9.949225812177816e-07 logit_scale 4.644588947296143
+01/08/2024 12:43:11 - INFO - __main__ -   Step 1150: loss 3.5344293117523193 lr 9.948133468024658e-07 logit_scale 4.644588470458984
+01/08/2024 12:43:28 - INFO - __main__ -   Step 1160: loss 2.1667897701263428 lr 9.947029559623042e-07 logit_scale 4.644588470458984
+01/08/2024 12:43:45 - INFO - __main__ -   Step 1170: loss 2.474273920059204 lr 9.945914089552905e-07 logit_scale 4.644590377807617
+01/08/2024 12:44:01 - INFO - __main__ -   Step 1180: loss 2.5783944129943848 lr 9.944787060421204e-07 logit_scale 4.644594669342041
+01/08/2024 12:44:18 - INFO - __main__ -   Step 1190: loss 2.4721531867980957 lr 9.943648474861912e-07 logit_scale 4.644598484039307
+01/08/2024 12:44:35 - INFO - __main__ -   Step 1200: loss 2.69384503364563 lr 9.94249833553601e-07 logit_scale 4.644598007202148
+01/08/2024 12:44:52 - INFO - __main__ -   Step 1210: loss 2.6985182762145996 lr 9.941336645131479e-07 logit_scale 4.64459753036499
+01/08/2024 12:45:09 - INFO - __main__ -   Step 1220: loss 2.475053071975708 lr 9.940163406363298e-07 logit_scale 4.64459753036499
+01/08/2024 12:45:26 - INFO - __main__ -   Step 1230: loss 2.616827964782715 lr 9.938978621973434e-07 logit_scale 4.64459753036499
+01/08/2024 12:45:43 - INFO - __main__ -   Step 1240: loss 2.4889135360717773 lr 9.937782294730842e-07 logit_scale 4.644598007202148
+01/08/2024 12:46:03 - INFO - __main__ -   Step 1250: loss 3.207465648651123 lr 9.936574427431449e-07 logit_scale 4.644601345062256
+01/08/2024 12:46:20 - INFO - __main__ -   Step 1260: loss 2.1472508907318115 lr 9.93535502289815e-07 logit_scale 4.6446027755737305
+01/08/2024 12:46:36 - INFO - __main__ -   Step 1270: loss 2.579606771469116 lr 9.934124083980811e-07 logit_scale 4.644606590270996
+01/08/2024 12:46:53 - INFO - __main__ -   Step 1280: start inference
+01/08/2024 12:46:53 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:46:56 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:46:56 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 55.8824 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 12:46:56 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:46:56 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 55.8824 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 12:46:57 - INFO - __main__ -   Step 1280: loss 2.6172444820404053 lr 9.932881613556247e-07 logit_scale 4.64461088180542
+01/08/2024 12:47:13 - INFO - __main__ -   Step 1290: loss 3.0743751525878906 lr 9.931627614528232e-07 logit_scale 4.644614219665527
+01/08/2024 12:47:30 - INFO - __main__ -   Step 1300: loss 3.2608656883239746 lr 9.930362089827472e-07 logit_scale 4.644615173339844
+01/08/2024 12:47:47 - INFO - __main__ -   Step 1310: loss 2.4297752380371094 lr 9.929085042411621e-07 logit_scale 4.6446146965026855
+01/08/2024 12:48:04 - INFO - __main__ -   Step 1320: loss 2.434723377227783 lr 9.927796475265256e-07 logit_scale 4.644613265991211
+01/08/2024 12:48:21 - INFO - __main__ -   Step 1330: loss 2.9199862480163574 lr 9.926496391399879e-07 logit_scale 4.644613742828369
+01/08/2024 12:48:38 - INFO - __main__ -   Step 1340: loss 2.3306851387023926 lr 9.925184793853907e-07 logit_scale 4.644615173339844
+01/08/2024 12:48:55 - INFO - __main__ -   Step 1350: loss 3.1746139526367188 lr 9.923861685692663e-07 logit_scale 4.644615173339844
+01/08/2024 12:49:12 - INFO - __main__ -   Step 1360: loss 2.9698944091796875 lr 9.922527070008378e-07 logit_scale 4.644615650177002
+01/08/2024 12:49:29 - INFO - __main__ -   Step 1370: loss 2.4126439094543457 lr 9.92118094992017e-07 logit_scale 4.644615650177002
+01/08/2024 12:49:46 - INFO - __main__ -   Step 1380: loss 1.9644618034362793 lr 9.919823328574047e-07 logit_scale 4.644618511199951
+01/08/2024 12:50:02 - INFO - __main__ -   Step 1390: loss 2.7664852142333984 lr 9.918454209142899e-07 logit_scale 4.644618511199951
+01/08/2024 12:50:19 - INFO - __main__ -   Step 1400: loss 2.652005910873413 lr 9.917073594826484e-07 logit_scale 4.644619464874268
+01/08/2024 12:50:36 - INFO - __main__ -   Step 1410: loss 2.4429984092712402 lr 9.915681488851425e-07 logit_scale 4.644622802734375
+01/08/2024 12:50:53 - INFO - __main__ -   Step 1420: loss 2.6947593688964844 lr 9.914277894471204e-07 logit_scale 4.644625663757324
+01/08/2024 12:51:10 - INFO - __main__ -   Step 1430: loss 2.625063896179199 lr 9.912862814966152e-07 logit_scale 4.644630432128906
+01/08/2024 12:51:26 - INFO - __main__ -   Step 1440: start inference
+01/08/2024 12:51:26 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:51:29 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:51:29 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.8 
+01/08/2024 12:51:29 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:51:29 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.8 
+01/08/2024 12:51:30 - INFO - __main__ -   Step 1440: loss 2.431241512298584 lr 9.911436253643443e-07 logit_scale 4.644631385803223
+01/08/2024 12:51:46 - INFO - __main__ -   Step 1450: loss 3.047227382659912 lr 9.90999821383708e-07 logit_scale 4.644629001617432
+01/08/2024 12:52:06 - INFO - __main__ -   Step 1460: loss 2.5023369789123535 lr 9.908548698907902e-07 logit_scale 4.644628047943115
+01/08/2024 12:52:22 - INFO - __main__ -   Step 1470: loss 3.1613829135894775 lr 9.907087712243554e-07 logit_scale 4.644628047943115
+01/08/2024 12:52:39 - INFO - __main__ -   Step 1480: loss 2.702716827392578 lr 9.905615257258498e-07 logit_scale 4.644628047943115
+01/08/2024 12:52:56 - INFO - __main__ -   Step 1490: loss 2.1061835289001465 lr 9.904131337394002e-07 logit_scale 4.6446309089660645
+01/08/2024 12:53:13 - INFO - __main__ -   Step 1500: loss 2.7552120685577393 lr 9.902635956118124e-07 logit_scale 4.6446332931518555
+01/08/2024 12:53:29 - INFO - __main__ -   Step 1510: loss 1.9371892213821411 lr 9.901129116925708e-07 logit_scale 4.6446332931518555
+01/08/2024 12:53:46 - INFO - __main__ -   Step 1520: loss 2.8365883827209473 lr 9.899610823338378e-07 logit_scale 4.644633769989014
+01/08/2024 12:54:03 - INFO - __main__ -   Step 1530: loss 2.2976417541503906 lr 9.898081078904528e-07 logit_scale 4.644633769989014
+01/08/2024 12:54:20 - INFO - __main__ -   Step 1540: loss 2.337268590927124 lr 9.896539887199312e-07 logit_scale 4.644633769989014
+01/08/2024 12:54:37 - INFO - __main__ -   Step 1550: loss 2.182663917541504 lr 9.894987251824638e-07 logit_scale 4.644633769989014
+01/08/2024 12:54:54 - INFO - __main__ -   Step 1560: loss 2.1797590255737305 lr 9.89342317640916e-07 logit_scale 4.644633769989014
+01/08/2024 12:55:10 - INFO - __main__ -   Step 1570: loss 2.357706069946289 lr 9.891847664608272e-07 logit_scale 4.644633769989014
+01/08/2024 12:55:27 - INFO - __main__ -   Step 1580: loss 2.606990337371826 lr 9.890260720104084e-07 logit_scale 4.6446309089660645
+01/08/2024 12:55:44 - INFO - __main__ -   Step 1590: loss 2.570974349975586 lr 9.88866234660544e-07 logit_scale 4.6446332931518555
+01/08/2024 12:56:00 - INFO - __main__ -   Step 1600: start inference
+01/08/2024 12:56:00 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 12:56:04 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 12:56:04 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 12:56:04 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 12:56:04 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 12:56:04 - INFO - __main__ -   Step 1600: loss 2.5796031951904297 lr 9.887052547847883e-07 logit_scale 4.644638538360596
+01/08/2024 12:56:21 - INFO - __main__ -   Step 1610: loss 3.27211332321167 lr 9.885431327593662e-07 logit_scale 4.6446428298950195
+01/08/2024 12:56:38 - INFO - __main__ -   Step 1620: loss 2.492154121398926 lr 9.883798689631723e-07 logit_scale 4.64463996887207
+01/08/2024 12:56:55 - INFO - __main__ -   Step 1630: loss 3.03938627243042 lr 9.882154637777694e-07 logit_scale 4.64463996887207
+01/08/2024 12:57:12 - INFO - __main__ -   Step 1640: loss 2.7753825187683105 lr 9.880499175873873e-07 logit_scale 4.6446404457092285
+01/08/2024 12:57:29 - INFO - __main__ -   Step 1650: loss 2.283592700958252 lr 9.878832307789229e-07 logit_scale 4.644644260406494
+01/08/2024 12:57:46 - INFO - __main__ -   Step 1660: loss 2.7588307857513428 lr 9.87715403741939e-07 logit_scale 4.644646644592285
+01/08/2024 12:58:05 - INFO - __main__ -   Step 1670: loss 2.9374799728393555 lr 9.87546436868663e-07 logit_scale 4.644647121429443
+01/08/2024 12:58:22 - INFO - __main__ -   Step 1680: loss 2.2714695930480957 lr 9.873763305539862e-07 logit_scale 4.644651412963867
+01/08/2024 12:58:39 - INFO - __main__ -   Step 1690: loss 3.722609281539917 lr 9.872050851954626e-07 logit_scale 4.644656181335449
+01/08/2024 12:58:56 - INFO - __main__ -   Step 1700: loss 3.6707570552825928 lr 9.870327011933088e-07 logit_scale 4.644656181335449
+01/08/2024 12:59:13 - INFO - __main__ -   Step 1710: loss 2.076026201248169 lr 9.868591789504025e-07 logit_scale 4.644655704498291
+01/08/2024 12:59:30 - INFO - __main__ -   Step 1720: loss 2.3349170684814453 lr 9.866845188722809e-07 logit_scale 4.644655704498291
+01/08/2024 12:59:46 - INFO - __main__ -   Step 1730: loss 2.2343006134033203 lr 9.86508721367141e-07 logit_scale 4.644655704498291
+01/08/2024 13:00:03 - INFO - __main__ -   Step 1740: loss 2.3711342811584473 lr 9.863317868458377e-07 logit_scale 4.644659519195557
+01/08/2024 13:00:20 - INFO - __main__ -   Step 1750: loss 3.4606380462646484 lr 9.86153715721884e-07 logit_scale 4.644662857055664
+01/08/2024 13:00:36 - INFO - __main__ -   Step 1760: start inference
+01/08/2024 13:00:36 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:00:40 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:00:40 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 13:00:40 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:00:40 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 91.1765 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 13:00:40 - INFO - __main__ -   Step 1760: loss 2.771108627319336 lr 9.859745084114482e-07 logit_scale 4.644660949707031
+01/08/2024 13:00:57 - INFO - __main__ -   Step 1770: loss 2.5785226821899414 lr 9.857941653333547e-07 logit_scale 4.644656658172607
+01/08/2024 13:01:14 - INFO - __main__ -   Step 1780: loss 2.6245546340942383 lr 9.85612686909082e-07 logit_scale 4.644655704498291
+01/08/2024 13:01:31 - INFO - __main__ -   Step 1790: loss 2.416266679763794 lr 9.854300735627622e-07 logit_scale 4.644660472869873
+01/08/2024 13:01:48 - INFO - __main__ -   Step 1800: loss 2.338953971862793 lr 9.852463257211792e-07 logit_scale 4.644662857055664
+01/08/2024 13:02:05 - INFO - __main__ -   Step 1810: loss 2.530759572982788 lr 9.850614438137694e-07 logit_scale 4.64466667175293
+01/08/2024 13:02:22 - INFO - __main__ -   Step 1820: loss 3.040126085281372 lr 9.848754282726187e-07 logit_scale 4.644665718078613
+01/08/2024 13:02:39 - INFO - __main__ -   Step 1830: loss 2.5413007736206055 lr 9.846882795324631e-07 logit_scale 4.644663333892822
+01/08/2024 13:02:56 - INFO - __main__ -   Step 1840: loss 2.650392532348633 lr 9.844999980306862e-07 logit_scale 4.644663333892822
+01/08/2024 13:03:12 - INFO - __main__ -   Step 1850: loss 2.2779746055603027 lr 9.843105842073195e-07 logit_scale 4.6446661949157715
+01/08/2024 13:03:30 - INFO - __main__ -   Step 1860: loss 2.8338546752929688 lr 9.841200385050407e-07 logit_scale 4.64466667175293
+01/08/2024 13:03:47 - INFO - __main__ -   Step 1870: loss 2.3166863918304443 lr 9.83928361369173e-07 logit_scale 4.6446661949157715
+01/08/2024 13:04:06 - INFO - __main__ -   Step 1880: loss 2.501499891281128 lr 9.837355532476836e-07 logit_scale 4.644664764404297
+01/08/2024 13:04:23 - INFO - __main__ -   Step 1890: loss 2.131746292114258 lr 9.83541614591183e-07 logit_scale 4.644664764404297
+01/08/2024 13:04:40 - INFO - __main__ -   Step 1900: loss 2.0051021575927734 lr 9.83346545852924e-07 logit_scale 4.644664764404297
+01/08/2024 13:04:57 - INFO - __main__ -   Step 1910: loss 2.2233786582946777 lr 9.831503474888004e-07 logit_scale 4.644664764404297
+01/08/2024 13:05:13 - INFO - __main__ -   Step 1920: start inference
+01/08/2024 13:05:13 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:05:17 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:05:17 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 13:05:17 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:05:17 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 13:05:17 - INFO - __main__ -   Step 1920: loss 2.637674331665039 lr 9.82953019957346e-07 logit_scale 4.64466667175293
+01/08/2024 13:05:34 - INFO - __main__ -   Step 1930: loss 2.185492753982544 lr 9.827545637197334e-07 logit_scale 4.644667148590088
+01/08/2024 13:05:51 - INFO - __main__ -   Step 1940: loss 2.8745033740997314 lr 9.825549792397736e-07 logit_scale 4.644669532775879
+01/08/2024 13:06:08 - INFO - __main__ -   Step 1950: loss 2.1548590660095215 lr 9.82354266983914e-07 logit_scale 4.64467191696167
+01/08/2024 13:06:25 - INFO - __main__ -   Step 1960: loss 3.074036121368408 lr 9.821524274212377e-07 logit_scale 4.6446733474731445
+01/08/2024 13:06:42 - INFO - __main__ -   Step 1970: loss 2.617845296859741 lr 9.819494610234628e-07 logit_scale 4.6446733474731445
+01/08/2024 13:06:59 - INFO - __main__ -   Step 1980: loss 2.2960205078125 lr 9.817453682649404e-07 logit_scale 4.6446733474731445
+01/08/2024 13:07:16 - INFO - __main__ -   Step 1990: loss 2.35831880569458 lr 9.815401496226544e-07 logit_scale 4.644676208496094
+01/08/2024 13:07:33 - INFO - __main__ -   Step 2000: loss 2.715243339538574 lr 9.8133380557622e-07 logit_scale 4.644680500030518
+01/08/2024 13:07:50 - INFO - __main__ -   Step 2010: loss 2.123134136199951 lr 9.81126336607882e-07 logit_scale 4.644682884216309
+01/08/2024 13:08:08 - INFO - __main__ -   Step 2020: loss 2.76539945602417 lr 9.80917743202515e-07 logit_scale 4.644685745239258
+01/08/2024 13:08:25 - INFO - __main__ -   Step 2030: loss 2.28456711769104 lr 9.807080258476214e-07 logit_scale 4.644689083099365
+01/08/2024 13:08:42 - INFO - __main__ -   Step 2040: loss 2.861684560775757 lr 9.804971850333301e-07 logit_scale 4.644688129425049
+01/08/2024 13:08:59 - INFO - __main__ -   Step 2050: loss 3.0551578998565674 lr 9.802852212523953e-07 logit_scale 4.644688129425049
+01/08/2024 13:09:16 - INFO - __main__ -   Step 2060: loss 2.5234017372131348 lr 9.800721350001965e-07 logit_scale 4.644685745239258
+01/08/2024 13:09:33 - INFO - __main__ -   Step 2070: loss 2.8970422744750977 lr 9.79857926774736e-07 logit_scale 4.644684791564941
+01/08/2024 13:09:49 - INFO - __main__ -   Step 2080: start inference
+01/08/2024 13:09:49 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:09:55 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:09:55 - INFO - __main__ -   validation finished in 5 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 13:09:55 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:09:55 - INFO - __main__ -   validation finished in 5 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 13:10:00 - INFO - __main__ -   Step 2080: loss 2.138823986053467 lr 9.796425970766382e-07 logit_scale 4.644683837890625
+01/08/2024 13:10:17 - INFO - __main__ -   Step 2090: loss 3.4589548110961914 lr 9.794261464091488e-07 logit_scale 4.644684314727783
+01/08/2024 13:10:33 - INFO - __main__ -   Step 2100: loss 2.251781940460205 lr 9.79208575278133e-07 logit_scale 4.644689083099365
+01/08/2024 13:10:50 - INFO - __main__ -   Step 2110: loss 1.7720106840133667 lr 9.789898841920751e-07 logit_scale 4.644692897796631
+01/08/2024 13:11:07 - INFO - __main__ -   Step 2120: loss 2.6391634941101074 lr 9.787700736620763e-07 logit_scale 4.6446967124938965
+01/08/2024 13:11:24 - INFO - __main__ -   Step 2130: loss 2.4055981636047363 lr 9.78549144201854e-07 logit_scale 4.6446990966796875
+01/08/2024 13:11:41 - INFO - __main__ -   Step 2140: loss 2.3162012100219727 lr 9.783270963277417e-07 logit_scale 4.6446990966796875
+01/08/2024 13:11:58 - INFO - __main__ -   Step 2150: loss 2.160813331604004 lr 9.781039305586852e-07 logit_scale 4.6446990966796875
+01/08/2024 13:12:15 - INFO - __main__ -   Step 2160: loss 2.589102268218994 lr 9.778796474162438e-07 logit_scale 4.644702434539795
+01/08/2024 13:12:32 - INFO - __main__ -   Step 2170: loss 1.7080190181732178 lr 9.776542474245885e-07 logit_scale 4.644705772399902
+01/08/2024 13:12:49 - INFO - __main__ -   Step 2180: loss 2.830683708190918 lr 9.774277311104995e-07 logit_scale 4.644707202911377
+01/08/2024 13:13:06 - INFO - __main__ -   Step 2190: loss 1.9837193489074707 lr 9.772000990033671e-07 logit_scale 4.644708156585693
+01/08/2024 13:13:23 - INFO - __main__ -   Step 2200: loss 2.1900393962860107 lr 9.76971351635188e-07 logit_scale 4.644706726074219
+01/08/2024 13:13:40 - INFO - __main__ -   Step 2210: loss 2.5868306159973145 lr 9.767414895405668e-07 logit_scale 4.644702434539795
+01/08/2024 13:13:57 - INFO - __main__ -   Step 2220: loss 1.8916871547698975 lr 9.765105132567122e-07 logit_scale 4.644698143005371
+01/08/2024 13:14:15 - INFO - __main__ -   Step 2230: loss 2.702138900756836 lr 9.762784233234373e-07 logit_scale 4.644698143005371
+01/08/2024 13:14:31 - INFO - __main__ -   Step 2240: start inference
+01/08/2024 13:14:31 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:14:34 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:14:34 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 13:14:34 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:14:34 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 70.5882 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 13:14:35 - INFO - __main__ -   Step 2240: loss 2.786461353302002 lr 9.76045220283158e-07 logit_scale 4.644698143005371
+01/08/2024 13:14:52 - INFO - __main__ -   Step 2250: loss 2.3464598655700684 lr 9.758109046808915e-07 logit_scale 4.6446990966796875
+01/08/2024 13:15:09 - INFO - __main__ -   Step 2260: loss 2.949315309524536 lr 9.75575477064255e-07 logit_scale 4.644701957702637
+01/08/2024 13:15:26 - INFO - __main__ -   Step 2270: loss 2.303959369659424 lr 9.75338937983465e-07 logit_scale 4.644701957702637
+01/08/2024 13:15:43 - INFO - __main__ -   Step 2280: loss 2.6297810077667236 lr 9.751012879913353e-07 logit_scale 4.6447014808654785
+01/08/2024 13:16:03 - INFO - __main__ -   Step 2290: loss 2.4785871505737305 lr 9.748625276432759e-07 logit_scale 4.6447014808654785
+01/08/2024 13:16:20 - INFO - __main__ -   Step 2300: loss 2.570547103881836 lr 9.74622657497292e-07 logit_scale 4.6447014808654785
+01/08/2024 13:16:36 - INFO - __main__ -   Step 2310: loss 2.9302313327789307 lr 9.743816781139824e-07 logit_scale 4.644702434539795
+01/08/2024 13:16:54 - INFO - __main__ -   Step 2320: loss 1.983269453048706 lr 9.741395900565386e-07 logit_scale 4.644707202911377
+01/08/2024 13:17:11 - INFO - __main__ -   Step 2330: loss 2.254589319229126 lr 9.738963938907427e-07 logit_scale 4.644708156585693
+01/08/2024 13:17:28 - INFO - __main__ -   Step 2340: loss 2.821737051010132 lr 9.73652090184967e-07 logit_scale 4.644711017608643
+01/08/2024 13:17:45 - INFO - __main__ -   Step 2350: loss 2.3557794094085693 lr 9.734066795101716e-07 logit_scale 4.644715785980225
+01/08/2024 13:18:02 - INFO - __main__ -   Step 2360: loss 3.3682286739349365 lr 9.731601624399042e-07 logit_scale 4.644720077514648
+01/08/2024 13:18:19 - INFO - __main__ -   Step 2370: loss 3.150036334991455 lr 9.729125395502986e-07 logit_scale 4.644720077514648
+01/08/2024 13:18:36 - INFO - __main__ -   Step 2380: loss 2.4241466522216797 lr 9.72663811420072e-07 logit_scale 4.64471960067749
+01/08/2024 13:18:53 - INFO - __main__ -   Step 2390: loss 2.5057382583618164 lr 9.724139786305255e-07 logit_scale 4.644719123840332
+01/08/2024 13:19:09 - INFO - __main__ -   Step 2400: start inference
+01/08/2024 13:19:09 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:19:13 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:19:13 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 13:19:13 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:19:13 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 13:19:14 - INFO - __main__ -   Step 2400: loss 2.227029323577881 lr 9.721630417655412e-07 logit_scale 4.644717693328857
+01/08/2024 13:19:31 - INFO - __main__ -   Step 2410: loss 2.383281707763672 lr 9.719110014115826e-07 logit_scale 4.644717693328857
+01/08/2024 13:19:48 - INFO - __main__ -   Step 2420: loss 2.9473724365234375 lr 9.716578581576908e-07 logit_scale 4.644717693328857
+01/08/2024 13:20:05 - INFO - __main__ -   Step 2430: loss 2.619641065597534 lr 9.714036125954854e-07 logit_scale 4.644713878631592
+01/08/2024 13:20:22 - INFO - __main__ -   Step 2440: loss 2.4240946769714355 lr 9.71148265319162e-07 logit_scale 4.644712924957275
+01/08/2024 13:20:39 - INFO - __main__ -   Step 2450: loss 2.714426040649414 lr 9.70891816925491e-07 logit_scale 4.644716262817383
+01/08/2024 13:20:56 - INFO - __main__ -   Step 2460: loss 2.37113094329834 lr 9.706342680138158e-07 logit_scale 4.644721031188965
+01/08/2024 13:21:13 - INFO - __main__ -   Step 2470: loss 2.292511463165283 lr 9.703756191860525e-07 logit_scale 4.644723892211914
+01/08/2024 13:21:30 - INFO - __main__ -   Step 2480: loss 2.629321575164795 lr 9.701158710466875e-07 logit_scale 4.644725322723389
+01/08/2024 13:21:47 - INFO - __main__ -   Step 2490: loss 2.517566680908203 lr 9.698550242027762e-07 logit_scale 4.6447248458862305
+01/08/2024 13:22:07 - INFO - __main__ -   Step 2500: loss 2.262712240219116 lr 9.695930792639422e-07 logit_scale 4.64472770690918
+01/08/2024 13:22:24 - INFO - __main__ -   Step 2510: loss 3.1752915382385254 lr 9.69330036842375e-07 logit_scale 4.64472770690918
+01/08/2024 13:22:41 - INFO - __main__ -   Step 2520: loss 1.9000084400177002 lr 9.69065897552829e-07 logit_scale 4.64472770690918
+01/08/2024 13:22:58 - INFO - __main__ -   Step 2530: loss 2.547757148742676 lr 9.688006620126227e-07 logit_scale 4.64472770690918
+01/08/2024 13:23:15 - INFO - __main__ -   Step 2540: loss 2.428737163543701 lr 9.685343308416362e-07 logit_scale 4.64472770690918
+01/08/2024 13:23:32 - INFO - __main__ -   Step 2550: loss 2.5292000770568848 lr 9.682669046623102e-07 logit_scale 4.64472770690918
+01/08/2024 13:23:49 - INFO - __main__ -   Step 2560: start inference
+01/08/2024 13:23:49 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:23:52 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:23:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 13:23:52 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:23:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 13:23:53 - INFO - __main__ -   Step 2560: loss 1.7450330257415771 lr 9.679983840996445e-07 logit_scale 4.644732475280762
+01/08/2024 13:24:10 - INFO - __main__ -   Step 2570: loss 2.7246596813201904 lr 9.677287697811966e-07 logit_scale 4.644736289978027
+01/08/2024 13:24:27 - INFO - __main__ -   Step 2580: loss 2.7394967079162598 lr 9.674580623370805e-07 logit_scale 4.644734859466553
+01/08/2024 13:24:44 - INFO - __main__ -   Step 2590: loss 2.35275936126709 lr 9.671862623999643e-07 logit_scale 4.644734859466553
+01/08/2024 13:25:01 - INFO - __main__ -   Step 2600: loss 2.214545726776123 lr 9.6691337060507e-07 logit_scale 4.64473819732666
+01/08/2024 13:25:18 - INFO - __main__ -   Step 2610: loss 2.845879554748535 lr 9.66639387590171e-07 logit_scale 4.644741058349609
+01/08/2024 13:25:35 - INFO - __main__ -   Step 2620: loss 2.926520347595215 lr 9.663643139955915e-07 logit_scale 4.644742012023926
+01/08/2024 13:25:52 - INFO - __main__ -   Step 2630: loss 2.1239209175109863 lr 9.660881504642037e-07 logit_scale 4.644742012023926
+01/08/2024 13:26:09 - INFO - __main__ -   Step 2640: loss 1.8864322900772095 lr 9.658108976414275e-07 logit_scale 4.644742012023926
+01/08/2024 13:26:26 - INFO - __main__ -   Step 2650: loss 2.3060059547424316 lr 9.655325561752285e-07 logit_scale 4.644743919372559
+01/08/2024 13:26:43 - INFO - __main__ -   Step 2660: loss 2.8293228149414062 lr 9.652531267161167e-07 logit_scale 4.6447434425354
+01/08/2024 13:27:01 - INFO - __main__ -   Step 2670: loss 2.181927442550659 lr 9.649726099171452e-07 logit_scale 4.644744396209717
+01/08/2024 13:27:18 - INFO - __main__ -   Step 2680: loss 2.767500877380371 lr 9.64691006433907e-07 logit_scale 4.644745826721191
+01/08/2024 13:27:35 - INFO - __main__ -   Step 2690: loss 3.540688991546631 lr 9.644083169245364e-07 logit_scale 4.64474630355835
+01/08/2024 13:27:52 - INFO - __main__ -   Step 2700: loss 3.125596523284912 lr 9.641245420497046e-07 logit_scale 4.644747257232666
+01/08/2024 13:28:24 - INFO - __main__ -   Step 2710: loss 2.2559361457824707 lr 9.638396824726202e-07 logit_scale 4.644747734069824
+01/08/2024 13:28:40 - INFO - __main__ -   Step 2720: start inference
+01/08/2024 13:28:40 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:28:44 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:28:44 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 13:28:44 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:28:44 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.8 
+01/08/2024 13:28:44 - INFO - __main__ -   Step 2720: loss 2.8040847778320312 lr 9.635537388590264e-07 logit_scale 4.644748210906982
+01/08/2024 13:29:01 - INFO - __main__ -   Step 2730: loss 2.0146987438201904 lr 9.632667118772002e-07 logit_scale 4.644749164581299
+01/08/2024 13:29:18 - INFO - __main__ -   Step 2740: loss 2.556013584136963 lr 9.6297860219795e-07 logit_scale 4.644753932952881
+01/08/2024 13:29:35 - INFO - __main__ -   Step 2750: loss 2.5201964378356934 lr 9.626894104946154e-07 logit_scale 4.644754886627197
+01/08/2024 13:29:52 - INFO - __main__ -   Step 2760: loss 2.357175350189209 lr 9.62399137443064e-07 logit_scale 4.644754886627197
+01/08/2024 13:30:09 - INFO - __main__ -   Step 2770: loss 2.393078327178955 lr 9.621077837216912e-07 logit_scale 4.644756317138672
+01/08/2024 13:30:26 - INFO - __main__ -   Step 2780: loss 2.420389413833618 lr 9.618153500114174e-07 logit_scale 4.644755840301514
+01/08/2024 13:30:43 - INFO - __main__ -   Step 2790: loss 2.781830310821533 lr 9.615218369956877e-07 logit_scale 4.644759654998779
+01/08/2024 13:31:00 - INFO - __main__ -   Step 2800: loss 2.620255947113037 lr 9.612272453604693e-07 logit_scale 4.644761562347412
+01/08/2024 13:31:17 - INFO - __main__ -   Step 2810: loss 2.85380220413208 lr 9.609315757942502e-07 logit_scale 4.644761562347412
+01/08/2024 13:31:34 - INFO - __main__ -   Step 2820: loss 2.141836643218994 lr 9.606348289880378e-07 logit_scale 4.64476203918457
+01/08/2024 13:31:51 - INFO - __main__ -   Step 2830: loss 2.1568284034729004 lr 9.60337005635357e-07 logit_scale 4.644763469696045
+01/08/2024 13:32:09 - INFO - __main__ -   Step 2840: loss 2.501455783843994 lr 9.600381064322482e-07 logit_scale 4.644761562347412
+01/08/2024 13:32:26 - INFO - __main__ -   Step 2850: loss 2.5453243255615234 lr 9.597381320772673e-07 logit_scale 4.644758224487305
+01/08/2024 13:32:43 - INFO - __main__ -   Step 2860: loss 2.498227119445801 lr 9.59437083271482e-07 logit_scale 4.6447577476501465
+01/08/2024 13:33:00 - INFO - __main__ -   Step 2870: loss 2.425631046295166 lr 9.591349607184716e-07 logit_scale 4.644758701324463
+01/08/2024 13:33:16 - INFO - __main__ -   Step 2880: start inference
+01/08/2024 13:33:16 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:33:20 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:33:20 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 64.7059 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 13:33:20 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:33:20 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 73.5294 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 64.7059 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 13:33:20 - INFO - __main__ -   Step 2880: loss 2.139007091522217 lr 9.588317651243243e-07 logit_scale 4.644763469696045
+01/08/2024 13:33:37 - INFO - __main__ -   Step 2890: loss 2.96518611907959 lr 9.585274971976366e-07 logit_scale 4.6447672843933105
+01/08/2024 13:33:54 - INFO - __main__ -   Step 2900: loss 2.1358606815338135 lr 9.58222157649511e-07 logit_scale 4.644772052764893
+01/08/2024 13:34:11 - INFO - __main__ -   Step 2910: loss 1.823002815246582 lr 9.579157471935545e-07 logit_scale 4.644776821136475
+01/08/2024 13:34:31 - INFO - __main__ -   Step 2920: loss 2.151350975036621 lr 9.576082665458766e-07 logit_scale 4.644781112670898
+01/08/2024 13:34:48 - INFO - __main__ -   Step 2930: loss 2.4566054344177246 lr 9.572997164250885e-07 logit_scale 4.644778251647949
+01/08/2024 13:35:05 - INFO - __main__ -   Step 2940: loss 2.9165148735046387 lr 9.569900975523003e-07 logit_scale 4.644779682159424
+01/08/2024 13:35:22 - INFO - __main__ -   Step 2950: loss 2.126715660095215 lr 9.566794106511203e-07 logit_scale 4.644783020019531
+01/08/2024 13:35:39 - INFO - __main__ -   Step 2960: loss 2.178966522216797 lr 9.563676564476523e-07 logit_scale 4.644783020019531
+01/08/2024 13:35:56 - INFO - __main__ -   Step 2970: loss 2.8002469539642334 lr 9.560548356704956e-07 logit_scale 4.644783020019531
+01/08/2024 13:36:13 - INFO - __main__ -   Step 2980: loss 2.325119972229004 lr 9.557409490507409e-07 logit_scale 4.6447834968566895
+01/08/2024 13:36:30 - INFO - __main__ -   Step 2990: loss 2.319955348968506 lr 9.554259973219705e-07 logit_scale 4.644783973693848
+01/08/2024 13:36:47 - INFO - __main__ -   Step 3000: loss 2.9447989463806152 lr 9.551099812202564e-07 logit_scale 4.644787311553955
+01/08/2024 13:37:04 - INFO - __main__ -   Step 3010: loss 2.730898857116699 lr 9.54792901484157e-07 logit_scale 4.644787311553955
+01/08/2024 13:37:22 - INFO - __main__ -   Step 3020: loss 2.421445369720459 lr 9.544747588547175e-07 logit_scale 4.644787311553955
+01/08/2024 13:37:39 - INFO - __main__ -   Step 3030: loss 2.293649911880493 lr 9.541555540754666e-07 logit_scale 4.644789218902588
+01/08/2024 13:37:55 - INFO - __main__ -   Step 3040: start inference
+01/08/2024 13:37:55 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:37:58 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:37:58 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 13:37:58 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:37:58 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 13:37:59 - INFO - __main__ -   Step 3040: loss 2.780315637588501 lr 9.53835287892416e-07 logit_scale 4.6447858810424805
+01/08/2024 13:38:16 - INFO - __main__ -   Step 3050: loss 2.5638937950134277 lr 9.535139610540572e-07 logit_scale 4.644784927368164
+01/08/2024 13:38:33 - INFO - __main__ -   Step 3060: loss 1.9204347133636475 lr 9.53191574311361e-07 logit_scale 4.644783973693848
+01/08/2024 13:38:50 - INFO - __main__ -   Step 3070: loss 2.3240561485290527 lr 9.528681284177753e-07 logit_scale 4.644783973693848
+01/08/2024 13:39:07 - INFO - __main__ -   Step 3080: loss 2.2255806922912598 lr 9.525436241292233e-07 logit_scale 4.644783973693848
+01/08/2024 13:39:24 - INFO - __main__ -   Step 3090: loss 2.7518808841705322 lr 9.522180622041016e-07 logit_scale 4.644787311553955
+01/08/2024 13:39:41 - INFO - __main__ -   Step 3100: loss 2.6733040809631348 lr 9.518914434032789e-07 logit_scale 4.644787311553955
+01/08/2024 13:39:58 - INFO - __main__ -   Step 3110: loss 2.1054015159606934 lr 9.515637684900935e-07 logit_scale 4.6447882652282715
+01/08/2024 13:40:18 - INFO - __main__ -   Step 3120: loss 2.5257303714752197 lr 9.512350382303522e-07 logit_scale 4.644791603088379
+01/08/2024 13:40:35 - INFO - __main__ -   Step 3130: loss 2.0706465244293213 lr 9.509052533923285e-07 logit_scale 4.6447906494140625
+01/08/2024 13:40:52 - INFO - __main__ -   Step 3140: loss 2.0695958137512207 lr 9.505744147467598e-07 logit_scale 4.6447906494140625
+01/08/2024 13:41:09 - INFO - __main__ -   Step 3150: loss 2.843473196029663 lr 9.502425230668474e-07 logit_scale 4.6447882652282715
+01/08/2024 13:41:26 - INFO - __main__ -   Step 3160: loss 2.4216504096984863 lr 9.499095791282525e-07 logit_scale 4.644786834716797
+01/08/2024 13:41:43 - INFO - __main__ -   Step 3170: loss 2.601297378540039 lr 9.495755837090962e-07 logit_scale 4.644786834716797
+01/08/2024 13:42:00 - INFO - __main__ -   Step 3180: loss 2.9088752269744873 lr 9.492405375899571e-07 logit_scale 4.644787788391113
+01/08/2024 13:42:17 - INFO - __main__ -   Step 3190: loss 2.297779083251953 lr 9.48904441553869e-07 logit_scale 4.6447882652282715
+01/08/2024 13:42:33 - INFO - __main__ -   Step 3200: start inference
+01/08/2024 13:42:33 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:42:37 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:42:37 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 88.2353 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 85.2941 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 3.0 
+01/08/2024 13:42:37 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:42:37 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 85.2941 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 3.0 
+01/08/2024 13:42:37 - INFO - __main__ -   Step 3200: loss 2.19490647315979 lr 9.485672963863196e-07 logit_scale 4.64478874206543
+01/08/2024 13:42:54 - INFO - __main__ -   Step 3210: loss 2.4588985443115234 lr 9.482291028752487e-07 logit_scale 4.644789218902588
+01/08/2024 13:43:11 - INFO - __main__ -   Step 3220: loss 2.186664581298828 lr 9.478898618110458e-07 logit_scale 4.6447930335998535
+01/08/2024 13:43:28 - INFO - __main__ -   Step 3230: loss 2.390373706817627 lr 9.475495739865491e-07 logit_scale 4.6447978019714355
+01/08/2024 13:43:45 - INFO - __main__ -   Step 3240: loss 2.369330406188965 lr 9.472082401970426e-07 logit_scale 4.64479923248291
+01/08/2024 13:44:02 - INFO - __main__ -   Step 3250: loss 3.190474510192871 lr 9.468658612402553e-07 logit_scale 4.644798755645752
+01/08/2024 13:44:19 - INFO - __main__ -   Step 3260: loss 2.070424795150757 lr 9.465224379163588e-07 logit_scale 4.644800186157227
+01/08/2024 13:44:36 - INFO - __main__ -   Step 3270: loss 2.8355252742767334 lr 9.461779710279652e-07 logit_scale 4.644803047180176
+01/08/2024 13:44:54 - INFO - __main__ -   Step 3280: loss 1.8169997930526733 lr 9.458324613801256e-07 logit_scale 4.644803047180176
+01/08/2024 13:45:11 - INFO - __main__ -   Step 3290: loss 3.0588250160217285 lr 9.454859097803284e-07 logit_scale 4.644805908203125
+01/08/2024 13:45:28 - INFO - __main__ -   Step 3300: loss 3.023357391357422 lr 9.451383170384968e-07 logit_scale 4.644808292388916
+01/08/2024 13:45:45 - INFO - __main__ -   Step 3310: loss 2.455936908721924 lr 9.447896839669876e-07 logit_scale 4.644809246063232
+01/08/2024 13:46:02 - INFO - __main__ -   Step 3320: loss 1.8800609111785889 lr 9.444400113805886e-07 logit_scale 4.644809246063232
+01/08/2024 13:46:22 - INFO - __main__ -   Step 3330: loss 2.428980827331543 lr 9.440893000965171e-07 logit_scale 4.644809246063232
+01/08/2024 13:46:39 - INFO - __main__ -   Step 3340: loss 2.2565343379974365 lr 9.437375509344183e-07 logit_scale 4.644809246063232
+01/08/2024 13:46:56 - INFO - __main__ -   Step 3350: loss 2.9193482398986816 lr 9.433847647163623e-07 logit_scale 4.644809246063232
+01/08/2024 13:47:13 - INFO - __main__ -   Step 3360: start inference
+01/08/2024 13:47:13 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:47:16 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:47:16 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.9 
+01/08/2024 13:47:16 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:47:16 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 88.2353 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.9 
+01/08/2024 13:47:17 - INFO - __main__ -   Step 3360: loss 2.626405715942383 lr 9.430309422668437e-07 logit_scale 4.644809246063232
+01/08/2024 13:47:34 - INFO - __main__ -   Step 3370: loss 1.927807092666626 lr 9.426760844127783e-07 logit_scale 4.644812107086182
+01/08/2024 13:47:51 - INFO - __main__ -   Step 3380: loss 2.601536750793457 lr 9.42320191983502e-07 logit_scale 4.644813537597656
+01/08/2024 13:48:08 - INFO - __main__ -   Step 3390: loss 2.8756909370422363 lr 9.419632658107685e-07 logit_scale 4.644813060760498
+01/08/2024 13:48:25 - INFO - __main__ -   Step 3400: loss 2.4585061073303223 lr 9.416053067287475e-07 logit_scale 4.644810676574707
+01/08/2024 13:48:42 - INFO - __main__ -   Step 3410: loss 1.8866629600524902 lr 9.412463155740226e-07 logit_scale 4.644807815551758
+01/08/2024 13:48:59 - INFO - __main__ -   Step 3420: loss 2.4647035598754883 lr 9.408862931855898e-07 logit_scale 4.6448073387146
+01/08/2024 13:49:16 - INFO - __main__ -   Step 3430: loss 2.7188878059387207 lr 9.405252404048547e-07 logit_scale 4.6448073387146
+01/08/2024 13:49:33 - INFO - __main__ -   Step 3440: loss 2.7337608337402344 lr 9.401631580756312e-07 logit_scale 4.6448073387146
+01/08/2024 13:49:50 - INFO - __main__ -   Step 3450: loss 2.301119089126587 lr 9.398000470441398e-07 logit_scale 4.644808769226074
+01/08/2024 13:50:07 - INFO - __main__ -   Step 3460: loss 1.8970736265182495 lr 9.394359081590043e-07 logit_scale 4.644811153411865
+01/08/2024 13:50:24 - INFO - __main__ -   Step 3470: loss 2.586277961730957 lr 9.390707422712514e-07 logit_scale 4.644810676574707
+01/08/2024 13:50:41 - INFO - __main__ -   Step 3480: loss 2.4557127952575684 lr 9.387045502343078e-07 logit_scale 4.644811153411865
+01/08/2024 13:50:58 - INFO - __main__ -   Step 3490: loss 2.422314167022705 lr 9.383373329039982e-07 logit_scale 4.644812107086182
+01/08/2024 13:51:15 - INFO - __main__ -   Step 3500: loss 2.3792476654052734 lr 9.379690911385438e-07 logit_scale 4.64481258392334
+01/08/2024 13:51:32 - INFO - __main__ -   Step 3510: loss 1.97642183303833 lr 9.3759982579856e-07 logit_scale 4.644813060760498
+01/08/2024 13:51:49 - INFO - __main__ -   Step 3520: start inference
+01/08/2024 13:51:49 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:51:52 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:51:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 13:51:52 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:51:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 13:51:53 - INFO - __main__ -   Step 3520: loss 2.0931484699249268 lr 9.37229537747054e-07 logit_scale 4.644813060760498
+01/08/2024 13:52:10 - INFO - __main__ -   Step 3530: loss 2.4984259605407715 lr 9.368582278494236e-07 logit_scale 4.64481258392334
+01/08/2024 13:52:30 - INFO - __main__ -   Step 3540: loss 2.7424895763397217 lr 9.364858969734546e-07 logit_scale 4.64481258392334
+01/08/2024 13:52:47 - INFO - __main__ -   Step 3550: loss 2.5696213245391846 lr 9.361125459893189e-07 logit_scale 4.6448163986206055
+01/08/2024 13:53:04 - INFO - __main__ -   Step 3560: loss 2.8552427291870117 lr 9.357381757695724e-07 logit_scale 4.644819736480713
+01/08/2024 13:53:21 - INFO - __main__ -   Step 3570: loss 2.475862503051758 lr 9.353627871891531e-07 logit_scale 4.6448235511779785
+01/08/2024 13:53:38 - INFO - __main__ -   Step 3580: loss 2.530292510986328 lr 9.349863811253794e-07 logit_scale 4.644825458526611
+01/08/2024 13:53:55 - INFO - __main__ -   Step 3590: loss 2.1720616817474365 lr 9.346089584579471e-07 logit_scale 4.6448283195495605
+01/08/2024 13:54:12 - INFO - __main__ -   Step 3600: loss 2.218689441680908 lr 9.342305200689279e-07 logit_scale 4.644831657409668
+01/08/2024 13:54:29 - INFO - __main__ -   Step 3610: loss 2.014040470123291 lr 9.338510668427679e-07 logit_scale 4.644830703735352
+01/08/2024 13:54:46 - INFO - __main__ -   Step 3620: loss 2.3091118335723877 lr 9.334705996662843e-07 logit_scale 4.644829273223877
+01/08/2024 13:55:03 - INFO - __main__ -   Step 3630: loss 2.4280264377593994 lr 9.330891194286645e-07 logit_scale 4.644829273223877
+01/08/2024 13:55:21 - INFO - __main__ -   Step 3640: loss 2.6038148403167725 lr 9.327066270214632e-07 logit_scale 4.644831657409668
+01/08/2024 13:55:38 - INFO - __main__ -   Step 3650: loss 2.061488151550293 lr 9.323231233386008e-07 logit_scale 4.644832611083984
+01/08/2024 13:55:55 - INFO - __main__ -   Step 3660: loss 3.094120979309082 lr 9.31938609276361e-07 logit_scale 4.644832611083984
+01/08/2024 13:56:11 - INFO - __main__ -   Step 3670: loss 1.920938491821289 lr 9.315530857333893e-07 logit_scale 4.64483642578125
+01/08/2024 13:56:28 - INFO - __main__ -   Step 3680: start inference
+01/08/2024 13:56:28 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 13:56:31 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 13:56:31 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 13:56:31 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 13:56:31 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 13:56:32 - INFO - __main__ -   Step 3680: loss 2.3087854385375977 lr 9.311665536106898e-07 logit_scale 4.644841194152832
+01/08/2024 13:56:49 - INFO - __main__ -   Step 3690: loss 2.1559317111968994 lr 9.30779013811624e-07 logit_scale 4.644842147827148
+01/08/2024 13:57:06 - INFO - __main__ -   Step 3700: loss 1.8442175388336182 lr 9.303904672419086e-07 logit_scale 4.644841194152832
+01/08/2024 13:57:22 - INFO - __main__ -   Step 3710: loss 1.7887648344039917 lr 9.300009148096131e-07 logit_scale 4.644841194152832
+01/08/2024 13:57:40 - INFO - __main__ -   Step 3720: loss 1.8765523433685303 lr 9.29610357425158e-07 logit_scale 4.644841194152832
+01/08/2024 13:57:57 - INFO - __main__ -   Step 3730: loss 2.312866687774658 lr 9.292187960013117e-07 logit_scale 4.64484167098999
+01/08/2024 13:58:14 - INFO - __main__ -   Step 3740: loss 1.8675289154052734 lr 9.288262314531901e-07 logit_scale 4.64484167098999
+01/08/2024 13:58:34 - INFO - __main__ -   Step 3750: loss 1.973046064376831 lr 9.284326646982532e-07 logit_scale 4.644838333129883
+01/08/2024 13:58:51 - INFO - __main__ -   Step 3760: loss 2.024583578109741 lr 9.280380966563028e-07 logit_scale 4.644837856292725
+01/08/2024 13:59:08 - INFO - __main__ -   Step 3770: loss 2.198108673095703 lr 9.276425282494813e-07 logit_scale 4.644838809967041
+01/08/2024 13:59:25 - INFO - __main__ -   Step 3780: loss 1.974684238433838 lr 9.272459604022689e-07 logit_scale 4.644839286804199
+01/08/2024 13:59:42 - INFO - __main__ -   Step 3790: loss 2.218391180038452 lr 9.268483940414815e-07 logit_scale 4.644839763641357
+01/08/2024 13:59:59 - INFO - __main__ -   Step 3800: loss 2.803135871887207 lr 9.264498300962687e-07 logit_scale 4.644840717315674
+01/08/2024 14:00:16 - INFO - __main__ -   Step 3810: loss 2.0381507873535156 lr 9.260502694981117e-07 logit_scale 4.644840717315674
+01/08/2024 14:00:33 - INFO - __main__ -   Step 3820: loss 2.5891644954681396 lr 9.256497131808206e-07 logit_scale 4.644840240478516
+01/08/2024 14:00:50 - INFO - __main__ -   Step 3830: loss 2.2173707485198975 lr 9.252481620805329e-07 logit_scale 4.644839763641357
+01/08/2024 14:01:06 - INFO - __main__ -   Step 3840: start inference
+01/08/2024 14:01:06 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:01:10 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:01:10 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 14:01:10 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:01:10 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 73.5294 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 14:01:10 - INFO - __main__ -   Step 3840: loss 2.5058531761169434 lr 9.248456171357109e-07 logit_scale 4.644839763641357
+01/08/2024 14:01:27 - INFO - __main__ -   Step 3850: loss 2.5194811820983887 lr 9.244420792871395e-07 logit_scale 4.644839763641357
+01/08/2024 14:01:44 - INFO - __main__ -   Step 3860: loss 2.592852830886841 lr 9.240375494779243e-07 logit_scale 4.644840240478516
+01/08/2024 14:02:01 - INFO - __main__ -   Step 3870: loss 2.3387067317962646 lr 9.236320286534888e-07 logit_scale 4.644840717315674
+01/08/2024 14:02:18 - INFO - __main__ -   Step 3880: loss 2.119718074798584 lr 9.232255177615735e-07 logit_scale 4.644840717315674
+01/08/2024 14:02:35 - INFO - __main__ -   Step 3890: loss 2.2117912769317627 lr 9.22818017752232e-07 logit_scale 4.644843101501465
+01/08/2024 14:02:53 - INFO - __main__ -   Step 3900: loss 3.0173683166503906 lr 9.224095295778295e-07 logit_scale 4.644845008850098
+01/08/2024 14:03:10 - INFO - __main__ -   Step 3910: loss 2.2840514183044434 lr 9.22000054193041e-07 logit_scale 4.6448445320129395
+01/08/2024 14:03:27 - INFO - __main__ -   Step 3920: loss 2.9054627418518066 lr 9.215895925548487e-07 logit_scale 4.644845962524414
+01/08/2024 14:03:44 - INFO - __main__ -   Step 3930: loss 2.2255711555480957 lr 9.211781456225393e-07 logit_scale 4.6448469161987305
+01/08/2024 14:04:01 - INFO - __main__ -   Step 3940: loss 2.8705251216888428 lr 9.207657143577033e-07 logit_scale 4.6448469161987305
+01/08/2024 14:04:18 - INFO - __main__ -   Step 3950: loss 2.1491599082946777 lr 9.203522997242301e-07 logit_scale 4.644847869873047
+01/08/2024 14:04:38 - INFO - __main__ -   Step 3960: loss 2.7564358711242676 lr 9.199379026883087e-07 logit_scale 4.644850254058838
+01/08/2024 14:04:55 - INFO - __main__ -   Step 3970: loss 1.6989017724990845 lr 9.195225242184233e-07 logit_scale 4.64484977722168
+01/08/2024 14:05:12 - INFO - __main__ -   Step 3980: loss 2.990225315093994 lr 9.191061652853522e-07 logit_scale 4.644847393035889
+01/08/2024 14:05:29 - INFO - __main__ -   Step 3990: loss 1.887056827545166 lr 9.186888268621651e-07 logit_scale 4.644845962524414
+01/08/2024 14:05:46 - INFO - __main__ -   Step 4000: start inference
+01/08/2024 14:05:46 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:05:49 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:05:49 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 52.9412 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:05:49 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:05:49 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:05:49 - INFO - __main__ -   Step 4000: loss 2.8872170448303223 lr 9.182705099242205e-07 logit_scale 4.644847393035889
+01/08/2024 14:06:06 - INFO - __main__ -   Step 4010: loss 2.4789161682128906 lr 9.17851215449164e-07 logit_scale 4.644851207733154
+01/08/2024 14:06:23 - INFO - __main__ -   Step 4020: loss 2.5851268768310547 lr 9.174309444169259e-07 logit_scale 4.644851207733154
+01/08/2024 14:06:40 - INFO - __main__ -   Step 4030: loss 2.4523563385009766 lr 9.170096978097188e-07 logit_scale 4.644853591918945
+01/08/2024 14:06:58 - INFO - __main__ -   Step 4040: loss 2.726046085357666 lr 9.165874766120351e-07 logit_scale 4.644853591918945
+01/08/2024 14:07:15 - INFO - __main__ -   Step 4050: loss 2.027520179748535 lr 9.161642818106452e-07 logit_scale 4.644853591918945
+01/08/2024 14:07:32 - INFO - __main__ -   Step 4060: loss 2.873342514038086 lr 9.157401143945944e-07 logit_scale 4.644850254058838
+01/08/2024 14:07:49 - INFO - __main__ -   Step 4070: loss 2.6118831634521484 lr 9.153149753552018e-07 logit_scale 4.644850254058838
+01/08/2024 14:08:06 - INFO - __main__ -   Step 4080: loss 1.7117921113967896 lr 9.148888656860568e-07 logit_scale 4.644850254058838
+01/08/2024 14:08:23 - INFO - __main__ -   Step 4090: loss 2.8618500232696533 lr 9.144617863830173e-07 logit_scale 4.64484977722168
+01/08/2024 14:08:40 - INFO - __main__ -   Step 4100: loss 2.683187484741211 lr 9.140337384442074e-07 logit_scale 4.644848823547363
+01/08/2024 14:08:57 - INFO - __main__ -   Step 4110: loss 3.0902318954467773 lr 9.13604722870015e-07 logit_scale 4.644850730895996
+01/08/2024 14:09:14 - INFO - __main__ -   Step 4120: loss 2.183053970336914 lr 9.131747406630892e-07 logit_scale 4.644851207733154
+01/08/2024 14:09:31 - INFO - __main__ -   Step 4130: loss 2.36184024810791 lr 9.127437928283388e-07 logit_scale 4.644853591918945
+01/08/2024 14:09:48 - INFO - __main__ -   Step 4140: loss 2.4770214557647705 lr 9.123118803729288e-07 logit_scale 4.644853115081787
+01/08/2024 14:10:06 - INFO - __main__ -   Step 4150: loss 2.3837451934814453 lr 9.118790043062789e-07 logit_scale 4.644853115081787
+01/08/2024 14:10:08 - INFO - __main__ -   Step 4152: start validation and Save
+01/08/2024 14:10:08 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:10:12 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:10:12 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:10:12 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:10:12 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 79.4118 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.3 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:10:12 - INFO - __main__ -   ModelSaver save trial NO. 0
+01/08/2024 14:10:26 - INFO - __main__ -   Step 4160: start inference
+01/08/2024 14:10:26 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:10:29 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:10:29 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 55.8824 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 14:10:29 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:10:29 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 76.4706 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 55.8824 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 14:10:34 - INFO - __main__ -   Step 4160: loss 1.788962960243225 lr 9.114451656400606e-07 logit_scale 4.644853115081787
+01/08/2024 14:10:51 - INFO - __main__ -   Step 4170: loss 3.1547913551330566 lr 9.110103653881956e-07 logit_scale 4.644853115081787
+01/08/2024 14:11:08 - INFO - __main__ -   Step 4180: loss 2.97691011428833 lr 9.10574604566852e-07 logit_scale 4.64485502243042
+01/08/2024 14:11:25 - INFO - __main__ -   Step 4190: loss 1.7289659976959229 lr 9.101378841944438e-07 logit_scale 4.644855499267578
+01/08/2024 14:11:42 - INFO - __main__ -   Step 4200: loss 2.497267961502075 lr 9.09700205291627e-07 logit_scale 4.644855499267578
+01/08/2024 14:11:58 - INFO - __main__ -   Step 4210: loss 2.625328779220581 lr 9.092615688812981e-07 logit_scale 4.644859790802002
+01/08/2024 14:12:15 - INFO - __main__ -   Step 4220: loss 2.4373278617858887 lr 9.088219759885911e-07 logit_scale 4.644859790802002
+01/08/2024 14:12:32 - INFO - __main__ -   Step 4230: loss 2.4479281902313232 lr 9.083814276408754e-07 logit_scale 4.644859790802002
+01/08/2024 14:12:50 - INFO - __main__ -   Step 4240: loss 1.7585783004760742 lr 9.079399248677537e-07 logit_scale 4.644857883453369
+01/08/2024 14:13:07 - INFO - __main__ -   Step 4250: loss 2.6799678802490234 lr 9.074974687010589e-07 logit_scale 4.6448564529418945
+01/08/2024 14:13:24 - INFO - __main__ -   Step 4260: loss 2.292006015777588 lr 9.070540601748525e-07 logit_scale 4.6448564529418945
+01/08/2024 14:13:41 - INFO - __main__ -   Step 4270: loss 2.4753003120422363 lr 9.06609700325421e-07 logit_scale 4.6448564529418945
+01/08/2024 14:13:58 - INFO - __main__ -   Step 4280: loss 2.456023693084717 lr 9.061643901912753e-07 logit_scale 4.644856929779053
+01/08/2024 14:14:15 - INFO - __main__ -   Step 4290: loss 2.3524394035339355 lr 9.057181308131463e-07 logit_scale 4.644860744476318
+01/08/2024 14:14:32 - INFO - __main__ -   Step 4300: loss 2.4506406784057617 lr 9.052709232339837e-07 logit_scale 4.6448655128479
+01/08/2024 14:14:49 - INFO - __main__ -   Step 4310: loss 2.0062355995178223 lr 9.048227684989534e-07 logit_scale 4.644869804382324
+01/08/2024 14:15:05 - INFO - __main__ -   Step 4320: start inference
+01/08/2024 14:15:05 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:15:09 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:15:09 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.1 
+01/08/2024 14:15:09 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:15:09 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 70.5882 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.1 
+01/08/2024 14:15:09 - INFO - __main__ -   Step 4320: loss 2.240232229232788 lr 9.043736676554347e-07 logit_scale 4.644869804382324
+01/08/2024 14:15:26 - INFO - __main__ -   Step 4330: loss 2.7094194889068604 lr 9.03923621753018e-07 logit_scale 4.644870758056641
+01/08/2024 14:15:43 - INFO - __main__ -   Step 4340: loss 2.0084798336029053 lr 9.034726318435022e-07 logit_scale 4.644870758056641
+01/08/2024 14:16:00 - INFO - __main__ -   Step 4350: loss 2.9092047214508057 lr 9.030206989808933e-07 logit_scale 4.644871234893799
+01/08/2024 14:16:17 - INFO - __main__ -   Step 4360: loss 2.0394816398620605 lr 9.025678242213999e-07 logit_scale 4.644870758056641
+01/08/2024 14:16:37 - INFO - __main__ -   Step 4370: loss 2.1983871459960938 lr 9.021140086234327e-07 logit_scale 4.644870281219482
+01/08/2024 14:16:54 - INFO - __main__ -   Step 4380: loss 2.1437368392944336 lr 9.01659253247601e-07 logit_scale 4.644870281219482
+01/08/2024 14:17:11 - INFO - __main__ -   Step 4390: loss 2.3540992736816406 lr 9.012035591567106e-07 logit_scale 4.644869327545166
+01/08/2024 14:17:28 - INFO - __main__ -   Step 4400: loss 2.3098177909851074 lr 9.007469274157606e-07 logit_scale 4.644869804382324
+01/08/2024 14:17:45 - INFO - __main__ -   Step 4410: loss 1.773923397064209 lr 9.002893590919423e-07 logit_scale 4.644869804382324
+01/08/2024 14:18:02 - INFO - __main__ -   Step 4420: loss 2.2193288803100586 lr 8.99830855254635e-07 logit_scale 4.644869327545166
+01/08/2024 14:18:19 - INFO - __main__ -   Step 4430: loss 1.568113088607788 lr 8.993714169754053e-07 logit_scale 4.644871234893799
+01/08/2024 14:18:36 - INFO - __main__ -   Step 4440: loss 1.5837911367416382 lr 8.989110453280029e-07 logit_scale 4.644871234893799
+01/08/2024 14:18:53 - INFO - __main__ -   Step 4450: loss 2.063861131668091 lr 8.984497413883595e-07 logit_scale 4.644871234893799
+01/08/2024 14:19:10 - INFO - __main__ -   Step 4460: loss 2.944244861602783 lr 8.97987506234585e-07 logit_scale 4.644872665405273
+01/08/2024 14:19:27 - INFO - __main__ -   Step 4470: loss 3.257643222808838 lr 8.975243409469662e-07 logit_scale 4.6448774337768555
+01/08/2024 14:19:43 - INFO - __main__ -   Step 4480: start inference
+01/08/2024 14:19:43 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:19:47 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:19:47 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:19:47 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:19:47 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:19:48 - INFO - __main__ -   Step 4480: loss 1.7241169214248657 lr 8.970602466079635e-07 logit_scale 4.644881725311279
+01/08/2024 14:20:04 - INFO - __main__ -   Step 4490: loss 3.085630416870117 lr 8.965952243022084e-07 logit_scale 4.644886493682861
+01/08/2024 14:20:21 - INFO - __main__ -   Step 4500: loss 2.5425186157226562 lr 8.961292751165013e-07 logit_scale 4.644891262054443
+01/08/2024 14:20:38 - INFO - __main__ -   Step 4510: loss 1.9705238342285156 lr 8.95662400139809e-07 logit_scale 4.64489221572876
+01/08/2024 14:20:55 - INFO - __main__ -   Step 4520: loss 2.2836947441101074 lr 8.951946004632618e-07 logit_scale 4.644891738891602
+01/08/2024 14:21:12 - INFO - __main__ -   Step 4530: loss 2.691343307495117 lr 8.947258771801507e-07 logit_scale 4.64489221572876
+01/08/2024 14:21:29 - INFO - __main__ -   Step 4540: loss 2.881229877471924 lr 8.942562313859261e-07 logit_scale 4.644890308380127
+01/08/2024 14:21:47 - INFO - __main__ -   Step 4550: loss 3.7223191261291504 lr 8.937856641781937e-07 logit_scale 4.644889831542969
+01/08/2024 14:22:04 - INFO - __main__ -   Step 4560: loss 1.880751132965088 lr 8.93314176656713e-07 logit_scale 4.644889831542969
+01/08/2024 14:22:21 - INFO - __main__ -   Step 4570: loss 2.1080589294433594 lr 8.928417699233939e-07 logit_scale 4.644889831542969
+01/08/2024 14:22:41 - INFO - __main__ -   Step 4580: loss 2.3853330612182617 lr 8.923684450822953e-07 logit_scale 4.644887924194336
+01/08/2024 14:22:58 - INFO - __main__ -   Step 4590: loss 2.9152908325195312 lr 8.918942032396211e-07 logit_scale 4.644887447357178
+01/08/2024 14:23:15 - INFO - __main__ -   Step 4600: loss 2.1609086990356445 lr 8.914190455037188e-07 logit_scale 4.644887447357178
+01/08/2024 14:23:32 - INFO - __main__ -   Step 4610: loss 2.09647798538208 lr 8.909429729850764e-07 logit_scale 4.644890308380127
+01/08/2024 14:23:49 - INFO - __main__ -   Step 4620: loss 2.20424222946167 lr 8.904659867963192e-07 logit_scale 4.64489221572876
+01/08/2024 14:24:06 - INFO - __main__ -   Step 4630: loss 2.0682373046875 lr 8.899880880522088e-07 logit_scale 4.64489221572876
+01/08/2024 14:24:22 - INFO - __main__ -   Step 4640: start inference
+01/08/2024 14:24:22 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:24:26 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:24:26 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 14:24:26 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:24:26 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 76.4706 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 14:24:26 - INFO - __main__ -   Step 4640: loss 3.3424007892608643 lr 8.895092778696389e-07 logit_scale 4.64489221572876
+01/08/2024 14:24:43 - INFO - __main__ -   Step 4650: loss 2.7138760089874268 lr 8.890295573676333e-07 logit_scale 4.64489221572876
+01/08/2024 14:25:00 - INFO - __main__ -   Step 4660: loss 2.8233566284179688 lr 8.885489276673437e-07 logit_scale 4.644891738891602
+01/08/2024 14:25:17 - INFO - __main__ -   Step 4670: loss 2.4241018295288086 lr 8.880673898920462e-07 logit_scale 4.644888877868652
+01/08/2024 14:25:34 - INFO - __main__ -   Step 4680: loss 2.872535228729248 lr 8.875849451671396e-07 logit_scale 4.6448869705200195
+01/08/2024 14:25:51 - INFO - __main__ -   Step 4690: loss 2.683161735534668 lr 8.871015946201422e-07 logit_scale 4.644887924194336
+01/08/2024 14:26:08 - INFO - __main__ -   Step 4700: loss 2.1020851135253906 lr 8.866173393806888e-07 logit_scale 4.644890308380127
+01/08/2024 14:26:25 - INFO - __main__ -   Step 4710: loss 2.3372690677642822 lr 8.861321805805294e-07 logit_scale 4.6448893547058105
+01/08/2024 14:26:43 - INFO - __main__ -   Step 4720: loss 1.8931763172149658 lr 8.85646119353525e-07 logit_scale 4.644888877868652
+01/08/2024 14:27:00 - INFO - __main__ -   Step 4730: loss 2.543187141418457 lr 8.851591568356463e-07 logit_scale 4.6448869705200195
+01/08/2024 14:27:17 - INFO - __main__ -   Step 4740: loss 1.767181634902954 lr 8.846712941649694e-07 logit_scale 4.6448845863342285
+01/08/2024 14:27:34 - INFO - __main__ -   Step 4750: loss 2.1454036235809326 lr 8.841825324816754e-07 logit_scale 4.64488410949707
+01/08/2024 14:27:51 - INFO - __main__ -   Step 4760: loss 1.798478364944458 lr 8.836928729280455e-07 logit_scale 4.64488410949707
+01/08/2024 14:28:08 - INFO - __main__ -   Step 4770: loss 2.5169191360473633 lr 8.832023166484596e-07 logit_scale 4.644883632659912
+01/08/2024 14:28:25 - INFO - __main__ -   Step 4780: loss 2.2028560638427734 lr 8.827108647893937e-07 logit_scale 4.644883632659912
+01/08/2024 14:28:45 - INFO - __main__ -   Step 4790: loss 2.469970941543579 lr 8.822185184994164e-07 logit_scale 4.644883632659912
+01/08/2024 14:29:02 - INFO - __main__ -   Step 4800: start inference
+01/08/2024 14:29:02 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:29:05 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:29:05 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.2 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 97.0588 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 14:29:05 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:29:05 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.7 daa_test v2t recall@1: 47.0588 daa_test v2t recall@5: 97.0588 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 2.0 daa_test v2t recall_mean: 2.7 
+01/08/2024 14:29:06 - INFO - __main__ -   Step 4800: loss 2.4165546894073486 lr 8.817252789291865e-07 logit_scale 4.644883632659912
+01/08/2024 14:29:23 - INFO - __main__ -   Step 4810: loss 1.8894104957580566 lr 8.812311472314513e-07 logit_scale 4.644886493682861
+01/08/2024 14:29:40 - INFO - __main__ -   Step 4820: loss 2.8725810050964355 lr 8.807361245610421e-07 logit_scale 4.6448869705200195
+01/08/2024 14:29:57 - INFO - __main__ -   Step 4830: loss 2.369396209716797 lr 8.802402120748733e-07 logit_scale 4.6448869705200195
+01/08/2024 14:30:14 - INFO - __main__ -   Step 4840: loss 2.506181240081787 lr 8.797434109319384e-07 logit_scale 4.644885063171387
+01/08/2024 14:30:31 - INFO - __main__ -   Step 4850: loss 2.013242244720459 lr 8.792457222933079e-07 logit_scale 4.644883632659912
+01/08/2024 14:30:48 - INFO - __main__ -   Step 4860: loss 2.527373790740967 lr 8.787471473221263e-07 logit_scale 4.644888401031494
+01/08/2024 14:31:05 - INFO - __main__ -   Step 4870: loss 2.450458526611328 lr 8.7824768718361e-07 logit_scale 4.644886493682861
+01/08/2024 14:31:22 - INFO - __main__ -   Step 4880: loss 1.6257848739624023 lr 8.777473430450437e-07 logit_scale 4.644886493682861
+01/08/2024 14:31:39 - INFO - __main__ -   Step 4890: loss 2.582418918609619 lr 8.772461160757784e-07 logit_scale 4.644886493682861
+01/08/2024 14:31:56 - INFO - __main__ -   Step 4900: loss 2.2035093307495117 lr 8.767440074472279e-07 logit_scale 4.644886493682861
+01/08/2024 14:32:13 - INFO - __main__ -   Step 4910: loss 2.4963741302490234 lr 8.762410183328668e-07 logit_scale 4.644888401031494
+01/08/2024 14:32:31 - INFO - __main__ -   Step 4920: loss 2.544194221496582 lr 8.757371499082278e-07 logit_scale 4.644888401031494
+01/08/2024 14:32:47 - INFO - __main__ -   Step 4930: loss 1.8329482078552246 lr 8.75232403350898e-07 logit_scale 4.644886493682861
+01/08/2024 14:33:04 - INFO - __main__ -   Step 4940: loss 2.02781343460083 lr 8.747267798405172e-07 logit_scale 4.644886493682861
+01/08/2024 14:33:21 - INFO - __main__ -   Step 4950: loss 1.8946491479873657 lr 8.742202805587745e-07 logit_scale 4.644886493682861
+01/08/2024 14:33:38 - INFO - __main__ -   Step 4960: start inference
+01/08/2024 14:33:38 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:33:41 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:33:41 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 67.6471 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:33:41 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:33:41 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 76.4706 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.4 daa_test v2t recall@1: 67.6471 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:33:42 - INFO - __main__ -   Step 4960: loss 2.375675678253174 lr 8.73712906689406e-07 logit_scale 4.644885063171387
+01/08/2024 14:33:59 - INFO - __main__ -   Step 4970: loss 2.9969286918640137 lr 8.732046594181916e-07 logit_scale 4.64488410949707
+01/08/2024 14:34:16 - INFO - __main__ -   Step 4980: loss 2.8083009719848633 lr 8.726955399329525e-07 logit_scale 4.64488410949707
+01/08/2024 14:34:33 - INFO - __main__ -   Step 4990: loss 2.220670223236084 lr 8.721855494235484e-07 logit_scale 4.644883155822754
+01/08/2024 14:34:52 - INFO - __main__ -   Step 5000: loss 2.308718681335449 lr 8.716746890818742e-07 logit_scale 4.644883155822754
+01/08/2024 14:35:08 - INFO - __main__ -   Step 5010: loss 2.1951684951782227 lr 8.711629601018586e-07 logit_scale 4.644883155822754
+01/08/2024 14:35:25 - INFO - __main__ -   Step 5020: loss 2.359506607055664 lr 8.706503636794598e-07 logit_scale 4.644885063171387
+01/08/2024 14:35:42 - INFO - __main__ -   Step 5030: loss 2.5705440044403076 lr 8.701369010126628e-07 logit_scale 4.644885540008545
+01/08/2024 14:35:59 - INFO - __main__ -   Step 5040: loss 2.510775089263916 lr 8.696225733014781e-07 logit_scale 4.644888877868652
+01/08/2024 14:36:16 - INFO - __main__ -   Step 5050: loss 2.3603343963623047 lr 8.691073817479375e-07 logit_scale 4.644888877868652
+01/08/2024 14:36:33 - INFO - __main__ -   Step 5060: loss 3.3391847610473633 lr 8.685913275560912e-07 logit_scale 4.644888877868652
+01/08/2024 14:36:50 - INFO - __main__ -   Step 5070: loss 3.0396175384521484 lr 8.680744119320063e-07 logit_scale 4.644888877868652
+01/08/2024 14:37:06 - INFO - __main__ -   Step 5080: loss 1.7087937593460083 lr 8.675566360837626e-07 logit_scale 4.644888877868652
+01/08/2024 14:37:23 - INFO - __main__ -   Step 5090: loss 2.0558433532714844 lr 8.670380012214502e-07 logit_scale 4.644888877868652
+01/08/2024 14:37:40 - INFO - __main__ -   Step 5100: loss 2.743755578994751 lr 8.665185085571674e-07 logit_scale 4.644888877868652
+01/08/2024 14:37:57 - INFO - __main__ -   Step 5110: loss 2.478764057159424 lr 8.659981593050166e-07 logit_scale 4.644886493682861
+01/08/2024 14:38:13 - INFO - __main__ -   Step 5120: start inference
+01/08/2024 14:38:13 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:38:17 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:38:17 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:38:17 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:38:17 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.3 
+01/08/2024 14:38:18 - INFO - __main__ -   Step 5120: loss 2.522080659866333 lr 8.654769546811027e-07 logit_scale 4.644881725311279
+01/08/2024 14:38:34 - INFO - __main__ -   Step 5130: loss 3.2510275840759277 lr 8.649548959035294e-07 logit_scale 4.64487886428833
+01/08/2024 14:38:51 - INFO - __main__ -   Step 5140: loss 2.0170419216156006 lr 8.644319841923963e-07 logit_scale 4.644877910614014
+01/08/2024 14:39:08 - INFO - __main__ -   Step 5150: loss 2.347820997238159 lr 8.639082207697972e-07 logit_scale 4.6448774337768555
+01/08/2024 14:39:25 - INFO - __main__ -   Step 5160: loss 1.7158812284469604 lr 8.633836068598156e-07 logit_scale 4.6448774337768555
+01/08/2024 14:39:42 - INFO - __main__ -   Step 5170: loss 1.6228721141815186 lr 8.628581436885233e-07 logit_scale 4.6448774337768555
+01/08/2024 14:39:59 - INFO - __main__ -   Step 5180: loss 2.461552381515503 lr 8.623318324839766e-07 logit_scale 4.6448774337768555
+01/08/2024 14:40:16 - INFO - __main__ -   Step 5190: loss 2.9359428882598877 lr 8.618046744762135e-07 logit_scale 4.6448798179626465
+01/08/2024 14:40:35 - INFO - __main__ -   Step 5200: loss 2.221590518951416 lr 8.612766708972516e-07 logit_scale 4.644882678985596
+01/08/2024 14:40:52 - INFO - __main__ -   Step 5210: loss 3.208493709564209 lr 8.607478229810845e-07 logit_scale 4.644882678985596
+01/08/2024 14:41:09 - INFO - __main__ -   Step 5220: loss 2.834920883178711 lr 8.602181319636788e-07 logit_scale 4.6448845863342285
+01/08/2024 14:41:26 - INFO - __main__ -   Step 5230: loss 2.201449155807495 lr 8.596875990829717e-07 logit_scale 4.644885063171387
+01/08/2024 14:41:43 - INFO - __main__ -   Step 5240: loss 1.9378786087036133 lr 8.591562255788679e-07 logit_scale 4.644885063171387
+01/08/2024 14:42:00 - INFO - __main__ -   Step 5250: loss 2.6451849937438965 lr 8.58624012693237e-07 logit_scale 4.6448845863342285
+01/08/2024 14:42:16 - INFO - __main__ -   Step 5260: loss 1.6968835592269897 lr 8.580909616699097e-07 logit_scale 4.6448845863342285
+01/08/2024 14:42:33 - INFO - __main__ -   Step 5270: loss 2.0658671855926514 lr 8.575570737546761e-07 logit_scale 4.644886016845703
+01/08/2024 14:42:50 - INFO - __main__ -   Step 5280: start inference
+01/08/2024 14:42:50 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:42:53 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:42:53 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:42:53 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:42:53 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 70.5882 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:42:54 - INFO - __main__ -   Step 5280: loss 1.6215636730194092 lr 8.570223501952817e-07 logit_scale 4.644886016845703
+01/08/2024 14:43:10 - INFO - __main__ -   Step 5290: loss 2.563880681991577 lr 8.564867922414254e-07 logit_scale 4.644886493682861
+01/08/2024 14:43:27 - INFO - __main__ -   Step 5300: loss 1.9133012294769287 lr 8.559504011447561e-07 logit_scale 4.6448869705200195
+01/08/2024 14:43:44 - INFO - __main__ -   Step 5310: loss 2.1974356174468994 lr 8.554131781588695e-07 logit_scale 4.644887924194336
+01/08/2024 14:44:01 - INFO - __main__ -   Step 5320: loss 3.004805564880371 lr 8.54875124539306e-07 logit_scale 4.644888877868652
+01/08/2024 14:44:18 - INFO - __main__ -   Step 5330: loss 3.0561819076538086 lr 8.543362415435466e-07 logit_scale 4.644888877868652
+01/08/2024 14:44:35 - INFO - __main__ -   Step 5340: loss 2.8560914993286133 lr 8.537965304310113e-07 logit_scale 4.644888877868652
+01/08/2024 14:44:52 - INFO - __main__ -   Step 5350: loss 2.682154893875122 lr 8.532559924630551e-07 logit_scale 4.644888877868652
+01/08/2024 14:45:09 - INFO - __main__ -   Step 5360: loss 2.4811716079711914 lr 8.527146289029656e-07 logit_scale 4.644889831542969
+01/08/2024 14:45:26 - INFO - __main__ -   Step 5370: loss 2.1064093112945557 lr 8.521724410159597e-07 logit_scale 4.644890308380127
+01/08/2024 14:45:43 - INFO - __main__ -   Step 5380: loss 1.7865158319473267 lr 8.51629430069181e-07 logit_scale 4.644890308380127
+01/08/2024 14:46:00 - INFO - __main__ -   Step 5390: loss 2.2780280113220215 lr 8.510855973316968e-07 logit_scale 4.644890785217285
+01/08/2024 14:46:17 - INFO - __main__ -   Step 5400: loss 2.054960012435913 lr 8.505409440744946e-07 logit_scale 4.644890785217285
+01/08/2024 14:46:36 - INFO - __main__ -   Step 5410: loss 2.7227630615234375 lr 8.4999547157048e-07 logit_scale 4.644890308380127
+01/08/2024 14:46:53 - INFO - __main__ -   Step 5420: loss 2.653965950012207 lr 8.494491810944726e-07 logit_scale 4.6448893547058105
+01/08/2024 14:47:10 - INFO - __main__ -   Step 5430: loss 2.2742207050323486 lr 8.489020739232046e-07 logit_scale 4.6448893547058105
+01/08/2024 14:47:26 - INFO - __main__ -   Step 5440: start inference
+01/08/2024 14:47:26 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:47:30 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:47:30 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:47:30 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:47:30 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 70.5882 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 94.1176 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.6 
+01/08/2024 14:47:30 - INFO - __main__ -   Step 5440: loss 2.2703945636749268 lr 8.483541513353161e-07 logit_scale 4.6448893547058105
+01/08/2024 14:47:47 - INFO - __main__ -   Step 5450: loss 2.2154784202575684 lr 8.47805414611353e-07 logit_scale 4.6448869705200195
+01/08/2024 14:48:04 - INFO - __main__ -   Step 5460: loss 2.463728189468384 lr 8.472558650337644e-07 logit_scale 4.6448869705200195
+01/08/2024 14:48:21 - INFO - __main__ -   Step 5470: loss 2.3268370628356934 lr 8.467055038868988e-07 logit_scale 4.644886493682861
+01/08/2024 14:48:38 - INFO - __main__ -   Step 5480: loss 2.7384896278381348 lr 8.461543324570013e-07 logit_scale 4.644885063171387
+01/08/2024 14:48:54 - INFO - __main__ -   Step 5490: loss 2.0896425247192383 lr 8.456023520322108e-07 logit_scale 4.644885063171387
+01/08/2024 14:49:11 - INFO - __main__ -   Step 5500: loss 1.7142364978790283 lr 8.45049563902557e-07 logit_scale 4.644885063171387
+01/08/2024 14:49:28 - INFO - __main__ -   Step 5510: loss 2.211482048034668 lr 8.444959693599574e-07 logit_scale 4.644886493682861
+01/08/2024 14:49:45 - INFO - __main__ -   Step 5520: loss 1.9448713064193726 lr 8.439415696982135e-07 logit_scale 4.644889831542969
+01/08/2024 14:50:02 - INFO - __main__ -   Step 5530: loss 2.221388339996338 lr 8.433863662130094e-07 logit_scale 4.644894123077393
+01/08/2024 14:50:19 - INFO - __main__ -   Step 5540: loss 2.3467440605163574 lr 8.428303602019072e-07 logit_scale 4.644892692565918
+01/08/2024 14:50:36 - INFO - __main__ -   Step 5550: loss 2.033156394958496 lr 8.422735529643443e-07 logit_scale 4.644891738891602
+01/08/2024 14:50:53 - INFO - __main__ -   Step 5560: loss 3.2263646125793457 lr 8.417159458016315e-07 logit_scale 4.644890785217285
+01/08/2024 14:51:10 - INFO - __main__ -   Step 5570: loss 1.67038094997406 lr 8.411575400169485e-07 logit_scale 4.644890308380127
+01/08/2024 14:51:27 - INFO - __main__ -   Step 5580: loss 2.0655410289764404 lr 8.405983369153415e-07 logit_scale 4.644890308380127
+01/08/2024 14:51:44 - INFO - __main__ -   Step 5590: loss 2.282970905303955 lr 8.400383378037205e-07 logit_scale 4.644890308380127
+01/08/2024 14:52:00 - INFO - __main__ -   Step 5600: start inference
+01/08/2024 14:52:00 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:52:03 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:52:03 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 91.1765 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 14:52:03 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:52:03 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 14:52:04 - INFO - __main__ -   Step 5600: loss 2.385702610015869 lr 8.39477543990855e-07 logit_scale 4.644890308380127
+01/08/2024 14:52:21 - INFO - __main__ -   Step 5610: loss 1.5926332473754883 lr 8.389159567873729e-07 logit_scale 4.644890308380127
+01/08/2024 14:52:41 - INFO - __main__ -   Step 5620: loss 2.655972480773926 lr 8.383535775057553e-07 logit_scale 4.644893169403076
+01/08/2024 14:52:58 - INFO - __main__ -   Step 5630: loss 1.703866720199585 lr 8.377904074603355e-07 logit_scale 4.644894123077393
+01/08/2024 14:53:14 - INFO - __main__ -   Step 5640: loss 2.516798973083496 lr 8.372264479672934e-07 logit_scale 4.644894123077393
+01/08/2024 14:53:31 - INFO - __main__ -   Step 5650: loss 2.586233139038086 lr 8.366617003446559e-07 logit_scale 4.644894599914551
+01/08/2024 14:53:48 - INFO - __main__ -   Step 5660: loss 3.2823665142059326 lr 8.3609616591229e-07 logit_scale 4.644899368286133
+01/08/2024 14:54:05 - INFO - __main__ -   Step 5670: loss 2.247154951095581 lr 8.355298459919027e-07 logit_scale 4.644899845123291
+01/08/2024 14:54:22 - INFO - __main__ -   Step 5680: loss 1.4145294427871704 lr 8.34962741907036e-07 logit_scale 4.644899845123291
+01/08/2024 14:54:39 - INFO - __main__ -   Step 5690: loss 1.9495586156845093 lr 8.343948549830652e-07 logit_scale 4.644900798797607
+01/08/2024 14:54:55 - INFO - __main__ -   Step 5700: loss 2.551769733428955 lr 8.338261865471949e-07 logit_scale 4.644905090332031
+01/08/2024 14:55:12 - INFO - __main__ -   Step 5710: loss 2.2509405612945557 lr 8.332567379284561e-07 logit_scale 4.644909381866455
+01/08/2024 14:55:29 - INFO - __main__ -   Step 5720: loss 2.3659701347351074 lr 8.326865104577031e-07 logit_scale 4.644909858703613
+01/08/2024 14:55:46 - INFO - __main__ -   Step 5730: loss 2.793879985809326 lr 8.321155054676107e-07 logit_scale 4.644909858703613
+01/08/2024 14:56:03 - INFO - __main__ -   Step 5740: loss 2.0079660415649414 lr 8.315437242926708e-07 logit_scale 4.644909858703613
+01/08/2024 14:56:20 - INFO - __main__ -   Step 5750: loss 2.717068672180176 lr 8.309711682691891e-07 logit_scale 4.644909858703613
+01/08/2024 14:56:36 - INFO - __main__ -   Step 5760: start inference
+01/08/2024 14:56:36 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 14:56:39 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 14:56:39 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.4 
+01/08/2024 14:56:39 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 14:56:39 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 73.5294 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 50.0000 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.5 daa_test v2t recall_mean: 2.4 
+01/08/2024 14:56:40 - INFO - __main__ -   Step 5760: loss 2.683462381362915 lr 8.303978387352823e-07 logit_scale 4.644911289215088
+01/08/2024 14:56:57 - INFO - __main__ -   Step 5770: loss 2.121352195739746 lr 8.298237370308749e-07 logit_scale 4.644911289215088
+01/08/2024 14:57:14 - INFO - __main__ -   Step 5780: loss 2.5445475578308105 lr 8.292488644976962e-07 logit_scale 4.644913196563721
+01/08/2024 14:57:31 - INFO - __main__ -   Step 5790: loss 1.747164249420166 lr 8.286732224792764e-07 logit_scale 4.644917964935303
+01/08/2024 14:57:48 - INFO - __main__ -   Step 5800: loss 2.8165032863616943 lr 8.280968123209448e-07 logit_scale 4.644922256469727
+01/08/2024 14:58:05 - INFO - __main__ -   Step 5810: loss 2.2726454734802246 lr 8.275196353698257e-07 logit_scale 4.644922733306885
+01/08/2024 14:58:21 - INFO - __main__ -   Step 5820: loss 2.48541259765625 lr 8.269416929748351e-07 logit_scale 4.644922733306885
+01/08/2024 14:58:41 - INFO - __main__ -   Step 5830: loss 1.8979825973510742 lr 8.263629864866782e-07 logit_scale 4.644921779632568
+01/08/2024 14:58:58 - INFO - __main__ -   Step 5840: loss 2.94852876663208 lr 8.257835172578459e-07 logit_scale 4.644921779632568
+01/08/2024 14:59:15 - INFO - __main__ -   Step 5850: loss 2.4088706970214844 lr 8.252032866426118e-07 logit_scale 4.644921779632568
+01/08/2024 14:59:31 - INFO - __main__ -   Step 5860: loss 2.2825517654418945 lr 8.246222959970288e-07 logit_scale 4.644919395446777
+01/08/2024 14:59:48 - INFO - __main__ -   Step 5870: loss 2.929375648498535 lr 8.240405466789263e-07 logit_scale 4.644919395446777
+01/08/2024 15:00:05 - INFO - __main__ -   Step 5880: loss 2.061650514602661 lr 8.234580400479065e-07 logit_scale 4.644919395446777
+01/08/2024 15:00:22 - INFO - __main__ -   Step 5890: loss 2.5885391235351562 lr 8.228747774653412e-07 logit_scale 4.644919395446777
+01/08/2024 15:00:39 - INFO - __main__ -   Step 5900: loss 2.4736948013305664 lr 8.222907602943702e-07 logit_scale 4.644920349121094
+01/08/2024 15:00:56 - INFO - __main__ -   Step 5910: loss 2.1492607593536377 lr 8.217059898998952e-07 logit_scale 4.644920825958252
+01/08/2024 15:01:12 - INFO - __main__ -   Step 5920: start inference
+01/08/2024 15:01:12 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 15:01:16 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 15:01:16 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 55.8824 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.1 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 97.0588 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 15:01:16 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 15:01:16 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 64.7059 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 97.0588 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.2 
+01/08/2024 15:01:16 - INFO - __main__ -   Step 5920: loss 2.5692641735076904 lr 8.211204676485795e-07 logit_scale 4.644918918609619
+01/08/2024 15:01:33 - INFO - __main__ -   Step 5930: loss 1.917664885520935 lr 8.205341949088427e-07 logit_scale 4.644914150238037
+01/08/2024 15:01:50 - INFO - __main__ -   Step 5940: loss 1.7409359216690063 lr 8.199471730508591e-07 logit_scale 4.644912242889404
+01/08/2024 15:02:07 - INFO - __main__ -   Step 5950: loss 2.4245190620422363 lr 8.193594034465534e-07 logit_scale 4.644912242889404
+01/08/2024 15:02:23 - INFO - __main__ -   Step 5960: loss 1.9534246921539307 lr 8.187708874695977e-07 logit_scale 4.644911289215088
+01/08/2024 15:02:41 - INFO - __main__ -   Step 5970: loss 2.5613646507263184 lr 8.181816264954087e-07 logit_scale 4.644911289215088
+01/08/2024 15:02:57 - INFO - __main__ -   Step 5980: loss 2.18684983253479 lr 8.175916219011441e-07 logit_scale 4.644911289215088
+01/08/2024 15:03:14 - INFO - __main__ -   Step 5990: loss 2.2690281867980957 lr 8.170008750656997e-07 logit_scale 4.644911289215088
+01/08/2024 15:03:31 - INFO - __main__ -   Step 6000: loss 1.9307677745819092 lr 8.164093873697057e-07 logit_scale 4.644908428192139
+01/08/2024 15:03:48 - INFO - __main__ -   Step 6010: loss 1.8435286283493042 lr 8.158171601955239e-07 logit_scale 4.644906997680664
+01/08/2024 15:04:05 - INFO - __main__ -   Step 6020: loss 1.8600585460662842 lr 8.152241949272443e-07 logit_scale 4.644904613494873
+01/08/2024 15:04:22 - INFO - __main__ -   Step 6030: loss 3.457184314727783 lr 8.14630492950682e-07 logit_scale 4.644903182983398
+01/08/2024 15:04:41 - INFO - __main__ -   Step 6040: loss 2.0039072036743164 lr 8.140360556533739e-07 logit_scale 4.644903182983398
+01/08/2024 15:04:58 - INFO - __main__ -   Step 6050: loss 2.9533498287200928 lr 8.134408844245748e-07 logit_scale 4.644902229309082
+01/08/2024 15:05:15 - INFO - __main__ -   Step 6060: loss 3.423967123031616 lr 8.128449806552559e-07 logit_scale 4.644901752471924
+01/08/2024 15:05:32 - INFO - __main__ -   Step 6070: loss 2.4842934608459473 lr 8.122483457380993e-07 logit_scale 4.644901752471924
+01/08/2024 15:05:48 - INFO - __main__ -   Step 6080: start inference
+01/08/2024 15:05:48 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 15:05:52 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 15:05:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 50.0000 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 97.0588 daa_test t2v recall_med: 1.5 daa_test t2v recall_mean: 2.3 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 15:05:52 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 15:05:52 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 61.7647 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.8 daa_test v2t recall@1: 52.9412 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.5 
+01/08/2024 15:05:52 - INFO - __main__ -   Step 6080: loss 3.433743476867676 lr 8.116509810674965e-07 logit_scale 4.644901752471924
+01/08/2024 15:06:09 - INFO - __main__ -   Step 6090: loss 1.925485610961914 lr 8.110528880395445e-07 logit_scale 4.644905090332031
+01/08/2024 15:06:26 - INFO - __main__ -   Step 6100: loss 2.2967147827148438 lr 8.104540680520422e-07 logit_scale 4.644909858703613
+01/08/2024 15:06:43 - INFO - __main__ -   Step 6110: loss 1.990922212600708 lr 8.098545225044875e-07 logit_scale 4.644913196563721
+01/08/2024 15:07:00 - INFO - __main__ -   Step 6120: loss 2.7543070316314697 lr 8.092542527980743e-07 logit_scale 4.64491605758667
+01/08/2024 15:07:17 - INFO - __main__ -   Step 6130: loss 2.746562957763672 lr 8.086532603356888e-07 logit_scale 4.64491605758667
+01/08/2024 15:07:34 - INFO - __main__ -   Step 6140: loss 1.9756064414978027 lr 8.080515465219065e-07 logit_scale 4.64491605758667
+01/08/2024 15:07:50 - INFO - __main__ -   Step 6150: loss 2.9750211238861084 lr 8.074491127629882e-07 logit_scale 4.64491605758667
+01/08/2024 15:08:07 - INFO - __main__ -   Step 6160: loss 2.35309100151062 lr 8.068459604668778e-07 logit_scale 4.64491605758667
+01/08/2024 15:08:24 - INFO - __main__ -   Step 6170: loss 2.7202563285827637 lr 8.062420910431986e-07 logit_scale 4.64491605758667
+01/08/2024 15:08:41 - INFO - __main__ -   Step 6180: loss 2.6059391498565674 lr 8.056375059032492e-07 logit_scale 4.644913673400879
+01/08/2024 15:08:58 - INFO - __main__ -   Step 6190: loss 2.5683298110961914 lr 8.050322064600018e-07 logit_scale 4.644913196563721
+01/08/2024 15:09:15 - INFO - __main__ -   Step 6200: loss 2.50410795211792 lr 8.044261941280972e-07 logit_scale 4.644915580749512
+01/08/2024 15:09:32 - INFO - __main__ -   Step 6210: loss 2.8606603145599365 lr 8.038194703238428e-07 logit_scale 4.64491605758667
+01/08/2024 15:09:49 - INFO - __main__ -   Step 6220: loss 2.177792549133301 lr 8.032120364652086e-07 logit_scale 4.6449127197265625
+01/08/2024 15:10:06 - INFO - __main__ -   Step 6230: loss 2.249464988708496 lr 8.026038939718241e-07 logit_scale 4.6449127197265625
+01/08/2024 15:10:21 - INFO - __main__ -   Step 6240: start inference
+01/08/2024 15:10:21 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 15:10:24 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 15:10:24 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 94.1176 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 2.0 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 15:10:24 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 15:10:24 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 70.5882 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.6 daa_test v2t recall@1: 58.8235 daa_test v2t recall@5: 94.1176 daa_test v2t recall@10: 97.0588 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.4 
+01/08/2024 15:10:29 - INFO - __main__ -   Step 6240: loss 2.7310707569122314 lr 8.019950442649746e-07 logit_scale 4.6449127197265625
+01/08/2024 15:10:45 - INFO - __main__ -   Step 6250: loss 2.130984306335449 lr 8.013854887675988e-07 logit_scale 4.6449127197265625
+01/08/2024 15:11:02 - INFO - __main__ -   Step 6260: loss 3.1798834800720215 lr 8.007752289042846e-07 logit_scale 4.6449127197265625
+01/08/2024 15:11:19 - INFO - __main__ -   Step 6270: loss 2.1279702186584473 lr 8.001642661012662e-07 logit_scale 4.6449127197265625
+01/08/2024 15:11:36 - INFO - __main__ -   Step 6280: loss 2.4309544563293457 lr 7.995526017864205e-07 logit_scale 4.644911766052246
+01/08/2024 15:11:53 - INFO - __main__ -   Step 6290: loss 2.3775811195373535 lr 7.989402373892637e-07 logit_scale 4.644909858703613
+01/08/2024 15:12:10 - INFO - __main__ -   Step 6300: loss 2.8529510498046875 lr 7.983271743409485e-07 logit_scale 4.644906044006348
+01/08/2024 15:12:27 - INFO - __main__ -   Step 6310: loss 2.3365349769592285 lr 7.977134140742605e-07 logit_scale 4.644906520843506
+01/08/2024 15:12:43 - INFO - __main__ -   Step 6320: loss 2.349759817123413 lr 7.970989580236143e-07 logit_scale 4.644911289215088
+01/08/2024 15:13:00 - INFO - __main__ -   Step 6330: loss 2.9404234886169434 lr 7.964838076250511e-07 logit_scale 4.644913196563721
+01/08/2024 15:13:17 - INFO - __main__ -   Step 6340: loss 1.8299306631088257 lr 7.958679643162345e-07 logit_scale 4.644913673400879
+01/08/2024 15:13:34 - INFO - __main__ -   Step 6350: loss 2.644857883453369 lr 7.952514295364476e-07 logit_scale 4.644913673400879
+01/08/2024 15:13:51 - INFO - __main__ -   Step 6360: loss 2.730747699737549 lr 7.946342047265898e-07 logit_scale 4.644913673400879
+01/08/2024 15:14:08 - INFO - __main__ -   Step 6370: loss 2.2110114097595215 lr 7.940162913291726e-07 logit_scale 4.644913673400879
+01/08/2024 15:14:25 - INFO - __main__ -   Step 6380: loss 2.1594502925872803 lr 7.933976907883176e-07 logit_scale 4.644913673400879
+01/08/2024 15:14:42 - INFO - __main__ -   Step 6390: loss 2.063016891479492 lr 7.927784045497512e-07 logit_scale 4.644913673400879
+01/08/2024 15:14:58 - INFO - __main__ -   Step 6400: start inference
+01/08/2024 15:14:58 - INFO - __main__ -   Loop val_loader daa_test.
+01/08/2024 15:15:01 - INFO - __main__ -   Evaluate under setting: simple.
+01/08/2024 15:15:01 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 58.8235 daa_test t2v recall@5: 97.0588 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.9 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 15:15:01 - INFO - __main__ -   Evaluate under setting: DSL.
+01/08/2024 15:15:01 - INFO - __main__ -   validation finished in 3 seconds, validated on 34 videosdaa_test t2v recall@1: 67.6471 daa_test t2v recall@5: 100.0000 daa_test t2v recall@10: 100.0000 daa_test t2v recall_med: 1.0 daa_test t2v recall_mean: 1.5 daa_test v2t recall@1: 61.7647 daa_test v2t recall@5: 91.1765 daa_test v2t recall@10: 100.0000 daa_test v2t recall_med: 1.0 daa_test v2t recall_mean: 2.0 
+01/08/2024 15:15:02 - INFO - __main__ -   Step 6400: loss 2.359477996826172 lr 7.921584340608034e-07 logit_scale 4.644913673400879
+01/08/2024 15:15:19 - INFO - __main__ -   Step 6410: loss 2.4127354621887207 lr 7.915377807704029e-07 logit_scale 4.644911289215088
+01/08/2024 15:15:35 - INFO - __main__ -   Step 6420: loss 2.2063426971435547 lr 7.909164461290739e-07 logit_scale 4.644911289215088

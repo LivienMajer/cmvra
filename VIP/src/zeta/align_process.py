@@ -10,7 +10,7 @@ from glob import glob
 import json
 import gc
 
-from zeta.loss import InfoNCELoss1
+from zeta.loss import InfoNCELoss1, NCEContrastiveLoss
 
 def align_modalities_process(multi_modality_model, 
                              train_loader, 
@@ -39,7 +39,7 @@ def align_modalities_process(multi_modality_model,
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
     gradient_accumulation_steps = config.get('gradient_accumulation_steps', 1)
-    overfit_on_one_batch = config.get('overfit_on_one_batch', False)
+    #overfit_on_one_batch = config.get('overfit_on_one_batch', False)
 
 
     # Function to find the latest checkpoint
@@ -56,7 +56,8 @@ def align_modalities_process(multi_modality_model,
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
     info_nce_loss = InfoNCELoss1(temperature=temperature) #InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
-
+    #compare_loss1 = InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
+    #compare_loss2 = NCEContrastiveLoss(temperature)
     # Placeholder for best validation loss
     best_val_loss = float('inf')
     start_epoch = 0
@@ -66,7 +67,7 @@ def align_modalities_process(multi_modality_model,
         latest_checkpoint_path = find_latest_checkpoint()
         if latest_checkpoint_path:
             logging.info(f"Resuming from checkpoint: {latest_checkpoint_path}")
-            checkpoint = torch.load(latest_checkpoint_path)
+            checkpoint = torch.load(latest_checkpoint_path, map_location=f"cuda:{device}")
             multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             if 'scheduler_state_dict' in checkpoint:
@@ -82,8 +83,8 @@ def align_modalities_process(multi_modality_model,
 
     logging.info("Starting training loop")
 
-    if overfit_on_one_batch:
-        single_batch_data, _ = next(iter(train_loader))
+    #if overfit_on_one_batch:
+    #    single_batch_data, _ = next(iter(train_loader))
     
     # Training loop
     for epoch in range(start_epoch, num_epochs):
@@ -106,22 +107,27 @@ def align_modalities_process(multi_modality_model,
             modality_keys = list(embeddings.keys())
             loss = info_nce_loss(embeddings[modality_keys[1]], embeddings[modality_keys[0]])
             """
-            if overfit_on_one_batch: # this is inefficent but conveniant
-                del batch_data
-                batch_data = single_batch_data
+            #if overfit_on_one_batch: # this is inefficent but conveniant
+            #    del batch_data
+            #    batch_data = single_batch_data
 
             embeddings = []
             for modality in batch_data.keys():
                 if modality in multi_modality_model.module.modalities_encoders:
-                    data = batch_data[modality].cuda(device)
+                    data = batch_data[modality].cuda(device, non_blocking=True)
                     embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
 
             # Calculate the loss across all pairs of modalities
             loss, loss_dict = info_nce_loss(*embeddings)
             loss = loss / gradient_accumulation_steps
 
-            if overfit_on_one_batch:
-                logging.info(f"loss on overfiting batch {loss.item()}")
+            #loss1 = compare_loss1(embeddings[0], embeddings[1])
+            #loss2 = compare_loss2(embeddings[0], embeddings[1])
+            #logging.info(loss)
+            #logging.info(loss1)
+            #logging.info(loss2)
+            #if overfit_on_one_batch:
+              #  logging.info(f"loss on overfiting batch {loss.item()}")
 
             # Accumulate individual losses for logging
             for key, value in loss_dict.items():
@@ -167,7 +173,7 @@ def align_modalities_process(multi_modality_model,
                 embeddings = []
                 for modality in batch_data.keys():
                     if modality in multi_modality_model.module.modalities_encoders:
-                        data = batch_data[modality].cuda(device)
+                        data = batch_data[modality].cuda(device, non_blocking=True)
                         embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
 
                 # Calculate the loss across all pairs of modalities

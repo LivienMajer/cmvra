@@ -11,6 +11,8 @@ from decord import VideoReader
 from decord import cpu, gpu
 from torchvision.io import read_video
 from zeta.skeleton_transforms import RandomGaussianNoise, RandomRot, RandomScale, PreNormalize3D
+import logging
+import re
 
 class MultiModalVideoDataset(torch.utils.data.Dataset):
     def __init__(self, list_path: str, data_root: str, modalities: list, active_modalities: Optional[list] = None, mean=None, std=None, spatial_size=224, use_advanced_processing=False, random_sample=False):
@@ -184,7 +186,8 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         line = self.data_list[idx]
-        paths = line.split(' ')
+        # Use a regular expression to split on space preceded by 'i'
+        paths = re.split(r'(?<=[iy]) | (?=n)', line)
         label = int(paths[-1])
 
         modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3}
@@ -200,8 +203,9 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
             if path != 'None':  # Checking if the modality is available
                 if modality == 'skeleton':
                     full_path = os.path.join(self.data_root, path)
-                    skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
                     
+                    skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
+                   
                     # Apply transformations
                     random_rot = RandomRot(theta=0.3)
                     random_scale = RandomScale(scale=0.2)
@@ -215,8 +219,19 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                     
 
                     # Convert to tensor and integrate
-                    skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32)
-                    modality_frames['skeleton'] = skeleton_tensor.permute(1, 0, 2, 3)
+                    skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32).permute(1, 0, 2, 3)
+                    required_frame_count = 12
+                    current_frame_count = skeleton_tensor.shape[0]
+
+                    if current_frame_count < required_frame_count:
+                        # Calculate the number of frames to repeat
+                        repeat_count = required_frame_count - current_frame_count
+                        # Repeat the last frame
+                        last_frame = skeleton_tensor[-1, :, :, :].unsqueeze(0)
+                        repeated_frames = last_frame.repeat(repeat_count, 1, 1, 1)
+                        # Concatenate the repeated frames to the skeleton data
+                        skeleton_tensor = torch.cat((skeleton_tensor, repeated_frames), dim=0)
+                    modality_frames['skeleton'] = skeleton_tensor
                 else:
                     full_path = os.path.join(self.data_root, path)
                     modality_frames[modality] = self._extract_frames(full_path, sample_indices)
@@ -231,7 +246,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
         # Get the total number of frames in the video
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
+        #logging.info(f'total frames: {total_frames}')
         # Release the video capture object
         cap.release()
 
@@ -255,10 +270,10 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
     def _deterministic_sample_frame_idx(self, length):
         # Evenly sample 12 frames throughout the video
-        return np.linspace(0, length-1, 12).astype(int).tolist()
+        return np.linspace(0, length-2, 12).astype(int).tolist()
     
     def _extract_frames(self, path, sample_indices):
-        if 'depth' in path:
+        if 'depth' in path and 'ntu' in path:
             # Handling depth data
             depth_images = sorted(os.listdir(path))
             # Ensure that the sample_indices are within the range of available images
@@ -268,8 +283,8 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
             del sample_indices, depth_images
             frames_tensor = torch.stack(extracted_frames)
             del extracted_frames
-            frames_tensor = self.transform_grey(frames_tensor)
-        elif 'ir' in path:
+            frames_tensor = self.transform(frames_tensor.expand(-1, 3, -1, -1)) # change to three channel depth
+        elif 'ir' or ('depth' and 'daa') in path:
             frames_tensor = self.load_video(path, sample_indices, is_ir=True) # From NHWC to NCHW format
         else:
             frames_tensor = self.load_video(path, sample_indices)
@@ -278,10 +293,17 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         return frames_tensor
     
     def _load_skeleton_data(self, skeleton_path):
-        skeleton_data = np.load(skeleton_path, allow_pickle=True).item()
-        # Assume using RGB skeleton data from the first body
-        skel_body0 = skeleton_data.get('skel_body0', np.zeros((1, 25, 3)))
-        return skel_body0[np.newaxis, ...]
+        if 'ntu' in skeleton_path:
+            skeleton_data = np.load(skeleton_path, allow_pickle=True).item()
+            # Assume using RGB skeleton data from the first body
+            skel_body0 = skeleton_data.get('skel_body0', np.zeros((1000, 25, 3)))
+            return skel_body0[np.newaxis, ...]
+        elif 'daa' in skeleton_path:
+            skeleton_data = np.load(skeleton_path, allow_pickle=True)
+            #logging.info(f'skel frames {skeleton_data.shape}')
+            return skeleton_data[np.newaxis, ...]
+        else:
+            raise ValueError("Unsupported skeleton data format or path incorrect.")
 
     def _load_depth_image(self, img_path):
         # Load a single depth image as a grayscale tensor

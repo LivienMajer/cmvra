@@ -89,6 +89,7 @@ def info_nce(query, positive_key, negative_keys=None, temperature=0.1, reduction
     # Normalize to unit vectors
     query, positive_key, negative_keys = normalize(query, positive_key, negative_keys)
     if negative_keys is not None:
+        print('we are actualy here')
         # Explicit negative keys
 
         # Cosine between positive pairs
@@ -107,11 +108,12 @@ def info_nce(query, positive_key, negative_keys=None, temperature=0.1, reduction
         logits = torch.cat([positive_logit, negative_logits], dim=1)
         labels = torch.zeros(len(logits), dtype=torch.long, device=query.device)
     else:
+        print('we reach here')
         # Negative keys are implicitly off-diagonal positive keys.
 
         # Cosine between all combinations
         logits = query @ transpose(positive_key)
-
+        print(f"this is query lengh {len(query)}")
         # Positive keys are the entries on the diagonal
         labels = torch.arange(len(query), device=query.device)
 
