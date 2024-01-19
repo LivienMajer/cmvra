@@ -19,8 +19,8 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
             train_data_list = '/home/bas06400/Thesis/CS_training_set.txt'
             test_data_list = '/home/bas06400/Thesis/CS_testing_set.txt'
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/CV_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CV_testing_set.txt'
+            train_data_list = '/home/bas06400/Thesis/CV_training_set_low_res.txt'
+            test_data_list = '/home/bas06400/Thesis/CV_testing_set_low_res.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         

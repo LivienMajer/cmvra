@@ -88,3 +88,27 @@ class SigmoidContrastiveMultiModalLoss(nn.Module):
         # Average loss over all modality pairs
         total_loss /= count
         return total_loss
+    
+# Loss function
+def mse_loss(reconstructed, original):
+    criterion = nn.MSELoss()
+    loss = criterion(reconstructed, original)
+    return loss
+
+def create_scheduler(optimizer, config):
+    scheduler_config = config.get('scheduler_config', {})
+    scheduler_type = scheduler_config.get('type', 'step')
+    scheduler_params = scheduler_config.get('params', {})
+
+    if scheduler_type == 'cosine':
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, **scheduler_params)
+    elif scheduler_type == 'exponential':
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, **scheduler_params)
+    elif scheduler_type == 'step':
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, **scheduler_params)
+    elif scheduler_type == 'plateau':
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, **scheduler_params)
+    else:
+        raise ValueError(f"Unsupported scheduler type: {scheduler_type}")
+    
+    return scheduler

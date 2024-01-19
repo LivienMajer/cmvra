@@ -1,0 +1,41 @@
+2024-01-19 01:46:34,528 - INFO - Configuration:
+{
+    "task": "5",
+    "train_classifier": true,
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "mask_ratio": 0.8,
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "epochs": 50,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints",
+    "trained_encoder": "checkpoint_rgb_CV_20240118_052027.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "batch_size": 64,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}
+2024-01-19 01:46:34,593 - INFO - Training MAE for rgb...
+2024-01-19 01:46:34,642 - INFO - Evaluing on the following GPUs [2]
+2024-01-19 01:46:39,657 - INFO - Starting feature extraction...
+2024-01-19 02:20:36,088 - INFO - Validation Accuracy after Epoch 1: 1.844532279314888% and balanced Validation Accuracy: 1.9602434602434604
+2024-01-19 02:20:42,578 - INFO - Validation Accuracy after Epoch 11: 1.976284584980237% and balanced Validation Accuracy: 2.1350686350686354
+2024-01-19 02:20:49,250 - INFO - Validation Accuracy after Epoch 21: 1.844532279314888% and balanced Validation Accuracy: 2.0742035742035743
+2024-01-19 02:20:55,385 - INFO - Validation Accuracy after Epoch 31: 2.3715415019762847% and balanced Validation Accuracy: 2.667314167314167
+2024-01-19 02:21:01,893 - INFO - Validation Accuracy after Epoch 41: 2.503293807641634% and balanced Validation Accuracy: 2.852499352499353
+2024-01-19 02:21:07,750 - INFO - Final unblanced Test Accuracy: (2.320675105485232, 2.320675105485232)% and final balance Test Accuracy

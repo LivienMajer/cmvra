@@ -10,7 +10,8 @@ import json
 import logging
 from glob import glob
 import math
-
+from sklearn.metrics import balanced_accuracy_score
+import numpy as np
 
 
 def train_classefier_process(multi_modality_model, device, train_loader, val_loader, test_loader, config):
@@ -191,6 +192,112 @@ def clear_memory():
     gc.collect()
     torch.cuda.empty_cache()
 
+def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg):
+    logging.info("Starting feature extraction...")
+    train_features, train_labels = extract_features(encoder, train_data, device=device, cfg=cfg)
+    val_features, val_labels = extract_features(encoder, val_data, device=device, cfg=cfg)
+    test_features, test_labels = extract_features(encoder, test_data, device=device, cfg=cfg)
+    # Define and train the linear classifier
+    input_dim = train_features.shape[1] # Adjust based on your feature size
+    
+    
+    # Create the weighted loss function
+    criterion = nn.CrossEntropyLoss()
+    if cfg['dataset'] == 'DAA':
+        class_counts = torch.bincount(train_labels)
+        class_weights = 1. / class_counts
+        class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
+        criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+        
+    optimizer = optim.Adam(classifier.parameters(), lr=cfg['learning_rate'])
+    num_epochs = cfg['epochs']
+
+    train_classifier(classifier, train_features, val_features, train_labels, val_labels, criterion, optimizer, num_epochs, batch_size=cfg['batch_size'], device=device)
+
+    # Evaluate the classifier
+    test_acc, balanced_test_acc = evaluate_classifier(classifier, test_features, test_labels, batch_size=cfg['batch_size'], device=device)
+    logging.info(f"Final unblanced Test Accuracy: {test_acc}% and final balance Test Accuracy {balanced_test_acc}")
+
+def extract_features(model, dataloader, device, cfg):
+    model.eval()
+    features = []
+    labels = []
+
+    with torch.no_grad():
+        for data, label in tqdm(dataloader, desc="Extracting features"):
+            inputs = data[cfg['modalities'][0]]# Adjust according to your data format
+            inputs = inputs.to(device)
+
+            feature = model(inputs.permute(0,2,1,3,4)) # Get features from your model
+            #print(feature[0].shape)
+            features.append(feature[0].cpu())
+            labels.append(label)
+
+    features = torch.cat(features, dim=0)
+    labels = torch.cat(labels, dim=0)
+
+    return features, labels
+
+def train_classifier(classifier, features, val_features, labels, val_labels, criterion, optimizer, num_epochs, batch_size, device):
+    classifier.train()
+    correct = 0
+    total = 0
+    num_samples = features.size(0)
+    num_batches = (num_samples + batch_size - 1) // batch_size
+
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for i in range(num_batches):
+            start = i * batch_size
+            end = min(start + batch_size, num_samples)
+            batch_features = features[start:end].to(device)
+            batch_labels = labels[start:end].to(device)
+
+            optimizer.zero_grad()
+            outputs = classifier(batch_features)
+            #print(outputs.shape)
+            #print(batch_labels.shape)
+            loss = criterion(outputs, batch_labels)
+            loss.backward()
+            optimizer.step()
+
+            running_loss += loss.item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += batch_labels.size(0)
+            correct += (predicted == batch_labels).sum().item()
+
+        accuracy = 100 * correct / total
+        print(f'Accuracy: {accuracy}%')
+        
+        if epoch % 10 == 0:
+            val_accuracy, balanced_val_acc = evaluate_classifier(classifier, val_features, val_labels, batch_size, device)
+            logging.info(f'Validation Accuracy after Epoch {epoch+1}: {val_accuracy}% and balanced Validation Accuracy: {balanced_val_acc}')
+
+def evaluate_classifier(classifier, features, labels, batch_size, device):
+    classifier.eval()
+    all_predictions = []
+    all_labels = []
+    num_samples = features.size(0)
+    num_batches = (num_samples + batch_size - 1) // batch_size
+
+    with torch.no_grad():
+        for i in range(num_batches):
+            start = i * batch_size
+            end = min(start + batch_size, num_samples)
+            batch_features = features[start:end].to(device)
+            batch_labels = labels[start:end].to(device)
+
+            outputs = classifier(batch_features)
+            _, predicted = torch.max(outputs.data, 1)
+
+            all_predictions.extend(predicted.cpu().numpy())
+            all_labels.extend(batch_labels.cpu().numpy())
+
+    accuracy = 100 * sum(np.array(all_predictions) == np.array(all_labels)) / len(all_labels)
+    balanced_acc = 100 * balanced_accuracy_score(all_labels, all_predictions)
+    return accuracy, balanced_acc
+
+
 def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_loader, config):
     logging.info('Evaluing the rgb classefier on ir')
     
@@ -205,9 +312,7 @@ def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_load
                 labels = batch_labels.cuda(device)
 
                 outputs = model.module.forward_encoder(modality, data)
-                outputs = model.module.forward_classifier_only('rgb', outputs)
-                
-
+                outputs = model.module.forward_classifier_only('rgb', outputs)                
                 
                 accuracies[modality] += compute_accuracy(outputs, labels)
 

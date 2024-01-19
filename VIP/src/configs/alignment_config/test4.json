@@ -1,7 +1,7 @@
 {
     "task": "4",
     "number_gpus": "1",
-    "modalities": ["rgb", "skeleton"],
+    "modalities": ["rgb","ir","depth", "skeleton"],
     "dataset":"NTU",
     "split": "CV",
     "num_classes": 60,
@@ -9,7 +9,7 @@
     "epochs": 5,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
-    "aligned_model": "checkpoint_rgb_skeleton_CV_20231219_120313.pth",
+    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_CV_20240108_152034.pth",
     "learning_rate": 0.0001,
     "temperature": 0.1,
     "num_workers": 10,

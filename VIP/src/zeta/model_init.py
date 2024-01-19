@@ -1,5 +1,6 @@
 import json
 import torch
+import os
 from easydict import EasyDict as edict
 from modeling.CLIP_ViP import CLIPVisionModel, CLIPVisionTransformer, CLIPTextModel, CLIPTextTransformer
 from transformers.models.clip.configuration_clip import CLIPConfig, CLIPVisionConfig, CLIPTextConfig
@@ -8,7 +9,15 @@ from torch import nn
 from modeling.VidCLIP import VidCLIP
 from typing import Any, Optional, Tuple, Union
 from transformers.modeling_outputs import BaseModelOutput, BaseModelOutputWithPooling
-import logging
+from modeling.omnimae import make_conv_or_linear, reshape_and_init_as_mlp, vit_base_mae_pretraining 
+from modeling.vision_transformer import (
+    Attention,
+    Decoder,
+    PadIm2Video,
+    VisionTransformer,
+)
+from functools import partial
+from timm.models.layers import trunc_normal_
 
 class SimpleNamespace:
     def __init__(self, **kwargs):
@@ -267,3 +276,159 @@ class MultiModalityModel(nn.Module):
     def forward_classifier_only(self, modality, x):
         classifier = getattr(self, f"{modality}_classifier")
         return classifier(x)
+    
+
+class MaeModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.encoder = VisionTransformer(
+        img_size=[3, 16, 224, 224],
+        patch_size=[2, 16, 16],
+        in_chans=3,
+        embed_dim=768,
+        depth=12,
+        mlp_ratio=4,
+        attn_target=partial(
+            Attention,
+            attn_drop=0,
+            num_heads=12,
+            proj_drop=0,
+            qk_scale=False,
+            qkv_bias=True,
+        ),
+        drop_rate=0.0,
+        drop_path_rate=0.0,
+        drop_path_type="progressive",
+        classifier_feature="global_pool",
+        use_cls_token=False,
+        learnable_pos_embed=False,
+        layer_scale_type=None,
+        layer_scale_init_value=0.1,
+        patch_embed_type="generic",
+        patch_embed_params_list=[
+            PadIm2Video(ntimes=2, pad_type="repeat"),
+            make_conv_or_linear(
+                layer=torch.nn.Conv3d(
+                    in_channels=3,
+                    kernel_size=[2, 16, 16],
+                    out_channels=768,
+                    stride=[2, 16, 16],
+                ),
+                init_weight=partial(reshape_and_init_as_mlp),
+            ),
+        ],
+        layer_norm_eps=1e-6,
+        masked_image_modeling=True,
+        patch_drop_max_patches=-1,
+        add_pos_same_dtype=False,
+        patch_dropping=True,
+        post_encoder_params=None,
+        decoder=None,
+        mask_token_embed_dim=None,
+        )
+        self.decoder = Decoder(
+            first_patch_idx=0,
+            patches_layout=self.encoder.patch_embed.patches_layout,
+            attn_target=partial(Attention, num_heads=16),
+            decoder_depth=4,
+            decoder_embed_dim=384,
+            embed_dim=768,
+            learnable_pos_embed=False,
+            qkv_bias=True,
+        )
+        self.head = make_conv_or_linear(
+        layer=torch.nn.Linear(in_features=384, out_features=1536),
+        init_bias=partial(torch.nn.init.zeros_),
+        init_weight=partial(trunc_normal_, mean=0.0, std=0.02),
+        )
+        
+        self.norm = nn.LayerNorm(384)
+
+    def forward(self, rgb_input, mask):
+        encoded_features, input_shape, pos_embed = self.encoder(rgb_input, mask=mask)
+        return self.head(self.norm(self.decoder(encoded_features, input_shape, pos_embed)))
+    
+
+def init_mae_model(gpus, config):
+    pretrained_model = vit_base_mae_pretraining(pretrained=True)
+    pretrained_state_dict = pretrained_model.state_dict()
+    del pretrained_model
+
+    model = MaeModel()
+    # Loading VisionTransformer weights
+    for key, value in pretrained_state_dict.items():
+        if key.startswith('trunk.') and not key.startswith('trunk.decoder.'):
+            new_key = key.replace('trunk.', 'encoder.')  
+            if new_key in model.state_dict():
+                model.state_dict()[new_key].copy_(value)
+
+    # Loading Decoder weights
+    for key, value in pretrained_state_dict.items():
+        if key.startswith('trunk.decoder.'):
+            new_key = key.replace('trunk.decoder.', 'decoder')  
+            if new_key in model.state_dict():
+                model.state_dict()[new_key].copy_(value)
+    model = model.cuda(sorted(gpus)[0])
+    
+    return torch.nn.DataParallel(model, device_ids=sorted(gpus))
+
+def init_mae_encoder(cfg):
+    encoder = VisionTransformer(
+        img_size=[3, 16, 224, 224],
+        patch_size=[2, 16, 16],
+        in_chans=3,
+        embed_dim=768,
+        depth=12,
+        mlp_ratio=4,
+        attn_target=partial(
+            Attention,
+            attn_drop=0,
+            num_heads=12,
+            proj_drop=0,
+            qk_scale=False,
+            qkv_bias=True,
+        ),
+        drop_rate=0.0,
+        drop_path_rate=0.0,
+        drop_path_type="progressive",
+        classifier_feature="global_pool",
+        use_cls_token=False,
+        learnable_pos_embed=False,
+        layer_scale_type=None,
+        layer_scale_init_value=0.1,
+        patch_embed_type="generic",
+        patch_embed_params_list=[
+            PadIm2Video(ntimes=2, pad_type="repeat"),
+            make_conv_or_linear(
+                layer=torch.nn.Conv3d(
+                    in_channels=3,
+                    kernel_size=[2, 16, 16],
+                    out_channels=768,
+                    stride=[2, 16, 16],
+                ),
+                init_weight=partial(reshape_and_init_as_mlp),
+            ),
+        ],
+        layer_norm_eps=1e-6,
+        masked_image_modeling=False,
+        patch_drop_max_patches=-1,
+        add_pos_same_dtype=False,
+        patch_dropping=True,
+        post_encoder_params=None,
+        decoder=None,
+        mask_token_embed_dim=None,
+        )
+    checkpoint_path = os.path.join(cfg['cktp_dir'], cfg['trained_encoder'])
+    encoder.load_state_dict(torch.load(checkpoint_path),strict=False)
+    classifier = LinearClassifier(cfg.get('input_dim', 768), cfg['num_classes'], )
+    return encoder, classifier
+
+class LinearClassifier(nn.Module):
+    def __init__(self, input_dim, num_classes):
+        super(LinearClassifier, self).__init__()
+        self.fc = nn.Linear(input_dim, num_classes)
+
+    def forward(self, x):
+        return self.fc(x)
+
+    

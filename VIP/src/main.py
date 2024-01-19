@@ -15,10 +15,11 @@ import multiprocessing
 import time
 
 from zeta.data_loader import load_dataloaders
-from zeta.model_init import initialize_vip_encoder, MultiModalityModel, initialize_vip_text_encoder
+from zeta.model_init import initialize_vip_encoder, MultiModalityModel, initialize_vip_text_encoder, init_mae_model, init_mae_encoder
 from zeta.align_process import align_modalities_process, eval_loss_process
-from zeta.train_classefier import train_classefier_process, eval_rgb_classefier_on_ir
+from zeta.train_classefier import train_classefier_process, eval_rgb_classefier_on_ir, train_mae_classifier
 from zeta.eval_vip_textencoder import eval_text_encoder_process
+from zeta.mae_encoder_training import mae_training
 
 def setup_ccname():
     user = getpass.getuser()
@@ -281,12 +282,34 @@ def eval_text_encoder(train_data,
                               config=config
                               )
 
-# task 4 evealuate knn
-def evaluate_knn():
-    logging.info("Evaluating KNN...")
+# task 5 train Mae Encoder
+def train_Mae_Encoder(train_data, val_data, test_data, config):
+    logging.info(f"Training MAE for {config['modalities'][0]}...")
     # Your code for task 4
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Evaluing on the following GPUs {selected_gpu_ids}")
+    if len(config['modalities']) > 1:
+        logging.warn('Only single modalitiy Mae training implemented')
 
-
+    
+    if config['train_classifier'] == True:
+        device = sorted(selected_gpu_ids)[0] 
+        encoder , classifier = init_mae_encoder(config)
+        train_mae_classifier(encoder.to(device), 
+                             classifier.to(device), 
+                             train_data, 
+                             val_data, 
+                             test_data, 
+                             device, 
+                             config)
+    else:
+        model = init_mae_model(selected_gpu_ids, config)
+        mae_training(model=model,
+                 train_data=train_data,
+                 val_data=val_data,
+                 test_data=test_data,
+                 device=sorted(selected_gpu_ids)[0],
+                config=config)
 
 
 
@@ -304,7 +327,6 @@ def main():
     learning_rate = config['learning_rate']
     temperature = config['temperature']
     num_workers = config['num_workers']
-    data_list= config['data_list']
     data_root= config['data_root']
     batch_size= config['batch_size']
     pin_memory= config['pin_memory']
@@ -351,6 +373,11 @@ def main():
                         val_data, 
                         test_data,
                         config)
+    elif task == '5':
+        train_Mae_Encoder(train_data, 
+                          val_data, 
+                          test_data, 
+                          config)
 
 if __name__ == "__main__":
     
