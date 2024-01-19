@@ -6,3 +6,4 @@ pretrain_clipvip_base_16.pt
 pretrain_clipvip_base_32.pt
 VIP/src/align_checkpoints
 VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt
+model_step_47400 copy.pt
