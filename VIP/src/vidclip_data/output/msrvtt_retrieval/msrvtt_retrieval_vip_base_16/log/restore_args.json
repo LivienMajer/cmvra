@@ -17,14 +17,14 @@
     "train_n_clips": 1,
     "score_agg_func": "mean",
     "random_sample_clips": 1,
-    "train_batch_size": 32,
+    "train_batch_size": 8,
     "val_batch_size": 128,
     "gradient_accumulation_steps": 1,
     "learning_rate": 1e-06,
     "num_valid": 5,
     "min_valid_steps": 1,
     "save_steps_ratio": 0.9,
-    "num_train_epochs": 100,
+    "num_train_epochs": 10,
     "optim": "adamw",
     "betas": [
         0.9,
@@ -73,25 +73,25 @@
     "use_itc": 0,
     "pixel_random_sampling_size": 0,
     "train_datasets": {
-        "name": "daa_train",
+        "name": "ntu_train",
         "vis_format": "video",
-        "txt": "/home/bas06400/traindaa.jsonl",
-        "vis": "/home/bas06400/daa/kinect_color/clips/train"
+        "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/annotations_rgb_comp_CV_training_120set.jsonl",
+        "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
     },
     "val_datasets": [
         {
-            "name": "daa_val",
+            "name": "ntu_val",
             "vis_format": "video",
-            "txt": "/home/bas06400/testdaa.jsonl",
-            "vis": "/home/bas06400/daa/kinect_color/clips/test"
+            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/unique_samples120test.jsonl",
+            "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
         }
     ],
     "inference_datasets": [
         {
-            "name": "daa_test",
+            "name": "ntu_test",
             "vis_format": "video",
-            "txt": "/home/bas06400/testdaa.jsonl",
-            "vis": "/home/bas06400/daa/kinect_color/clips/test"
+            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/unique_samples120test.jsonl",
+            "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
         }
     ],
     "train_num_frms": 12,
@@ -128,6 +128,6 @@
     "if_model_saver": 1,
     "if_log2file": 1,
     "dummy_data": 0,
-    "num_train_steps": 20757,
-    "valid_steps": 4152
+    "num_train_steps": 68400,
+    "valid_steps": 13680
 }

@@ -1,0 +1,47 @@
+2024-01-23 14:56:38,434 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "full_train_classifiers": false,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240122_015909.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-01-23 14:56:38,515 - INFO - Training classifiers...
+2024-01-23 14:56:38,562 - INFO - Training on the following GPUs [1]
+2024-01-23 15:47:22,545 - INFO - Epoch [1/5]
+2024-01-23 15:47:22,546 - INFO - Modality: rgb, Loss: 2.8945, Accuracy: 0.5349
+2024-01-23 15:47:22,548 - INFO - Modality: ir, Loss: 2.3058, Accuracy: 0.4426
+2024-01-23 15:48:36,202 - INFO - Validation/Test Epoch [1/5]
+2024-01-23 15:48:36,203 - INFO - Modality: rgb, Loss: 2.0921, Accuracy: 0.7136
+2024-01-23 15:48:36,205 - INFO - Modality: ir, Loss: 1.9961, Accuracy: 0.4400
+2024-01-23 15:48:40,876 - INFO - New best model saved at epoch 1 with val loss: 2.0441

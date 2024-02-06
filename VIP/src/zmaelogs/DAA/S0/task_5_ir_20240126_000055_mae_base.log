@@ -1,0 +1,345 @@
+2024-01-26 00:00:55,906 - INFO - Configuration:
+{
+    "task": "5",
+    "topic": "ir",
+    "train_classifier": false,
+    "number_gpus": "1",
+    "modalities": [
+        "ir"
+    ],
+    "encoder_model": "MAE",
+    "mask_ratio": 0.8,
+    "dataset": "DAA",
+    "split": "0",
+    "epochs": 125,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints",
+    "trained_encoder": "checkpoint_rgb_CV_20240118_052027.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "batch_size": 8,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}
+2024-01-26 00:00:55,932 - INFO - Training MAE for ir...
+2024-01-26 00:00:55,976 - INFO - Evaluing on the following GPUs [0]
+2024-01-26 00:06:08,468 - INFO - Epoch: 0, Average Training Loss: 0.17898573442199744
+2024-01-26 00:06:37,367 - INFO - Epoch: 0, Validation Training Loss: 0.1021183879015832
+2024-01-26 00:06:47,105 - INFO - Saved checkpoint at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:11:57,631 - INFO - Epoch: 1, Average Training Loss: 0.08014408942361315
+2024-01-26 00:12:27,631 - INFO - Epoch: 1, Validation Training Loss: 0.07664441872991663
+2024-01-26 00:13:06,112 - INFO - Saved checkpoint at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:18:18,091 - INFO - Epoch: 2, Average Training Loss: 0.05972173845868392
+2024-01-26 00:18:50,651 - INFO - Epoch: 2, Validation Training Loss: 0.05936453001334348
+2024-01-26 00:18:58,783 - INFO - Saved checkpoint at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:24:11,742 - INFO - Epoch: 3, Average Training Loss: 0.051363086836719626
+2024-01-26 00:24:43,779 - INFO - Epoch: 3, Validation Training Loss: 0.056149084433164013
+2024-01-26 00:24:56,940 - INFO - Saved checkpoint at epoch 3 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:30:12,293 - INFO - Epoch: 4, Average Training Loss: 0.04193197049550201
+2024-01-26 00:30:45,126 - INFO - Epoch: 4, Validation Training Loss: 0.04414154636002453
+2024-01-26 00:31:01,177 - INFO - Saved checkpoint at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:36:25,180 - INFO - Epoch: 5, Average Training Loss: 0.03598209928662912
+2024-01-26 00:36:59,013 - INFO - Epoch: 5, Validation Training Loss: 0.03996606916189194
+2024-01-26 00:37:06,459 - INFO - Saved checkpoint at epoch 5 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:42:28,303 - INFO - Epoch: 6, Average Training Loss: 0.03455777603025614
+2024-01-26 00:42:59,936 - INFO - Epoch: 6, Validation Training Loss: 0.039103856580800185
+2024-01-26 00:43:13,260 - INFO - Saved checkpoint at epoch 6 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:48:25,908 - INFO - Epoch: 7, Average Training Loss: 0.030056942748544663
+2024-01-26 00:48:57,259 - INFO - Epoch: 7, Validation Training Loss: 0.032350679495314644
+2024-01-26 00:49:05,772 - INFO - Saved checkpoint at epoch 7 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 00:54:22,150 - INFO - Epoch: 8, Average Training Loss: 0.028262790740791497
+2024-01-26 00:54:54,892 - INFO - Epoch: 8, Validation Training Loss: 0.029128310775290656
+2024-01-26 00:55:38,184 - INFO - Saved checkpoint at epoch 8 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:00:49,760 - INFO - Epoch: 9, Average Training Loss: 0.025774525416842366
+2024-01-26 01:02:57,248 - INFO - Epoch: 9, Validation Training Loss: 0.028225067175675037
+2024-01-26 01:03:23,167 - INFO - Saved checkpoint at epoch 9 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:08:32,956 - INFO - Epoch: 10, Average Training Loss: 0.02500788304421302
+2024-01-26 01:09:20,647 - INFO - Epoch: 10, Validation Training Loss: 0.029528922578267877
+2024-01-26 01:14:34,342 - INFO - Epoch: 11, Average Training Loss: 0.02306505583258061
+2024-01-26 01:15:14,057 - INFO - Epoch: 11, Validation Training Loss: 0.024631866638928485
+2024-01-26 01:15:28,638 - INFO - Saved checkpoint at epoch 11 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:20:42,874 - INFO - Epoch: 12, Average Training Loss: 0.02188791374526873
+2024-01-26 01:21:29,019 - INFO - Epoch: 12, Validation Training Loss: 0.030912208074297984
+2024-01-26 01:26:43,650 - INFO - Epoch: 13, Average Training Loss: 0.021294272969847837
+2024-01-26 01:27:22,286 - INFO - Epoch: 13, Validation Training Loss: 0.023589301162383742
+2024-01-26 01:27:50,971 - INFO - Saved checkpoint at epoch 13 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:33:04,389 - INFO - Epoch: 14, Average Training Loss: 0.020377201736466476
+2024-01-26 01:33:43,491 - INFO - Epoch: 14, Validation Training Loss: 0.022504635920030113
+2024-01-26 01:34:27,093 - INFO - Saved checkpoint at epoch 14 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:39:39,514 - INFO - Epoch: 15, Average Training Loss: 0.019830479607138466
+2024-01-26 01:40:10,837 - INFO - Epoch: 15, Validation Training Loss: 0.02089565240533492
+2024-01-26 01:40:29,725 - INFO - Saved checkpoint at epoch 15 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:45:44,318 - INFO - Epoch: 16, Average Training Loss: 0.01970909123906303
+2024-01-26 01:46:18,434 - INFO - Epoch: 16, Validation Training Loss: 0.020425335639390533
+2024-01-26 01:46:22,420 - INFO - Saved checkpoint at epoch 16 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 01:51:37,120 - INFO - Epoch: 17, Average Training Loss: 0.018308496340844783
+2024-01-26 01:52:10,197 - INFO - Epoch: 17, Validation Training Loss: 0.021580082598511734
+2024-01-26 01:57:31,573 - INFO - Epoch: 18, Average Training Loss: 0.01852226903310178
+2024-01-26 01:58:05,060 - INFO - Epoch: 18, Validation Training Loss: 0.02178476712349074
+2024-01-26 02:03:30,432 - INFO - Epoch: 19, Average Training Loss: 0.017776934812730794
+2024-01-26 02:04:01,359 - INFO - Epoch: 19, Validation Training Loss: 0.02149742223613755
+2024-01-26 02:09:15,888 - INFO - Epoch: 20, Average Training Loss: 0.017641312845620618
+2024-01-26 02:09:49,412 - INFO - Epoch: 20, Validation Training Loss: 0.01960863005994252
+2024-01-26 02:10:31,692 - INFO - Saved checkpoint at epoch 20 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:15:45,026 - INFO - Epoch: 21, Average Training Loss: 0.016718090642983303
+2024-01-26 02:16:17,576 - INFO - Epoch: 21, Validation Training Loss: 0.019098301673068682
+2024-01-26 02:16:33,689 - INFO - Saved checkpoint at epoch 21 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:21:48,129 - INFO - Epoch: 22, Average Training Loss: 0.01706699502937917
+2024-01-26 02:22:20,353 - INFO - Epoch: 22, Validation Training Loss: 0.018079698855816985
+2024-01-26 02:22:36,863 - INFO - Saved checkpoint at epoch 22 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:28:01,103 - INFO - Epoch: 23, Average Training Loss: 0.01595693541450872
+2024-01-26 02:28:33,690 - INFO - Epoch: 23, Validation Training Loss: 0.01776536909977817
+2024-01-26 02:28:41,556 - INFO - Saved checkpoint at epoch 23 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:34:08,723 - INFO - Epoch: 24, Average Training Loss: 0.016853372029014265
+2024-01-26 02:34:42,397 - INFO - Epoch: 24, Validation Training Loss: 0.017280350015212536
+2024-01-26 02:34:51,884 - INFO - Saved checkpoint at epoch 24 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:40:09,897 - INFO - Epoch: 25, Average Training Loss: 0.01563711188650644
+2024-01-26 02:40:41,309 - INFO - Epoch: 25, Validation Training Loss: 0.01710714122759147
+2024-01-26 02:41:23,738 - INFO - Saved checkpoint at epoch 25 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 02:46:36,876 - INFO - Epoch: 26, Average Training Loss: 0.01525275945936909
+2024-01-26 02:47:09,485 - INFO - Epoch: 26, Validation Training Loss: 0.01715785379172953
+2024-01-26 02:52:24,678 - INFO - Epoch: 27, Average Training Loss: 0.015779344951139963
+2024-01-26 02:52:57,529 - INFO - Epoch: 27, Validation Training Loss: 0.017649635563307967
+2024-01-26 02:58:12,372 - INFO - Epoch: 28, Average Training Loss: 0.015014820760194432
+2024-01-26 02:58:45,082 - INFO - Epoch: 28, Validation Training Loss: 0.016474190706584874
+2024-01-26 02:59:30,993 - INFO - Saved checkpoint at epoch 28 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 03:04:45,740 - INFO - Epoch: 29, Average Training Loss: 0.014603139601186116
+2024-01-26 03:05:18,402 - INFO - Epoch: 29, Validation Training Loss: 0.01599561025300089
+2024-01-26 03:05:26,557 - INFO - Saved checkpoint at epoch 29 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 03:10:41,299 - INFO - Epoch: 30, Average Training Loss: 0.014726752641125527
+2024-01-26 03:11:16,521 - INFO - Epoch: 30, Validation Training Loss: 0.017203876457317583
+2024-01-26 03:16:31,577 - INFO - Epoch: 31, Average Training Loss: 0.014704127216019032
+2024-01-26 03:17:05,542 - INFO - Epoch: 31, Validation Training Loss: 0.016279094774463324
+2024-01-26 03:22:20,237 - INFO - Epoch: 32, Average Training Loss: 0.014428672567906507
+2024-01-26 03:22:54,111 - INFO - Epoch: 32, Validation Training Loss: 0.016202197485608597
+2024-01-26 03:28:09,274 - INFO - Epoch: 33, Average Training Loss: 0.014019433378716023
+2024-01-26 03:28:42,690 - INFO - Epoch: 33, Validation Training Loss: 0.015730500182230545
+2024-01-26 03:28:46,910 - INFO - Saved checkpoint at epoch 33 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 03:34:02,403 - INFO - Epoch: 34, Average Training Loss: 0.01378521673094423
+2024-01-26 03:34:33,819 - INFO - Epoch: 34, Validation Training Loss: 0.015355506841634406
+2024-01-26 03:34:40,553 - INFO - Saved checkpoint at epoch 34 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 03:39:54,545 - INFO - Epoch: 35, Average Training Loss: 0.013589627246756811
+2024-01-26 03:40:28,629 - INFO - Epoch: 35, Validation Training Loss: 0.016414654240865446
+2024-01-26 03:45:43,330 - INFO - Epoch: 36, Average Training Loss: 0.013537848218670283
+2024-01-26 03:46:15,457 - INFO - Epoch: 36, Validation Training Loss: 0.01585843652101785
+2024-01-26 03:51:30,750 - INFO - Epoch: 37, Average Training Loss: 0.013543046453337843
+2024-01-26 03:52:06,442 - INFO - Epoch: 37, Validation Training Loss: 0.015057878183752465
+2024-01-26 03:52:49,484 - INFO - Saved checkpoint at epoch 37 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 03:58:02,985 - INFO - Epoch: 38, Average Training Loss: 0.013160327911740068
+2024-01-26 03:58:42,460 - INFO - Epoch: 38, Validation Training Loss: 0.01516587590517778
+2024-01-26 04:04:04,190 - INFO - Epoch: 39, Average Training Loss: 0.01324701130000155
+2024-01-26 04:04:38,397 - INFO - Epoch: 39, Validation Training Loss: 0.014881595329241047
+2024-01-26 04:04:46,106 - INFO - Saved checkpoint at epoch 39 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 04:09:59,758 - INFO - Epoch: 40, Average Training Loss: 0.012842109395475738
+2024-01-26 04:10:33,679 - INFO - Epoch: 40, Validation Training Loss: 0.014771235287293542
+2024-01-26 04:10:41,867 - INFO - Saved checkpoint at epoch 40 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 04:15:56,526 - INFO - Epoch: 41, Average Training Loss: 0.013124794894818185
+2024-01-26 04:16:29,754 - INFO - Epoch: 41, Validation Training Loss: 0.014430137944288095
+2024-01-26 04:16:37,567 - INFO - Saved checkpoint at epoch 41 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 04:21:52,881 - INFO - Epoch: 42, Average Training Loss: 0.012742895837514588
+2024-01-26 04:22:26,322 - INFO - Epoch: 42, Validation Training Loss: 0.01557323913084728
+2024-01-26 04:27:41,983 - INFO - Epoch: 43, Average Training Loss: 0.012391694495286322
+2024-01-26 04:28:15,295 - INFO - Epoch: 43, Validation Training Loss: 0.014228534122523149
+2024-01-26 04:28:19,976 - INFO - Saved checkpoint at epoch 43 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 04:33:33,944 - INFO - Epoch: 44, Average Training Loss: 0.012387843421524755
+2024-01-26 04:34:06,539 - INFO - Epoch: 44, Validation Training Loss: 0.014732283638925526
+2024-01-26 04:39:24,834 - INFO - Epoch: 45, Average Training Loss: 0.012329060859444733
+2024-01-26 04:39:56,037 - INFO - Epoch: 45, Validation Training Loss: 0.01467098598498539
+2024-01-26 04:45:10,807 - INFO - Epoch: 46, Average Training Loss: 0.012294015052552402
+2024-01-26 04:45:43,308 - INFO - Epoch: 46, Validation Training Loss: 0.01408985546951354
+2024-01-26 04:45:50,167 - INFO - Saved checkpoint at epoch 46 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 04:51:07,307 - INFO - Epoch: 47, Average Training Loss: 0.012252760758549513
+2024-01-26 04:51:41,388 - INFO - Epoch: 47, Validation Training Loss: 0.01412840665697885
+2024-01-26 04:56:57,575 - INFO - Epoch: 48, Average Training Loss: 0.011904237758274113
+2024-01-26 04:57:30,749 - INFO - Epoch: 48, Validation Training Loss: 0.013550436782374895
+2024-01-26 04:57:36,019 - INFO - Saved checkpoint at epoch 48 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 05:02:50,246 - INFO - Epoch: 49, Average Training Loss: 0.011834241680141928
+2024-01-26 05:03:21,758 - INFO - Epoch: 49, Validation Training Loss: 0.013376768452099749
+2024-01-26 05:03:31,668 - INFO - Saved checkpoint at epoch 49 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 05:08:49,888 - INFO - Epoch: 50, Average Training Loss: 0.011856539167629647
+2024-01-26 05:09:21,774 - INFO - Epoch: 50, Validation Training Loss: 0.01425996821831558
+2024-01-26 05:14:37,371 - INFO - Epoch: 51, Average Training Loss: 0.011896477636200893
+2024-01-26 05:15:09,553 - INFO - Epoch: 51, Validation Training Loss: 0.014857264966625908
+2024-01-26 05:20:24,578 - INFO - Epoch: 52, Average Training Loss: 0.011683597863191194
+2024-01-26 05:20:56,845 - INFO - Epoch: 52, Validation Training Loss: 0.013505461139281869
+2024-01-26 05:26:11,693 - INFO - Epoch: 53, Average Training Loss: 0.011443446357269401
+2024-01-26 05:26:44,701 - INFO - Epoch: 53, Validation Training Loss: 0.013545265135110757
+2024-01-26 05:31:59,612 - INFO - Epoch: 54, Average Training Loss: 0.011505522476632493
+2024-01-26 05:32:32,511 - INFO - Epoch: 54, Validation Training Loss: 0.01331791681544491
+2024-01-26 05:32:46,697 - INFO - Saved checkpoint at epoch 54 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 05:38:01,556 - INFO - Epoch: 55, Average Training Loss: 0.011255299601038172
+2024-01-26 05:38:35,067 - INFO - Epoch: 55, Validation Training Loss: 0.012921701331086997
+2024-01-26 05:38:44,924 - INFO - Saved checkpoint at epoch 55 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 05:44:00,085 - INFO - Epoch: 56, Average Training Loss: 0.011107369075853166
+2024-01-26 05:44:32,844 - INFO - Epoch: 56, Validation Training Loss: 0.013303745132168579
+2024-01-26 05:49:49,508 - INFO - Epoch: 57, Average Training Loss: 0.011239320032464433
+2024-01-26 05:50:23,831 - INFO - Epoch: 57, Validation Training Loss: 0.013825287519532709
+2024-01-26 05:55:40,827 - INFO - Epoch: 58, Average Training Loss: 0.011209190893743443
+2024-01-26 05:56:14,280 - INFO - Epoch: 58, Validation Training Loss: 0.012611113571920874
+2024-01-26 05:56:18,396 - INFO - Saved checkpoint at epoch 58 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 06:01:37,400 - INFO - Epoch: 59, Average Training Loss: 0.011193357151961033
+2024-01-26 06:02:12,185 - INFO - Epoch: 59, Validation Training Loss: 0.012791807339240553
+2024-01-26 06:07:27,222 - INFO - Epoch: 60, Average Training Loss: 0.0109659389858319
+2024-01-26 06:07:59,054 - INFO - Epoch: 60, Validation Training Loss: 0.01278462602273046
+2024-01-26 06:13:13,985 - INFO - Epoch: 61, Average Training Loss: 0.010805410160666284
+2024-01-26 06:13:47,229 - INFO - Epoch: 61, Validation Training Loss: 0.013250240431734303
+2024-01-26 06:19:02,131 - INFO - Epoch: 62, Average Training Loss: 0.01080624202084778
+2024-01-26 06:19:37,729 - INFO - Epoch: 62, Validation Training Loss: 0.012551243950264248
+2024-01-26 06:19:46,787 - INFO - Saved checkpoint at epoch 62 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 06:25:01,676 - INFO - Epoch: 63, Average Training Loss: 0.010816784391222268
+2024-01-26 06:25:33,641 - INFO - Epoch: 63, Validation Training Loss: 0.013696075541971449
+2024-01-26 06:30:48,999 - INFO - Epoch: 64, Average Training Loss: 0.0108215627053172
+2024-01-26 06:31:22,288 - INFO - Epoch: 64, Validation Training Loss: 0.012284758597008843
+2024-01-26 06:31:28,952 - INFO - Saved checkpoint at epoch 64 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 06:36:49,708 - INFO - Epoch: 65, Average Training Loss: 0.010436650230263491
+2024-01-26 06:37:23,718 - INFO - Epoch: 65, Validation Training Loss: 0.012604112604206335
+2024-01-26 06:42:38,421 - INFO - Epoch: 66, Average Training Loss: 0.010527677797330218
+2024-01-26 06:43:10,591 - INFO - Epoch: 66, Validation Training Loss: 0.012165168180603888
+2024-01-26 06:43:14,866 - INFO - Saved checkpoint at epoch 66 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 06:48:29,962 - INFO - Epoch: 67, Average Training Loss: 0.010398111819142809
+2024-01-26 06:49:03,096 - INFO - Epoch: 67, Validation Training Loss: 0.012346667562762285
+2024-01-26 06:54:22,775 - INFO - Epoch: 68, Average Training Loss: 0.010410906848969514
+2024-01-26 06:54:57,613 - INFO - Epoch: 68, Validation Training Loss: 0.012097154364156324
+2024-01-26 06:55:11,628 - INFO - Saved checkpoint at epoch 68 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 07:00:25,970 - INFO - Epoch: 69, Average Training Loss: 0.010369103541709796
+2024-01-26 07:02:30,349 - INFO - Epoch: 69, Validation Training Loss: 0.012077235684381517
+2024-01-26 07:02:36,575 - INFO - Saved checkpoint at epoch 69 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 07:07:48,474 - INFO - Epoch: 70, Average Training Loss: 0.010370940393090212
+2024-01-26 07:08:21,903 - INFO - Epoch: 70, Validation Training Loss: 0.011936848267767183
+2024-01-26 07:08:36,918 - INFO - Saved checkpoint at epoch 70 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 07:13:50,441 - INFO - Epoch: 71, Average Training Loss: 0.01019531525850798
+2024-01-26 07:14:24,955 - INFO - Epoch: 71, Validation Training Loss: 0.012052656133144095
+2024-01-26 07:19:40,031 - INFO - Epoch: 72, Average Training Loss: 0.010084730570196711
+2024-01-26 07:20:12,079 - INFO - Epoch: 72, Validation Training Loss: 0.011732025576661751
+2024-01-26 07:20:21,357 - INFO - Saved checkpoint at epoch 72 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 07:25:38,804 - INFO - Epoch: 73, Average Training Loss: 0.010058277728715205
+2024-01-26 07:26:09,494 - INFO - Epoch: 73, Validation Training Loss: 0.012004631672928619
+2024-01-26 07:31:23,709 - INFO - Epoch: 74, Average Training Loss: 0.010123560554488023
+2024-01-26 07:31:57,662 - INFO - Epoch: 74, Validation Training Loss: 0.012444843233734702
+2024-01-26 07:37:11,941 - INFO - Epoch: 75, Average Training Loss: 0.01000773816153174
+2024-01-26 07:37:50,554 - INFO - Epoch: 75, Validation Training Loss: 0.01173905935138464
+2024-01-26 07:43:04,382 - INFO - Epoch: 76, Average Training Loss: 0.009933690837764873
+2024-01-26 07:43:40,497 - INFO - Epoch: 76, Validation Training Loss: 0.011585228064477277
+2024-01-26 07:43:44,820 - INFO - Saved checkpoint at epoch 76 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 07:48:59,004 - INFO - Epoch: 77, Average Training Loss: 0.01003019499511791
+2024-01-26 07:49:30,207 - INFO - Epoch: 77, Validation Training Loss: 0.011737748429012698
+2024-01-26 07:54:44,402 - INFO - Epoch: 78, Average Training Loss: 0.009685281981858643
+2024-01-26 07:55:17,953 - INFO - Epoch: 78, Validation Training Loss: 0.011515427640946218
+2024-01-26 07:55:25,615 - INFO - Saved checkpoint at epoch 78 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 08:00:40,346 - INFO - Epoch: 79, Average Training Loss: 0.009691124876667482
+2024-01-26 08:01:12,734 - INFO - Epoch: 79, Validation Training Loss: 0.011489409508506179
+2024-01-26 08:01:56,426 - INFO - Saved checkpoint at epoch 79 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 08:07:09,031 - INFO - Epoch: 80, Average Training Loss: 0.009889724131485292
+2024-01-26 08:07:45,149 - INFO - Epoch: 80, Validation Training Loss: 0.011786591833946425
+2024-01-26 08:12:59,635 - INFO - Epoch: 81, Average Training Loss: 0.009717643259835086
+2024-01-26 08:13:32,611 - INFO - Epoch: 81, Validation Training Loss: 0.01175655284376201
+2024-01-26 08:18:47,587 - INFO - Epoch: 82, Average Training Loss: 0.009606280746543612
+2024-01-26 08:19:20,164 - INFO - Epoch: 82, Validation Training Loss: 0.011307055372536682
+2024-01-26 08:19:28,593 - INFO - Saved checkpoint at epoch 82 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 08:24:43,238 - INFO - Epoch: 83, Average Training Loss: 0.009874810212797224
+2024-01-26 08:25:17,728 - INFO - Epoch: 83, Validation Training Loss: 0.012382541234246014
+2024-01-26 08:30:32,434 - INFO - Epoch: 84, Average Training Loss: 0.009516684824564952
+2024-01-26 08:31:04,511 - INFO - Epoch: 84, Validation Training Loss: 0.011290055871342814
+2024-01-26 08:31:20,635 - INFO - Saved checkpoint at epoch 84 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 08:36:34,878 - INFO - Epoch: 85, Average Training Loss: 0.00946968678798567
+2024-01-26 08:37:06,720 - INFO - Epoch: 85, Validation Training Loss: 0.011226230766624212
+2024-01-26 08:37:14,550 - INFO - Saved checkpoint at epoch 85 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 08:42:28,765 - INFO - Epoch: 86, Average Training Loss: 0.009497518333461848
+2024-01-26 08:43:02,580 - INFO - Epoch: 86, Validation Training Loss: 0.011306046284527086
+2024-01-26 08:48:17,144 - INFO - Epoch: 87, Average Training Loss: 0.009364981711119252
+2024-01-26 08:49:05,726 - INFO - Epoch: 87, Validation Training Loss: 0.011449228142330932
+2024-01-26 08:54:19,960 - INFO - Epoch: 88, Average Training Loss: 0.009329138450026423
+2024-01-26 08:54:52,009 - INFO - Epoch: 88, Validation Training Loss: 0.011727830296247032
+2024-01-26 09:00:06,589 - INFO - Epoch: 89, Average Training Loss: 0.009468251532201445
+2024-01-26 09:00:41,108 - INFO - Epoch: 89, Validation Training Loss: 0.0112851226088388
+2024-01-26 09:05:55,751 - INFO - Epoch: 90, Average Training Loss: 0.009203613472645195
+2024-01-26 09:06:27,442 - INFO - Epoch: 90, Validation Training Loss: 0.011363965818169397
+2024-01-26 09:11:46,097 - INFO - Epoch: 91, Average Training Loss: 0.009280092187705489
+2024-01-26 09:12:18,295 - INFO - Epoch: 91, Validation Training Loss: 0.011879570732756866
+2024-01-26 09:17:32,709 - INFO - Epoch: 92, Average Training Loss: 0.00874374231640765
+2024-01-26 09:18:17,811 - INFO - Epoch: 92, Validation Training Loss: 0.010489181906775722
+2024-01-26 09:18:32,186 - INFO - Saved checkpoint at epoch 92 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 09:24:10,385 - INFO - Epoch: 93, Average Training Loss: 0.008462133789356579
+2024-01-26 09:24:43,045 - INFO - Epoch: 93, Validation Training Loss: 0.010385529278626656
+2024-01-26 09:24:50,903 - INFO - Saved checkpoint at epoch 93 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 09:30:05,682 - INFO - Epoch: 94, Average Training Loss: 0.008384355886309227
+2024-01-26 09:30:37,657 - INFO - Epoch: 94, Validation Training Loss: 0.010442146893549066
+2024-01-26 09:35:52,086 - INFO - Epoch: 95, Average Training Loss: 0.008323188976213229
+2024-01-26 09:36:22,615 - INFO - Epoch: 95, Validation Training Loss: 0.010371360574021686
+2024-01-26 09:36:30,608 - INFO - Saved checkpoint at epoch 95 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 09:42:08,094 - INFO - Epoch: 96, Average Training Loss: 0.008249192172493315
+2024-01-26 09:42:44,023 - INFO - Epoch: 96, Validation Training Loss: 0.010323237359794325
+2024-01-26 09:42:53,387 - INFO - Saved checkpoint at epoch 96 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 09:48:31,051 - INFO - Epoch: 97, Average Training Loss: 0.008247759195143261
+2024-01-26 09:49:01,942 - INFO - Epoch: 97, Validation Training Loss: 0.01032344543494742
+2024-01-26 09:54:16,776 - INFO - Epoch: 98, Average Training Loss: 0.008188126848144267
+2024-01-26 09:54:48,584 - INFO - Epoch: 98, Validation Training Loss: 0.010245866207249836
+2024-01-26 09:55:00,293 - INFO - Saved checkpoint at epoch 98 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 10:00:15,775 - INFO - Epoch: 99, Average Training Loss: 0.008164877012298049
+2024-01-26 10:00:48,542 - INFO - Epoch: 99, Validation Training Loss: 0.010202201122324393
+2024-01-26 10:01:19,711 - INFO - Saved checkpoint at epoch 99 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 10:06:33,267 - INFO - Epoch: 100, Average Training Loss: 0.008140635739722783
+2024-01-26 10:07:05,093 - INFO - Epoch: 100, Validation Training Loss: 0.010258512207249689
+2024-01-26 10:12:21,473 - INFO - Epoch: 101, Average Training Loss: 0.008127551484924755
+2024-01-26 10:12:54,079 - INFO - Epoch: 101, Validation Training Loss: 0.010140330202919145
+2024-01-26 10:13:02,730 - INFO - Saved checkpoint at epoch 101 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 10:18:17,665 - INFO - Epoch: 102, Average Training Loss: 0.008086700419694741
+2024-01-26 10:18:49,895 - INFO - Epoch: 102, Validation Training Loss: 0.010169128746876503
+2024-01-26 10:24:05,072 - INFO - Epoch: 103, Average Training Loss: 0.008076803065291757
+2024-01-26 10:24:38,714 - INFO - Epoch: 103, Validation Training Loss: 0.01015928198515786
+2024-01-26 10:29:53,749 - INFO - Epoch: 104, Average Training Loss: 0.008037401298251536
+2024-01-26 10:30:25,458 - INFO - Epoch: 104, Validation Training Loss: 0.010144896173131699
+2024-01-26 10:35:40,585 - INFO - Epoch: 105, Average Training Loss: 0.00802834561962083
+2024-01-26 10:36:13,819 - INFO - Epoch: 105, Validation Training Loss: 0.010162435589077253
+2024-01-26 10:41:28,919 - INFO - Epoch: 106, Average Training Loss: 0.007989059384490859
+2024-01-26 10:42:00,073 - INFO - Epoch: 106, Validation Training Loss: 0.010151045058734258
+2024-01-26 10:47:15,896 - INFO - Epoch: 107, Average Training Loss: 0.008000125893908323
+2024-01-26 10:47:48,056 - INFO - Epoch: 107, Validation Training Loss: 0.01015810167427336
+2024-01-26 10:53:03,354 - INFO - Epoch: 108, Average Training Loss: 0.007939527726874526
+2024-01-26 10:53:38,342 - INFO - Epoch: 108, Validation Training Loss: 0.010065861522381366
+2024-01-26 10:53:43,666 - INFO - Saved checkpoint at epoch 108 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 10:58:57,794 - INFO - Epoch: 109, Average Training Loss: 0.007942347293361017
+2024-01-26 10:59:28,634 - INFO - Epoch: 109, Validation Training Loss: 0.010110781130032333
+2024-01-26 11:04:43,175 - INFO - Epoch: 110, Average Training Loss: 0.007913449351876418
+2024-01-26 11:05:15,142 - INFO - Epoch: 110, Validation Training Loss: 0.01008710671247467
+2024-01-26 11:10:29,531 - INFO - Epoch: 111, Average Training Loss: 0.007948097854709223
+2024-01-26 11:11:01,071 - INFO - Epoch: 111, Validation Training Loss: 0.010101569863296422
+2024-01-26 11:16:15,579 - INFO - Epoch: 112, Average Training Loss: 0.007903506799469894
+2024-01-26 11:16:47,117 - INFO - Epoch: 112, Validation Training Loss: 0.009977455700971393
+2024-01-26 11:16:58,557 - INFO - Saved checkpoint at epoch 112 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_ir_0_20240126_000105.pth
+2024-01-26 11:22:13,383 - INFO - Epoch: 113, Average Training Loss: 0.007904123695327414
+2024-01-26 11:22:45,327 - INFO - Epoch: 113, Validation Training Loss: 0.010050425641550865
+2024-01-26 11:28:00,108 - INFO - Epoch: 114, Average Training Loss: 0.007907570168828742
+2024-01-26 11:28:32,977 - INFO - Epoch: 114, Validation Training Loss: 0.01002180407489728
+2024-01-26 11:34:11,019 - INFO - Epoch: 115, Average Training Loss: 0.007912754761749961
+2024-01-26 11:34:43,421 - INFO - Epoch: 115, Validation Training Loss: 0.01005486752473692
+2024-01-26 11:40:00,605 - INFO - Epoch: 116, Average Training Loss: 0.007874498799416348
+2024-01-26 11:40:34,706 - INFO - Epoch: 116, Validation Training Loss: 0.009995983341219705
+2024-01-26 11:46:03,420 - INFO - Epoch: 117, Average Training Loss: 0.007894913280981219
+2024-01-26 11:46:36,757 - INFO - Epoch: 117, Validation Training Loss: 0.010025449795648456
+2024-01-26 11:51:51,918 - INFO - Epoch: 118, Average Training Loss: 0.00788961479829223
+2024-01-26 11:52:29,082 - INFO - Epoch: 118, Validation Training Loss: 0.010024196117096606
+2024-01-26 11:58:02,946 - INFO - Epoch: 119, Average Training Loss: 0.007902709301280935
+2024-01-26 11:58:36,686 - INFO - Epoch: 119, Validation Training Loss: 0.01000082687417555
+2024-01-26 12:04:22,614 - INFO - Epoch: 120, Average Training Loss: 0.007880878716283596
+2024-01-26 12:04:53,949 - INFO - Epoch: 120, Validation Training Loss: 0.010024122532207374
+2024-01-26 12:10:01,573 - INFO - Epoch: 121, Average Training Loss: 0.007875366565529325
+2024-01-26 12:10:32,231 - INFO - Epoch: 121, Validation Training Loss: 0.009993192123238768
+2024-01-26 12:15:46,052 - INFO - Epoch: 122, Average Training Loss: 0.00786913793352483
+2024-01-26 12:16:15,563 - INFO - Epoch: 122, Validation Training Loss: 0.0100698769274662
+2024-01-26 12:21:30,734 - INFO - Epoch: 123, Average Training Loss: 0.00789213985166592
+2024-01-26 12:22:00,268 - INFO - Epoch: 123, Validation Training Loss: 0.009980167558822552
+2024-01-26 12:27:07,173 - INFO - Epoch: 124, Average Training Loss: 0.007883137570824093
+2024-01-26 12:27:36,726 - INFO - Epoch: 124, Validation Training Loss: 0.01006777654011739
+2024-01-26 12:28:21,066 - INFO - Final Test Loss: 0.00906824750788912
+2024-01-26 12:28:21,072 - INFO - Training statistics saved to checkpoint_ir_0_20240126_000105

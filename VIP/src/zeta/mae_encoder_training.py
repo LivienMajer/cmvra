@@ -117,9 +117,6 @@ def validate(model, val_loader, device, config):
 
    
 def mae_training(model, train_data, val_data, test_data, device, config):
-    
-    
-    #scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5)
 
     optimizer = optim.Adam(model.parameters(), lr=config['learning_rate'])
     scheduler = create_scheduler(optimizer, config)

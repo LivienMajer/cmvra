@@ -192,7 +192,7 @@ def clear_memory():
     gc.collect()
     torch.cuda.empty_cache()
 
-def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg):
+def train_mae_classifier2(encoder, classifier, train_data, val_data, test_data, device, cfg):
     logging.info("Starting feature extraction...")
     train_features, train_labels = extract_features(encoder, train_data, device=device, cfg=cfg)
     val_features, val_labels = extract_features(encoder, val_data, device=device, cfg=cfg)
@@ -204,6 +204,7 @@ def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, d
     # Create the weighted loss function
     criterion = nn.CrossEntropyLoss()
     if cfg['dataset'] == 'DAA':
+        logging.info("Applying balance loss")
         class_counts = torch.bincount(train_labels)
         class_weights = 1. / class_counts
         class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
@@ -216,7 +217,7 @@ def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, d
 
     # Evaluate the classifier
     test_acc, balanced_test_acc = evaluate_classifier(classifier, test_features, test_labels, batch_size=cfg['batch_size'], device=device)
-    logging.info(f"Final unblanced Test Accuracy: {test_acc}% and final balance Test Accuracy {balanced_test_acc}")
+    logging.info(f"Final unblanced test accuracy: {test_acc}% and final balanced test accuracy {balanced_test_acc}")
 
 def extract_features(model, dataloader, device, cfg):
     model.eval()
@@ -271,7 +272,7 @@ def train_classifier(classifier, features, val_features, labels, val_labels, cri
         
         if epoch % 10 == 0:
             val_accuracy, balanced_val_acc = evaluate_classifier(classifier, val_features, val_labels, batch_size, device)
-            logging.info(f'Validation Accuracy after Epoch {epoch+1}: {val_accuracy}% and balanced Validation Accuracy: {balanced_val_acc}')
+            logging.info(f'Validation accuracy after epoch {epoch+1}: {val_accuracy}% and balanced validation accuracy: {balanced_val_acc}')
 
 def evaluate_classifier(classifier, features, labels, batch_size, device):
     classifier.eval()
@@ -292,7 +293,10 @@ def evaluate_classifier(classifier, features, labels, batch_size, device):
 
             all_predictions.extend(predicted.cpu().numpy())
             all_labels.extend(batch_labels.cpu().numpy())
-
+    #unique_predictions = np.unique(all_predictions)
+    #unique_labels = np.unique(all_labels)
+    #print(f"Unique predicted classes: {unique_predictions}")
+    #print(f"Unique true classes: {unique_labels}")
     accuracy = 100 * sum(np.array(all_predictions) == np.array(all_labels)) / len(all_labels)
     balanced_acc = 100 * balanced_accuracy_score(all_labels, all_predictions)
     return accuracy, balanced_acc
@@ -322,3 +326,181 @@ def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_load
     
     avg_val_accuracies = {modality: accuracies[modality] / len(test_loader) for modality in accuracies}
     logging.info(avg_val_accuracies)
+
+
+
+
+
+
+
+####################################################
+# saving step
+def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg, save_dir='/home/bas06400/Thesis/VIP/src/features'):
+    logging.info("Starting feature extraction...")
+    num_train_files = extract_features2(encoder, train_data, device, cfg, 'train', 10, save_dir)
+    num_val_files = extract_features2(encoder, val_data, device, cfg, 'val', 10, save_dir)
+    num_test_files = extract_features2(encoder, test_data, device, cfg, 'test', 10, save_dir)
+    
+    
+    
+    # Create the weighted loss function
+    criterion = nn.CrossEntropyLoss()
+    if cfg['dataset'] == 'DAA':
+        logging.info("Applying balanced loss")
+        class_counts = calculate_class_counts('train', num_train_files, save_dir)
+        class_weights = 1. / class_counts.float()
+        class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
+        criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+
+    optimizer = optim.Adam(classifier.parameters(), lr=cfg['learning_rate'])
+
+    train_classifier2(classifier, 'train', num_train_files, num_val_files, criterion, optimizer, cfg['epochs'], cfg['batch_size'], device, save_dir)
+    test_acc, balanced_test_acc = evaluate_classifier2(classifier, 'test', num_test_files, cfg['batch_size'], device, save_dir)
+
+    # Cleaning up files
+    delete_feature_files('train', num_train_files, save_dir)
+    delete_feature_files('val', num_val_files, save_dir)
+    delete_feature_files('test', num_test_files, save_dir)
+
+    logging.info(f"Final unblanced test accuracy: {test_acc}% and final balanced test accuracy {balanced_test_acc}")
+
+def calculate_class_counts(file_prefix, num_files, save_dir):
+    all_labels = []
+
+    # Loop over all files to concatenate labels
+    for file_index in range(num_files):
+        label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+        labels = torch.load(label_file)
+        all_labels.append(labels)
+
+    # Concatenate all labels into a single tensor
+    all_labels_concatenated = torch.cat(all_labels, dim=0)
+
+    # Perform bincount on the concatenated labels
+    total_counts = torch.bincount(all_labels_concatenated)
+
+    return total_counts
+
+
+def extract_features2(model, dataloader, device, cfg, file_prefix, batches_per_file, save_dir):
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    model.eval()
+    features = []
+    labels = []
+    batch_count = 0
+    file_index = 0
+
+    with torch.no_grad():
+        for data, label in tqdm(dataloader, desc="Extracting features"):
+            inputs = data[cfg['modalities'][0]]
+            inputs = inputs.to(device)
+            feature = model(inputs.permute(0,2,1,3,4))
+            features.append(feature[0].cpu())
+            labels.append(label)
+
+            batch_count += 1
+            if batch_count >= batches_per_file:
+                feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+                label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+                torch.save(torch.cat(features, dim=0), feature_file)
+                torch.save(torch.cat(labels, dim=0), label_file)
+                features = []
+                labels = []
+                file_index += 1
+                batch_count = 0
+
+        # Save remaining data if any
+        if features:
+            feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+            label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+            torch.save(torch.cat(features, dim=0), feature_file)
+            torch.save(torch.cat(labels, dim=0), label_file)
+
+         #Return the number of files created
+    return file_index + 1 if features else file_index
+
+def delete_feature_files(file_prefix, num_files, save_dir):
+    for file_index in range(num_files):
+        feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+        label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+        if os.path.exists(feature_file):
+            os.remove(feature_file)
+        if os.path.exists(label_file):
+            os.remove(label_file)
+
+def train_classifier2(classifier, file_prefix, num_files, num_val_files, criterion, optimizer, num_epochs, batch_size, device, save_dir):
+    classifier.train()
+    
+    for epoch in range(num_epochs):
+        total_loss = 0
+        total_correct = 0
+        total_samples = 0
+
+        for file_index in range(num_files):
+            feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+            label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+            features = torch.load(feature_file)
+            labels = torch.load(label_file)
+            num_samples = features.size(0)
+            num_batches = (num_samples + batch_size - 1) // batch_size
+
+            for i in range(num_batches):
+                start = i * batch_size
+                end = min(start + batch_size, num_samples)
+                batch_features = features[start:end].to(device)
+                batch_labels = labels[start:end].to(device)
+
+                optimizer.zero_grad()
+                outputs = classifier(batch_features)
+                loss = criterion(outputs, batch_labels)
+                loss.backward()
+                optimizer.step()
+
+                total_loss += loss.item()
+                _, predicted = torch.max(outputs.data, 1)
+                total_correct += (predicted == batch_labels).sum().item()
+                total_samples += batch_labels.size(0)
+
+        epoch_loss = total_loss / (num_batches * num_files)
+        epoch_accuracy = 100 * total_correct / total_samples
+        logging.info(f'Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss}, Accuracy: {epoch_accuracy}%')
+        if epoch % 10 == 0:
+            val_accuracy, balanced_val_acc = evaluate_classifier2(classifier, 'val', num_val_files, batch_size, device, save_dir)
+            
+
+
+def evaluate_classifier2(classifier, file_prefix, num_files, batch_size, device, save_dir, mode='test'):
+    classifier.eval()
+    all_predictions = []
+    all_labels = []
+
+    for file_index in range(num_files):
+        feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+        label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+        features = torch.load(feature_file)
+        labels = torch.load(label_file)
+        num_samples = features.size(0)
+        num_batches = (num_samples + batch_size - 1) // batch_size
+
+        with torch.no_grad():
+            for i in range(num_batches):
+                start = i * batch_size
+                end = min(start + batch_size, num_samples)
+                batch_features = features[start:end].to(device)
+                batch_labels = labels[start:end].to(device)
+
+                outputs = classifier(batch_features)
+                _, predicted = torch.max(outputs.data, 1)
+
+                all_predictions.extend(predicted.cpu().numpy())
+                all_labels.extend(batch_labels.cpu().numpy())
+
+    accuracy = 100 * sum(np.array(all_predictions) == np.array(all_labels)) / len(all_labels)
+    balanced_acc = 100 * balanced_accuracy_score(all_labels, all_predictions)
+    if mode == 'test':
+        logging.info(f'Test Accuracy: {accuracy}%, Balanced Test Accuracy: {balanced_acc}%')
+    elif mode == 'val':
+        logging.info(f'Validation Accuracy: {accuracy}%, Balanced Validation Accuracy: {balanced_acc}%')
+    return accuracy, balanced_acc

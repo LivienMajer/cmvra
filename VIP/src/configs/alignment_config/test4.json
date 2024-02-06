@@ -1,5 +1,6 @@
 {
     "task": "4",
+    "topic":"",
     "number_gpus": "1",
     "modalities": ["rgb","ir","depth", "skeleton"],
     "dataset":"NTU",

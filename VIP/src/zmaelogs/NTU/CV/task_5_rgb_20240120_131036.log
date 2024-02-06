@@ -1,0 +1,86 @@
+2024-01-20 13:10:36,855 - INFO - Configuration:
+{
+    "task": "5",
+    "train_classifier": true,
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "mask_ratio": 0.8,
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints",
+    "trained_encoder": "checkpoint_rgb_CV_20240118_052027.pth",
+    "learning_rate": 0.01,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "batch_size": 64,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}
+2024-01-20 13:10:36,903 - INFO - Training MAE for rgb...
+2024-01-20 13:10:36,950 - INFO - Evaluing on the following GPUs [0]
+2024-01-20 13:10:42,571 - INFO - Starting feature extraction...
+2024-01-20 13:44:57,783 - INFO - Validation Accuracy after Epoch 1: 2.3715415019762847% and balanced Validation Accuracy: 2.3611111111111107
+2024-01-20 13:45:02,740 - INFO - Validation Accuracy after Epoch 11: 2.1080368906455864% and balanced Validation Accuracy: 2.181279733911313
+2024-01-20 13:45:07,677 - INFO - Validation Accuracy after Epoch 21: 2.766798418972332% and balanced Validation Accuracy: 2.6971434997750787
+2024-01-20 13:45:12,605 - INFO - Validation Accuracy after Epoch 31: 2.635046113306983% and balanced Validation Accuracy: 2.791353383458646
+2024-01-20 13:45:17,471 - INFO - Validation Accuracy after Epoch 41: 3.4255599472990776% and balanced Validation Accuracy: 3.340541524752051
+2024-01-20 13:45:22,571 - INFO - Validation Accuracy after Epoch 51: 3.689064558629776% and balanced Validation Accuracy: 3.7716352847931796
+2024-01-20 13:45:27,595 - INFO - Validation Accuracy after Epoch 61: 2.898550724637681% and balanced Validation Accuracy: 2.7427397164239267
+2024-01-20 13:45:32,772 - INFO - Validation Accuracy after Epoch 71: 3.820816864295125% and balanced Validation Accuracy: 4.143407761828813
+2024-01-20 13:45:37,589 - INFO - Validation Accuracy after Epoch 81: 3.689064558629776% and balanced Validation Accuracy: 3.2185431527536794
+2024-01-20 13:45:42,507 - INFO - Validation Accuracy after Epoch 91: 3.820816864295125% and balanced Validation Accuracy: 3.8449781212939107
+2024-01-20 13:45:47,477 - INFO - Validation Accuracy after Epoch 101: 4.479578392621871% and balanced Validation Accuracy: 4.232670837933996
+2024-01-20 13:45:52,770 - INFO - Validation Accuracy after Epoch 111: 4.084321475625823% and balanced Validation Accuracy: 4.494725060514535
+2024-01-20 13:45:57,720 - INFO - Validation Accuracy after Epoch 121: 5.270092226613966% and balanced Validation Accuracy: 4.0897965123971325
+2024-01-20 13:46:02,922 - INFO - Validation Accuracy after Epoch 131: 4.084321475625823% and balanced Validation Accuracy: 4.023807089596564
+2024-01-20 13:46:07,856 - INFO - Validation Accuracy after Epoch 141: 4.216073781291173% and balanced Validation Accuracy: 4.643558196189774
+2024-01-20 13:46:13,087 - INFO - Validation Accuracy after Epoch 151: 4.084321475625823% and balanced Validation Accuracy: 3.600478468899522
+2024-01-20 13:46:18,309 - INFO - Validation Accuracy after Epoch 161: 4.743083003952569% and balanced Validation Accuracy: 3.9871444345128557
+2024-01-20 13:46:23,572 - INFO - Validation Accuracy after Epoch 171: 3.820816864295125% and balanced Validation Accuracy: 3.4147928095296516
+2024-01-20 13:46:28,332 - INFO - Validation Accuracy after Epoch 181: 5.006587615283268% and balanced Validation Accuracy: 4.299853168274221
+2024-01-20 13:46:33,145 - INFO - Validation Accuracy after Epoch 191: 3.2938076416337285% and balanced Validation Accuracy: 3.723196881091618
+2024-01-20 13:46:38,226 - INFO - Validation Accuracy after Epoch 201: 4.874835309617918% and balanced Validation Accuracy: 4.360702650176334
+2024-01-20 13:46:43,025 - INFO - Validation Accuracy after Epoch 211: 4.61133069828722% and balanced Validation Accuracy: 4.538935236303657
+2024-01-20 13:46:48,055 - INFO - Validation Accuracy after Epoch 221: 3.952569169960474% and balanced Validation Accuracy: 4.362364873974781
+2024-01-20 13:46:53,195 - INFO - Validation Accuracy after Epoch 231: 5.533596837944664% and balanced Validation Accuracy: 4.932935972409656
+2024-01-20 13:46:58,392 - INFO - Validation Accuracy after Epoch 241: 5.4018445322793145% and balanced Validation Accuracy: 4.837241705662758
+2024-01-20 13:47:03,550 - INFO - Validation Accuracy after Epoch 251: 5.006587615283268% and balanced Validation Accuracy: 4.397628687102371
+2024-01-20 13:47:08,866 - INFO - Validation Accuracy after Epoch 261: 4.3478260869565215% and balanced Validation Accuracy: 4.079070052754263
+2024-01-20 13:47:13,723 - INFO - Validation Accuracy after Epoch 271: 5.138339920948616% and balanced Validation Accuracy: 4.794389305225219
+2024-01-20 13:47:18,539 - INFO - Validation Accuracy after Epoch 281: 4.874835309617918% and balanced Validation Accuracy: 4.802173531662695
+2024-01-20 13:47:23,263 - INFO - Validation Accuracy after Epoch 291: 4.216073781291173% and balanced Validation Accuracy: 3.727766385661123
+2024-01-20 13:47:28,534 - INFO - Validation Accuracy after Epoch 301: 4.874835309617918% and balanced Validation Accuracy: 5.111563874721769
+2024-01-20 13:47:33,626 - INFO - Validation Accuracy after Epoch 311: 3.1620553359683794% and balanced Validation Accuracy: 3.7036077957130584
+2024-01-20 13:47:38,456 - INFO - Validation Accuracy after Epoch 321: 5.4018445322793145% and balanced Validation Accuracy: 4.915490941806732
+2024-01-20 13:47:43,191 - INFO - Validation Accuracy after Epoch 331: 4.3478260869565215% and balanced Validation Accuracy: 3.8005437688100234
+2024-01-20 13:47:48,236 - INFO - Validation Accuracy after Epoch 341: 5.270092226613966% and balanced Validation Accuracy: 4.55279916735025
+2024-01-20 13:47:53,113 - INFO - Validation Accuracy after Epoch 351: 4.084321475625823% and balanced Validation Accuracy: 4.535251298409193
+2024-01-20 13:47:57,987 - INFO - Validation Accuracy after Epoch 361: 5.533596837944664% and balanced Validation Accuracy: 5.039466868414237
+2024-01-20 13:48:03,337 - INFO - Validation Accuracy after Epoch 371: 4.743083003952569% and balanced Validation Accuracy: 3.9887871273320186
+2024-01-20 13:48:08,640 - INFO - Validation Accuracy after Epoch 381: 4.3478260869565215% and balanced Validation Accuracy: 4.09449402793056
+2024-01-20 13:48:13,764 - INFO - Validation Accuracy after Epoch 391: 5.006587615283268% and balanced Validation Accuracy: 5.1196987423767615
+2024-01-20 13:48:18,992 - INFO - Validation Accuracy after Epoch 401: 5.797101449275362% and balanced Validation Accuracy: 6.017131503973609
+2024-01-20 13:48:23,900 - INFO - Validation Accuracy after Epoch 411: 5.270092226613966% and balanced Validation Accuracy: 4.842780628384344
+2024-01-20 13:48:29,109 - INFO - Validation Accuracy after Epoch 421: 5.006587615283268% and balanced Validation Accuracy: 4.417931140067363
+2024-01-20 13:48:34,111 - INFO - Validation Accuracy after Epoch 431: 4.084321475625823% and balanced Validation Accuracy: 4.33769850720315
+2024-01-20 13:48:39,205 - INFO - Validation Accuracy after Epoch 441: 5.138339920948616% and balanced Validation Accuracy: 4.726699541715021
+2024-01-20 13:48:43,973 - INFO - Validation Accuracy after Epoch 451: 6.19235836627141% and balanced Validation Accuracy: 5.287154366101735
+2024-01-20 13:48:48,845 - INFO - Validation Accuracy after Epoch 461: 4.216073781291173% and balanced Validation Accuracy: 4.848968111352013
+2024-01-20 13:48:53,422 - INFO - Validation Accuracy after Epoch 471: 4.479578392621871% and balanced Validation Accuracy: 4.465613820876978
+2024-01-20 13:48:58,010 - INFO - Validation Accuracy after Epoch 481: 6.19235836627141% and balanced Validation Accuracy: 5.348645334713447
+2024-01-20 13:49:03,161 - INFO - Validation Accuracy after Epoch 491: 4.743083003952569% and balanced Validation Accuracy: 4.629560641170549
+2024-01-20 13:49:07,712 - INFO - Final unblanced Test Accuracy: 3.7025316455696204% and final balance Test Accuracy 3.7025316455696204

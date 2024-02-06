@@ -1,18 +1,20 @@
 {
     "task": "2",
+    "topic":"120",
     "number_gpus": "1",
     "modalities": [
         "ir"
     ],
-    "dataset": "NTU",
+    "encoder_model":"CLIP-VIP",
+    "dataset": "NTU120",
     "split": "CV",
-    "num_classes": 60,
+    "num_classes": 120,
     "in_features": 512,
     "full_train_classifiers": false,
     "epochs": 5,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
-    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_CV_20240108_152034.pth",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240202_175805.pth",
     "learning_rate": 0.0001,
     "temperature": 0.1,
     "num_workers": 10,

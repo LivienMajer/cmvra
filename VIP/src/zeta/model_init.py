@@ -365,14 +365,14 @@ def init_mae_model(gpus, config):
     # Loading Decoder weights
     for key, value in pretrained_state_dict.items():
         if key.startswith('trunk.decoder.'):
-            new_key = key.replace('trunk.decoder.', 'decoder')  
+            new_key = key.replace('trunk.decoder.', 'decoder.')  #####do never forget to set a . dumb fuck 
             if new_key in model.state_dict():
                 model.state_dict()[new_key].copy_(value)
     model = model.cuda(sorted(gpus)[0])
     
     return torch.nn.DataParallel(model, device_ids=sorted(gpus))
 
-def init_mae_encoder(cfg):
+def init_mae_encoder(cfg, device, return_class=True):
     encoder = VisionTransformer(
         img_size=[3, 16, 224, 224],
         patch_size=[2, 16, 16],
@@ -419,9 +419,12 @@ def init_mae_encoder(cfg):
         mask_token_embed_dim=None,
         )
     checkpoint_path = os.path.join(cfg['cktp_dir'], cfg['trained_encoder'])
-    encoder.load_state_dict(torch.load(checkpoint_path),strict=False)
+    encoder.load_state_dict(torch.load(checkpoint_path, map_location=f'cuda:{device}')['model_state_dict'], strict=False)
     classifier = LinearClassifier(cfg.get('input_dim', 768), cfg['num_classes'], )
-    return encoder, classifier
+    if return_class == True:
+        return encoder, classifier
+    else:
+        return encoder
 
 class LinearClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):

@@ -1,21 +1,20 @@
 {
     "task": "2",
+    "topic":"",
     "number_gpus": "1",
     "modalities": [
-        "rgb",
-        "ir",
-        "depth",
-        "skeleton"
+        "depth"
     ],
+    "encoder_model":"CLIP-VIP",
     "dataset": "DAA",
-    "split": "0",
+    "split": "1",
     "num_classes": 34,
     "in_features": 512,
     "full_train_classifiers": false,
     "epochs": 10,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
-    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_CV_20240108_152034.pth",
+    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_1_20240120_135017.pth",
     "learning_rate": 0.0001,
     "temperature": 0.1,
     "num_workers": 10,

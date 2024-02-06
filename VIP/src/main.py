@@ -70,7 +70,7 @@ def parse_args():
 def setup_logging(config):
     modalities_str = '_'.join(config['modalities'])
     current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = f'task_{config["task"]}_{modalities_str}_{current_time}.log'
+    log_file = f'task_{config["task"]}_{modalities_str}_{current_time}_{config["topic"]}.log'
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         handlers=[
@@ -285,7 +285,6 @@ def eval_text_encoder(train_data,
 # task 5 train Mae Encoder
 def train_Mae_Encoder(train_data, val_data, test_data, config):
     logging.info(f"Training MAE for {config['modalities'][0]}...")
-    # Your code for task 4
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
     logging.info(f"Evaluing on the following GPUs {selected_gpu_ids}")
     if len(config['modalities']) > 1:
@@ -294,7 +293,7 @@ def train_Mae_Encoder(train_data, val_data, test_data, config):
     
     if config['train_classifier'] == True:
         device = sorted(selected_gpu_ids)[0] 
-        encoder , classifier = init_mae_encoder(config)
+        encoder , classifier = init_mae_encoder(config, device)
         train_mae_classifier(encoder.to(device), 
                              classifier.to(device), 
                              train_data, 

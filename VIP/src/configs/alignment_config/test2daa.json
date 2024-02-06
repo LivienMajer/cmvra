@@ -1,12 +1,16 @@
 {
     "task": "1",
+    "topic":"",
     "number_gpus": "2",
     "modalities": [
         "rgb",
+        "ir",
+        "depth",
         "skeleton"
     ],
+    "encoder_model":"CLIP-VIP",
     "dataset": "DAA",
-    "split": "0",
+    "split": "2",
     "overfit_on_one_batch": false,
     "num_classes": 34,
     "in_features": 512,
@@ -27,7 +31,7 @@
     "num_workers": 10,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
-    "batch_size": 32,
+    "batch_size": 8,
     "random_sample": false,
     "pin_memory": true,
     "clip_config": "openai/clip-vit-base-patch16",

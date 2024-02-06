@@ -1,0 +1,65 @@
+2024-01-30 19:38:14,202 - INFO - Configuration:
+{
+    "task": "5",
+    "topic": "mae_base_CS",
+    "train_classifier": false,
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "encoder_model": "MAE",
+    "mask_ratio": 0.8,
+    "dataset": "NTU",
+    "split": "CS",
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints",
+    "trained_encoder": "checkpoint_rgb_CV_20240118_052027.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "batch_size": 8,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}
+2024-01-30 19:38:14,278 - INFO - Training MAE for rgb...
+2024-01-30 19:38:14,438 - INFO - Evaluing on the following GPUs [6]
+2024-01-30 20:11:08,054 - INFO - Epoch: 0, Average Training Loss: 0.18943668814443868
+2024-01-30 20:11:36,882 - INFO - Epoch: 0, Validation Training Loss: 0.09149333628097384
+2024-01-30 20:11:46,336 - INFO - Saved checkpoint at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 20:45:14,811 - INFO - Epoch: 1, Average Training Loss: 0.0722823899887834
+2024-01-30 20:45:42,219 - INFO - Epoch: 1, Validation Training Loss: 0.06336379029078058
+2024-01-30 20:45:54,742 - INFO - Saved checkpoint at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 21:20:08,788 - INFO - Epoch: 2, Average Training Loss: 0.05644577275735405
+2024-01-30 21:20:32,812 - INFO - Epoch: 2, Validation Training Loss: 0.05316375992675819
+2024-01-30 21:20:42,782 - INFO - Saved checkpoint at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 21:53:10,140 - INFO - Epoch: 3, Average Training Loss: 0.0492933535669376
+2024-01-30 21:53:33,127 - INFO - Epoch: 3, Validation Training Loss: 0.04713836817605661
+2024-01-30 21:53:44,502 - INFO - Saved checkpoint at epoch 3 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 22:27:03,326 - INFO - Epoch: 4, Average Training Loss: 0.045191412917922745
+2024-01-30 22:27:27,521 - INFO - Epoch: 4, Validation Training Loss: 0.04325927030479554
+2024-01-30 22:29:31,910 - INFO - Saved checkpoint at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 23:05:17,738 - INFO - Epoch: 5, Average Training Loss: 0.042115868683829
+2024-01-30 23:05:39,667 - INFO - Epoch: 5, Validation Training Loss: 0.04222785771852083
+2024-01-30 23:05:49,943 - INFO - Saved checkpoint at epoch 5 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-30 23:38:08,699 - INFO - Epoch: 6, Average Training Loss: 0.040352380231988096
+2024-01-30 23:38:31,635 - INFO - Epoch: 6, Validation Training Loss: 0.03995928339807704
+2024-01-30 23:38:41,938 - INFO - Saved checkpoint at epoch 6 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-31 00:12:12,234 - INFO - Epoch: 7, Average Training Loss: 0.038770405631814046
+2024-01-31 00:12:35,063 - INFO - Epoch: 7, Validation Training Loss: 0.03834557662358378
+2024-01-31 00:12:45,654 - INFO - Saved checkpoint at epoch 7 to /home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/checkpoint_rgb_CS_20240130_193828.pth
+2024-01-31 00:45:04,450 - INFO - Epoch: 8, Average Training Loss: 0.037327426242517676
+2024-01-31 00:45:29,470 - INFO - Epoch: 8, Validation Training Loss: 0.038533516799901975
+2024-01-31 01:20:17,958 - INFO - Epoch: 9, Average Training Loss: 0.03672137497754594
+2024-01-31 01:20:42,572 - INFO - Epoch: 9, Validation Training Loss: 0.03886971716759818
+2024-01-31 01:32:32,866 - INFO - Final Test Loss: 0.043229764841209
+2024-01-31 01:32:32,873 - INFO - Training statistics saved to checkpoint_rgb_CS_20240130_193828
