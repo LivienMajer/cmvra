@@ -10,8 +10,9 @@ import json
 import logging
 from glob import glob
 import math
-from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import numpy as np
+import shutil
 
 
 def train_classefier_process(multi_modality_model, device, train_loader, val_loader, test_loader, config):
@@ -191,7 +192,433 @@ def compute_accuracy(predictions, labels):
 def clear_memory():
     gc.collect()
     torch.cuda.empty_cache()
+##############################################
+class MultiModalityClassifierTrainer:
+    def __init__(self, multi_modality_model, device, train_loader, val_loader, test_loader, config):
+        self.model = multi_modality_model
+        self.device = device
+        self.train_loader = train_loader
+        self.val_loader = val_loader
+        self.test_loader = test_loader
+        self.cfg = config
+        self.start_epoch = 0
+        self.batches_per_file = 10
+        self.modalities = '_'.join(self.cfg['modalities'])
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.cfg['learning_rate'])
+        self.criterion = torch.nn.CrossEntropyLoss()
+        if config['dataset'] == 'DAA':
+            logging.info("Applying balance loss")
+            accumulated_labels = []
+            for _, label in tqdm(train_loader, desc="Extracting labels"):
+                accumulated_labels.append(label)
+            # Stack the accumulated label tensors into a single tensor
+            all_labels = torch.cat(accumulated_labels)
+            class_counts = torch.bincount(all_labels)
+            class_weights = 1. / class_counts
+            class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
+            self.criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+        self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=int(math.floor(self.cfg['epochs'] * 0.4)), gamma=0.5)
+        self.best_val_loss = float('inf')
+        stats_keys = ['train_loss', 'train_accuracy', 'val_loss', 'val_accuracy', 'train_balanced_accuracy', 'val_balanced_accuracy']
+        self.training_stats = {key: {modality: [] for modality in config['modalities']} for key in stats_keys}
+        self.training_stats['epochs'] = []
+        self.save_dir = config.get('feature_save_dir','/home/bas06400/Thesis/VIP/src/features')
+        self.initialize_training()
 
+    def initialize_training(self):
+        # Setup checkpoint directory, filename, stats path, etc.
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        checkpoint_filename = f"checkpoint_{self.modalities}_{self.cfg['encoder_model']}_{self.cfg['dataset']}_{self.cfg['split']}_{timestamp}.pth"
+        self.checkpoint_path = os.path.join(self.cfg['cktp_dir'], 'classifier_checkpoints/', checkpoint_filename)
+        self.stats_path = os.path.join(self.cfg['cktp_dir'], f"stats_{self.modalities}_{timestamp}.json")
+        if self.cfg['res_cktp']:
+            self.resume_from_checkpoint()
+
+    def process_epoch(self, epoch, mode='train'):
+        if mode == 'train':
+            self.model.train()
+        else:
+            self.model.eval()
+
+        modality_metrics = {modality: {'total_loss': 0, 'predictions': [], 'labels': []} for modality in self.cfg['modalities']}
+        #total_batches_processed = 0
+
+        for modality in self.cfg['modalities']:
+            file_prefix1 = f"{mode}"
+            file_prefix2 = f"{mode}_{modality}"
+            num_files = self.cfg['num_files'][modality][mode]
+            #print(f'num_files {num_files}')
+
+            for file_index in range(num_files):
+                feature_file = os.path.join(self.save_dir, file_prefix1,f"{file_prefix2}_features_{file_index}.pt")
+                label_file = os.path.join(self.save_dir, file_prefix1,f"{file_prefix2}_labels_{file_index}.pt")
+                features = torch.load(feature_file).to(self.device)
+                labels = torch.load(label_file).to(self.device)
+                #print(f'feature_size {features.shape}')
+                for start in range(0, features.size(0), self.cfg['batch_size']):
+                    
+                    end = start + self.cfg['batch_size']
+                    batch_features = features[start:end]
+                    batch_labels = labels[start:end]
+
+                    if mode == 'train':
+                        self.optimizer.zero_grad()
+
+                    outputs = self.model.module.forward_classifier_only(modality ,batch_features)
+                    loss = self.criterion(outputs, batch_labels)
+
+                    if mode == 'train':
+                        loss.backward()
+                        self.optimizer.step()
+
+                    modality_metrics[modality]['total_loss'] += loss.item()
+                    _, predicted = torch.max(outputs.data, 1)
+                    modality_metrics[modality]['predictions'].extend(predicted.cpu().numpy())
+                    modality_metrics[modality]['labels'].extend(batch_labels.cpu().numpy())
+                    #total_batches_processed += 1  # Increment the batch counter
+
+        # Log the total number of batches processed for this epoch and mode
+        #logging.info(f'Epoch {epoch+1}, {mode.capitalize()} - Total Batches Processed: {total_batches_processed}')
+
+
+        # After processing all batches, calculate and log metrics for each modality
+        for modality, metrics in modality_metrics.items():
+            accuracy = accuracy_score(metrics['labels'], metrics['predictions'])
+            balanced_acc = balanced_accuracy_score(metrics['labels'], metrics['predictions'])
+            logging.info(f'Epoch {epoch+1}, {mode.capitalize()} {modality} - Loss: {metrics["total_loss"] / len(metrics["labels"]):.4f}, '
+                         f'Accuracy: {accuracy:.4f}, Balanced Accuracy: {balanced_acc:.4f}')
+
+        epoch_metrics = {
+            modality: {
+                'loss': metrics['total_loss'] / len(metrics['labels']),
+                'accuracy': accuracy_score(metrics['labels'], metrics['predictions']),
+                'balanced_accuracy': balanced_accuracy_score(metrics['labels'], metrics['predictions'])
+            } for modality, metrics in modality_metrics.items()
+        }
+
+        return epoch_metrics
+
+
+    def train(self):
+        if self.cfg['res_cktp']:
+            self.resume_from_checkpoint()
+        else:
+            if not self.cfg['full_train_classifiers']:
+                self.extract_and_save_all_features()
+            else:
+                logging.info("Full Training enabled")
+        for epoch in range(self.start_epoch, self.cfg['epochs']):
+            if not self.cfg['full_train_classifiers']:
+                train_metrics = self.process_epoch(epoch, mode='train')
+                val_metrics = self.process_epoch(epoch, mode='val')
+            else:
+                train_metrics = self.process_epoch_full_training(epoch, mode='train')
+                val_metrics = self.process_epoch_full_training(epoch, mode='val')
+            # Here, process_epoch should return metrics in a structure that update_training_stats expects
+            self.update_training_stats(epoch, train_metrics, val_metrics)
+
+            overall_val_loss = sum(val_metrics[modality]['loss'] for modality in self.cfg['modalities']) / len(self.cfg['modalities'])
+            if overall_val_loss < self.best_val_loss:
+                self.best_val_loss = overall_val_loss
+                self.save_checkpoint(epoch)
+
+            self.lr_scheduler.step()
+
+        self.save_training_stats()
+        self.resume_from_checkpoint()
+        self.evaluate_test_set()
+        self.delete_saved_features_dir()
+
+    def process_epoch_full_training(self, epoch, mode='train'):
+        if mode == 'train':
+            self.model.train()
+            dataloader = self.train_loader  # Assuming self.train_loader is your training dataloader
+        elif mode == 'val':
+            self.model.eval()
+            dataloader = self.val_loader  # Assuming self.val_loader is your validation dataloader
+        elif mode == 'test':
+            self.model.eval()
+            dataloader = self.test_loader  # Assuming self.test_loader is your test dataloader
+        else:
+            raise ValueError("Invalid mode. Expected one of: 'train', 'val', 'test'.")
+        modality_metrics = {modality: {'total_loss': 0, 'predictions': [], 'labels': []} for modality in self.cfg['modalities']}
+        
+        with torch.no_grad() if mode != 'train' else torch.enable_grad():
+            for batch_data, batch_labels in tqdm(dataloader, desc=f"Epoch {epoch+1} - {mode.capitalize()}"):
+                for modality in self.cfg['modalities']:
+                    if modality in self.model.module.modalities_encoders:
+                        inputs = batch_data[modality].to(self.device)
+                        labels = batch_labels.to(self.device)
+
+                        
+                        if self.cfg['encoder_model'] in ['CLIP-VIP', 'MAE']:
+                            if self.cfg['encoder_model'] == 'MAE':
+                                inputs = inputs.permute(0, 2, 1, 3, 4)  
+                            outputs = self.model.module.forward_classifier(modality, inputs)
+                        elif self.cfg['encoder_model'] == 'MIX':
+                            encoder_type = self.cfg['modalities_encoders'][modality]
+                            inputs = self.preprocess_data(inputs, modality, encoder_type)  # Preprocess based on mixed encoder type
+                            outputs = self.model.module.forward_classifier(modality, inputs)
+                        else:
+                            logging.info(f"Unsupported encoder model: {self.cfg['encoder_model']}")
+                            continue
+
+                        loss = self.criterion(outputs, labels)
+
+                        if mode == 'train':
+                            self.optimizer.zero_grad()
+                            loss.backward()
+                            self.optimizer.step()
+
+                        modality_metrics[modality]['total_loss'] += loss.item()
+                        _, predicted = torch.max(outputs.data, 1)
+                        modality_metrics[modality]['predictions'].extend(predicted.cpu().numpy())
+                        modality_metrics[modality]['labels'].extend(labels.cpu().numpy())
+
+        # Calculate and log metrics for each modality
+        for modality, metrics in modality_metrics.items():
+            accuracy = accuracy_score(metrics['labels'], metrics['predictions'])
+            balanced_acc = balanced_accuracy_score(metrics['labels'], metrics['predictions'])
+            logging.info(f'Epoch {epoch+1}, {mode.capitalize()} {modality} - Loss: {metrics["total_loss"] / len(metrics["labels"]):.4f}, '
+                        f'Accuracy: {accuracy:.4f}, Balanced Accuracy: {balanced_acc:.4f}')
+
+        epoch_metrics = {
+            modality: {
+                'loss': metrics['total_loss'] / len(metrics["labels"]),
+                'accuracy': accuracy_score(metrics['labels'], metrics['predictions']),
+                'balanced_accuracy': balanced_accuracy_score(metrics['labels'], metrics['predictions'])
+            } for modality, metrics in modality_metrics.items()
+        }
+
+        return epoch_metrics
+
+
+    def evaluate_test_set(self):
+        if not self.cfg['full_train_classifiers']:
+            test_metrics = self.process_epoch(0, mode='test')
+        else:
+            test_metrics = self.process_epoch_full_training(0, mode='test')
+
+    def update_training_stats(self, epoch, train_metrics, val_metrics):
+        self.training_stats["epochs"].append(epoch)
+        for modality in self.cfg['modalities']:
+            # Ensure initialization for each modality if not already done
+            for key in ["train_loss", "train_accuracy", "train_balanced_accuracy", "val_loss", "val_accuracy", "val_balanced_accuracy"]:
+                if modality not in self.training_stats[key]:
+                    self.training_stats[key][modality] = []
+            
+            # Update training stats with metrics from process_epoch
+            self.training_stats["train_loss"][modality].append(train_metrics[modality]['loss'])
+            self.training_stats["train_accuracy"][modality].append(train_metrics[modality]['accuracy'])
+            self.training_stats["train_balanced_accuracy"][modality].append(train_metrics[modality]['balanced_accuracy'])
+            
+            self.training_stats["val_loss"][modality].append(val_metrics[modality]['loss'])
+            self.training_stats["val_accuracy"][modality].append(val_metrics[modality]['accuracy'])
+            self.training_stats["val_balanced_accuracy"][modality].append(val_metrics[modality]['balanced_accuracy'])
+
+    def retrieve_extracted_file_counts(self):
+        """
+        Scans the feature save directories for each modality and dataset mode
+        to update the self.cfg['num_files'] dictionary with the actual number of
+        extracted feature files present.
+        """
+        # Initialize num_files if not present
+        num_files = self.cfg.get('num_files', {})
+        if not num_files:
+            self.cfg['num_files'] = {modality: {'train': 0, 'val': 0, 'test': 0} for modality in self.cfg['modalities']}
+        for mode in ['train', 'val', 'test']:
+            for modality in self.cfg['modalities']:
+                # Construct the directory path for the current mode and modality
+                dir_path = os.path.join(self.save_dir, mode)
+                # Pattern to match files for the current modality
+                file_pattern = f"{mode}_{modality}_features_*.pt"
+                # List all matching feature files
+                feature_files = glob(os.path.join(dir_path, file_pattern))
+                # Update the count in self.cfg['num_files']
+                self.cfg['num_files'][modality][mode] = len(feature_files)
+
+        logging.info("Updated file counts from saved features.")
+
+    def resume_from_checkpoint(self, specific_checkpoint_path=None):
+        """
+        Resumes training from a specific checkpoint or the latest best checkpoint.
+
+        Args:
+            specific_checkpoint_path (str, optional): Path to a specific checkpoint file to resume from. 
+                                                       If None, resumes from the latest best checkpoint.
+        """
+        checkpoint_path = specific_checkpoint_path
+        if checkpoint_path is None:
+            checkpoint_path = self.find_latest_checkpoint()
+
+        if checkpoint_path and os.path.isfile(checkpoint_path):
+            logging.info(f"Loading checkpoint: {checkpoint_path}")
+            checkpoint = torch.load(checkpoint_path, map_location=f"cuda:{self.device}")
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.start_epoch = checkpoint.get('epoch', self.start_epoch)
+            self.best_val_loss = checkpoint.get('best_val_loss', self.best_val_loss)
+            # Optionally, also restore LR scheduler state
+            if 'lr_scheduler_state_dict' in checkpoint:
+                self.lr_scheduler.load_state_dict(checkpoint['lr_scheduler_state_dict'])
+            logging.info(f"Resumed from checkpoint: {checkpoint_path}")
+            self.retrieve_extracted_file_counts()
+        else:
+            logging.error("No checkpoint found to resume from. Starting the Classifier training from scratch")
+            self.retrieve_extracted_file_counts()
+
+    def find_latest_checkpoint(self):
+        """
+        Finds the latest (best) checkpoint file in the checkpoint directory.
+
+        Returns:
+            str: Path to the latest checkpoint file, or None if no checkpoint found.
+        """
+        checkpoint_dir = os.path.join(self.cfg['cktp_dir'], 'classifier_checkpoints')
+        list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{self.modalities}_{self.cfg["encoder_model"]}_{self.cfg["dataset"]}_{self.cfg["split"]}_*.pth'))
+        if list_of_files:
+            latest_checkpoint = max(list_of_files, key=os.path.getctime)
+            return latest_checkpoint
+        return None
+    
+    def save_training_stats(self):
+        """
+        Saves the training statistics to a JSON file.
+        """
+        with open(self.stats_path, 'w') as f:
+            json.dump(self.training_stats, f, indent=4)
+        logging.info(f"Training statistics saved to {self.stats_path}")
+
+    def extract_and_save_all_features(self):
+        """
+        Extracts and saves features for training, validation, and test datasets.
+
+        Args:
+            batches_per_file (int): Number of batches to aggregate before saving to disk.
+            save_dir (str): Base directory to save extracted features.
+        """
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
+
+        # Initialize or reset the num_files dictionary
+        self.cfg['num_files'] = {modality: {'train': 0, 'val': 0, 'test': 0} for modality in self.cfg['modalities']}
+
+        # Extract and save features for each dataset
+        for mode in ['train', 'val', 'test']:
+            loader = getattr(self, f"{mode}_loader", None)
+            if loader is not None:
+                num_files = self.extract_features_and_save(loader, self.cfg, mode, self.batches_per_file, os.path.join(self.save_dir, mode))
+                for modality in self.cfg['modalities']:
+                    # Update the num_files for each modality and mode
+                    self.cfg['num_files'][modality][mode] = num_files
+
+    def preprocess_data(self, inputs, modality, encoder_type):
+        # Implement preprocessing based on encoder type
+        if encoder_type == 'MAE':
+            return inputs.permute(0, 2, 1, 3, 4)  # Example for MAE
+        elif encoder_type == 'OMNIVORE':
+            return torch.cat((inputs, inputs[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+        return inputs  # Default case (e.g., CLIP-VIP and DINO do not need special preprocessing)
+    
+    def extract_features_and_save(self, dataloader, cfg, file_prefix, batches_per_file, save_dir):
+        # Ensure the save directory exists
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        self.model.eval()
+        batch_count = 0
+        file_index = 0
+
+        # Assert that every modality in cfg['modalities'] has an entry in cfg['modalities_encoders'] when using 'MIX'
+        if cfg['encoder_model'] == 'MIX':
+            assert all(modality in cfg['modalities_encoders'] for modality in cfg['modalities']), \
+                "Each modality in cfg['modalities'] must have a corresponding encoder in cfg['modalities_encoders'] when using 'MIX'."
+
+        # Containers for accumulating features and labels across batches
+        accumulated_features = {modality: [] for modality in cfg['modalities'] if modality in self.model.module.modalities_encoders}
+        accumulated_labels = []
+
+        with torch.no_grad():
+            for data, label in tqdm(dataloader, desc="Extracting features"):
+                for modality in cfg['modalities']:
+                    if modality in self.model.module.modalities_encoders:
+                        inputs = data[modality].to(self.device)
+
+                        # Adjust for different encoder models
+                        if cfg['encoder_model'] == 'CLIP-VIP':
+                            feature = self.model.module.forward_encoder(modality, inputs)
+                        elif cfg['encoder_model'] == 'MAE':
+                            feature = self.model.module.forward_encoder(modality, inputs.permute(0, 2, 1, 3, 4))
+                        elif cfg['encoder_model'] == 'MIX':
+                            inputs = self.preprocess_data(inputs, modality, cfg['modalities_encoders'][modality])
+                            feature = self.model.module.forward_encoder(modality, inputs)
+                        else:
+                            logging.info(f"Unsupported encoder model: {cfg['encoder_model']}")
+                            continue
+
+                        accumulated_features[modality].append(feature.cpu())
+
+                accumulated_labels.append(label)
+
+                batch_count += 1
+                if batch_count == batches_per_file:
+                    # Concatenate and save when batches_per_file is reached
+                    for modality, features_list in accumulated_features.items():
+                        concatenated_features = torch.cat(features_list, dim=0)
+                        concatenated_labels = torch.cat(accumulated_labels, dim=0)
+                        self._save_batch(concatenated_features, concatenated_labels, save_dir, f"{file_prefix}_{modality}", file_index)
+                    
+                    # Reset for next group of batches
+                    batch_count = 0
+                    file_index += 1
+                    accumulated_features = {modality: [] for modality in accumulated_features}
+                    accumulated_labels = []
+
+            # Check and save any remaining data not reaching batches_per_file
+            if batch_count > 0:  # This checks if there are unsaved features
+                for modality, features_list in accumulated_features.items():
+                    if features_list:  # Ensure there's data to save
+                        concatenated_features = torch.cat(features_list, dim=0)
+                        concatenated_labels = torch.cat(accumulated_labels, dim=0)
+                        self._save_batch(concatenated_features, concatenated_labels, save_dir, f"{file_prefix}_{modality}", file_index)
+
+        return file_index + 1 if batch_count > 0 else file_index
+
+    def _save_batch(self, features, labels, save_dir, file_prefix, file_index):
+        feature_file = os.path.join(save_dir, f"{file_prefix}_features_{file_index}.pt")
+        label_file = os.path.join(save_dir, f"{file_prefix}_labels_{file_index}.pt")
+        torch.save(features, feature_file)
+        torch.save(labels, label_file)
+
+
+    def delete_saved_features_dir(self):
+    # Check if the directory exists
+        if os.path.exists(self.save_dir):
+            # Use shutil.rmtree to delete the directory and all its contents
+            shutil.rmtree(self.save_dir)
+            print(f"Deleted the directory and all contents: {self.save_dir}")
+        else:
+            print(f"The directory does not exist: {self.save_dir}")
+   
+    def save_checkpoint(self, epoch):
+        """
+        Saves a checkpoint at the specified epoch.
+
+        Args:
+            epoch (int): The current epoch number.
+        """
+        checkpoint = {
+            'epoch': epoch + 1,  # Saving next epoch to start from
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'best_val_loss': self.best_val_loss,
+            'lr_scheduler_state_dict': self.lr_scheduler.state_dict()  # Optional: Save LR scheduler state
+        }
+        # Save checkpoint
+        torch.save(checkpoint, self.checkpoint_path)
+        logging.info(f"Checkpoint saved at epoch {epoch} to {self.checkpoint_path}")
+
+
+#################################################################################################################
 def train_mae_classifier2(encoder, classifier, train_data, val_data, test_data, device, cfg):
     logging.info("Starting feature extraction...")
     train_features, train_labels = extract_features(encoder, train_data, device=device, cfg=cfg)

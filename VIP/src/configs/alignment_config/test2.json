@@ -1,21 +1,29 @@
 {
     "task": "1",
-    "topic": "120",
+    "topic": "ft_on_daa",
     "number_gpus": "2",
+    "bind_to_rgb": true,
     "modalities": [
         "rgb",
-        "ir"
+        "depth"
     ],
-    "dataset": "NTU120",
-    "encoder_model": "CLIP-VIP",
-    "split": "CV",
+    "dataset": "DAA",
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "depth": "OMNIVORE"
+    },
+    "split": "0",
     "overfit_on_one_batch": false,
-    "num_classes": 60,
+    "num_classes": 34,
     "in_features": 512,
     "epochs": 10,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
-    "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
+    "trained_encoder": [
+        "checkpoint_rgb_0_20240124_002637.pth",
+        "checkpoint_ir_0_20240126_000105.pth"
+    ],
     "learning_rate": 0.0001,
     "gradient_accumulation_steps": 2,
     "scheduler_config": {
@@ -27,7 +35,6 @@
     },
     "temperature": 0.1,
     "num_workers": 10,
-    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
     "batch_size": 32,
     "random_sample": false,
@@ -41,5 +48,5 @@
         "logit_scale_init_value": 4.6,
         "add_cls_num": 3
     },
-    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/120CV_B32_model_step_17100.pt"
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/best_daa0_model_step_2076.pt"
 }

@@ -1,20 +1,26 @@
 {
     "task": "2",
-    "topic":"120",
+    "topic": "base_dino_full_learning",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features1",
     "number_gpus": "1",
     "modalities": [
+        "rgb",
         "ir"
     ],
-    "encoder_model":"CLIP-VIP",
-    "dataset": "NTU120",
-    "split": "CV",
-    "num_classes": 120,
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "ir": "DINO"
+    },
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
     "in_features": 512,
     "full_train_classifiers": false,
-    "epochs": 5,
+    "epochs": 500,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
-    "aligned_model": "checkpoint_rgb_ir_CV_20240202_175805.pth",
+    "aligned_model": "checkpoint_rgb_ir_0_20240219_115751.pth",
     "learning_rate": 0.0001,
     "temperature": 0.1,
     "num_workers": 10,

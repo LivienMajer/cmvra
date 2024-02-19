@@ -12,7 +12,8 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     # Set the seed for reproducibility
     input_frames_for_model = {
         'CLIP-VIP': 12,
-        'MAE': 16
+        'MAE': 16,
+        'MIX': 12
     }
     frame_count = input_frames_for_model[config['encoder_model']]
     

@@ -235,7 +235,7 @@ def start_training():
     model = setup_model(cfg, device=device)
 
     # Use DataParallel to wrap the model
-    model = torch.nn.DataParallel(model, device_ids=[0])
+    model = torch.nn.DataParallel(model, device_ids=[0,1,2,3])
     model.train()
 
     optimizer = setup_e2e_optimizer(model, cfg)

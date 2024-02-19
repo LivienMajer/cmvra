@@ -704,7 +704,7 @@ class VisionTransformer(nn.Module):
         elif self.classifier_feature == "global_pool" and (
             mask is None or self.decoder is None):
             x = x[:, self.first_patch_idx :, ...].mean(dim=1)
-        return x ,orig_input_shape, self.pos_embed
+        return x #,orig_input_shape, self.pos_embed
 
         print(f"this is the shape {x.shape}")
         if self.classifier_feature == "cls_token" and (

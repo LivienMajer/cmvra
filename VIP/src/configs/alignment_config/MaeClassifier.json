@@ -1,10 +1,10 @@
 {
     "task": "5",
-    "topic": "2_classifier",
+    "topic": "classifier",
     "train_classifier": true,
     "number_gpus": "1",
     "modalities": [
-        "rgb"
+        "depth"
     ],
     "encoder_model": "MAE",
     "mask_ratio": 0.8,

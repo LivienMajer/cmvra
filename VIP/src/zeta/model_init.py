@@ -1,6 +1,7 @@
 import json
 import torch
 import os
+import logging
 from easydict import EasyDict as edict
 from modeling.CLIP_ViP import CLIPVisionModel, CLIPVisionTransformer, CLIPTextModel, CLIPTextTransformer
 from transformers.models.clip.configuration_clip import CLIPConfig, CLIPVisionConfig, CLIPTextConfig
@@ -16,6 +17,7 @@ from modeling.vision_transformer import (
     PadIm2Video,
     VisionTransformer,
 )
+from modeling.omnivore import omnivore_swinB_imagenet21k
 from functools import partial
 from timm.models.layers import trunc_normal_
 
@@ -372,7 +374,7 @@ def init_mae_model(gpus, config):
     
     return torch.nn.DataParallel(model, device_ids=sorted(gpus))
 
-def init_mae_encoder(cfg, device, return_class=True):
+def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
     encoder = VisionTransformer(
         img_size=[3, 16, 224, 224],
         patch_size=[2, 16, 16],
@@ -418,13 +420,86 @@ def init_mae_encoder(cfg, device, return_class=True):
         decoder=None,
         mask_token_embed_dim=None,
         )
-    checkpoint_path = os.path.join(cfg['cktp_dir'], cfg['trained_encoder'])
-    encoder.load_state_dict(torch.load(checkpoint_path, map_location=f'cuda:{device}')['model_state_dict'], strict=False)
+    checkpoint_path = os.path.join(cfg['cktp_dir'], checkpoint)
+    # Check if the checkpoint file exists
+    if not os.path.isfile(checkpoint_path):
+        logging.info(f"Checkpoint '{checkpoint}' not found in '{cfg['cktp_dir']}'.")
+        # Set a default checkpoint directory or handle the missing file as needed
+        default_cktp_dir = "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/"
+        checkpoint_path = os.path.join(default_cktp_dir, checkpoint)
+        # Optionally, check again if the checkpoint exists in the default directory and handle if it still doesn't exist
+        if not os.path.isfile(checkpoint_path):
+            logging.info(f"Default checkpoint '{checkpoint}' also not found. Please check your paths.")
+            # Here you might want to raise an exception or exit the script if the checkpoint is critical
+            raise FileNotFoundError(f"Checkpoint '{checkpoint}' not found in both specified and default directories.")
+        else:
+            # Proceed with loading the checkpoint since it exists
+            encoder.load_state_dict(torch.load(checkpoint_path, map_location=f'cuda:{device}')['model_state_dict'], strict=False)
+            logging.info(f"Checkpoint {checkpoint} loaded succesfully")
+    else:
+        # Proceed with loading the checkpoint since it exists
+        encoder.load_state_dict(torch.load(checkpoint_path, map_location=f'cuda:{device}')['model_state_dict'], strict=False)
+        logging.info(f"Checkpoint {checkpoint} loaded succesfully")
+    
+
+    # Freeze the encoder parameters if freeze is True
+    if freeze:
+        for param in encoder.parameters():
+            param.requires_grad = False
+
     classifier = LinearClassifier(cfg.get('input_dim', 768), cfg['num_classes'], )
     if return_class == True:
         return encoder, classifier
     else:
         return encoder
+    
+
+def init_omnivore_encoder(cfg, device, freeze=False):
+    model = omnivore_swinB_imagenet21k()
+    
+    model.heads = nn.Linear(1024, cfg['in_features'], bias=False)
+    return model.to(f'cuda:{device}')
+
+class DINOVforIR(nn.Module):
+    def __init__(self, num_classes, embedding_dim=512, freeze_dino=False):
+        super(DINOVforIR, self).__init__()
+        # Instantiate the DinoVisionTransformer model
+        self.vision_transformer = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
+        # A linear layer for dimensionality reduction
+        if freeze_dino:
+            for param in self.vision_transformer.parameters():
+                param.requires_grad = False
+                
+        self.dim_reduction = nn.Linear(768, embedding_dim)
+        # Classifier layer
+        self.classifier = nn.Linear(embedding_dim, num_classes)
+        # Ensure the vision transformer model is in evaluation mode if not training
+        self.vision_transformer.eval()
+
+    def forward(self, video_frames):
+        """
+        video_frames: a tensor of shape (B, T, C, H, W)
+        return_embedding: if True, return the clip embedding instead of the classification result
+        """
+        batch_size, num_frames, C, H, W = video_frames.size()
+        # Reshape to process all frames at once
+        video_frames = video_frames.view(batch_size * num_frames, C, H, W)
+        # Compute frame embeddings
+        frame_embeddings = self.vision_transformer(video_frames)
+        # Reshape back to (B, T, embedding_dim)
+        frame_embeddings = frame_embeddings.view(batch_size, num_frames, -1)
+        # Mean pooling across frames
+        clip_embedding = torch.mean(frame_embeddings, dim=1)
+        # Dimensionality reduction
+        clip_embedding = self.dim_reduction(clip_embedding)
+        
+        
+        return clip_embedding
+        
+    
+def init_dino_encoder(cfg, device, freeze=False):
+    return DINOVforIR(cfg['num_classes'], cfg['in_features'], freeze_dino=True).to(f'cuda:{device}') # DINO is prone to catastrophic forgetting therefore we keep it always frozen
+
 
 class LinearClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):

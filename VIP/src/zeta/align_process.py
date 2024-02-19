@@ -97,25 +97,61 @@ def align_modalities_process(multi_modality_model,
 
         for step, (batch_data, _) in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}")):
             
-            """
-            embeddings = {}
-            for modality in batch_data.keys():
-                if modality in multi_modality_model.module.modalities_encoders:
-                    data = batch_data[modality].cuda(device)
-                    embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
-
-            modality_keys = list(embeddings.keys())
-            loss = info_nce_loss(embeddings[modality_keys[1]], embeddings[modality_keys[0]])
-            """
+            
             #if overfit_on_one_batch: # this is inefficent but conveniant
             #    del batch_data
             #    batch_data = single_batch_data
-
+            """ pre mix implementation
             embeddings = []
             for modality in batch_data.keys():
                 if modality in multi_modality_model.module.modalities_encoders:
                     data = batch_data[modality].cuda(device, non_blocking=True)
+                    if config['encoder_model'] == 'CLIP-VIP':
+                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
+                    elif config['encoder_model'] == 'MAE':
+                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data.permute(0,2,1,3,4)))
+
+                    else:
+                        logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
+            """
+            #now allowing mixed encoders
+            def preprocess_for_clip_vip(data):
+                return data  # Assuming no special preprocessing is needed for CLIP-VIP
+
+            def preprocess_for_mae(data):
+                return data.permute(0, 2, 1, 3, 4)  # Example permutation for MAE
+
+            def preprocess_for_omnivore(data):
+                # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
+                return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+
+            # Mapping encoders to their preprocessing functions
+            preprocessing_map = {
+                'CLIP-VIP': preprocess_for_clip_vip,
+                'MAE': preprocess_for_mae,
+                'OMNIVORE': preprocess_for_omnivore,
+                'DINO': preprocess_for_clip_vip # DINO requires the same structure
+            }
+            embeddings = []
+            for modality, data in batch_data.items():
+                # Determine the encoder to use for this modality
+                if config['encoder_model'] == 'MIX':
+                    encoder = config['modalities_encoders'].get(modality)
+                else:
+                    encoder = config['encoder_model']  # Use the unified encoder for all modalities
+                
+                # Check if the modality is supported and preprocess data accordingly
+                if modality in multi_modality_model.module.modalities_encoders:
+                    data = data.cuda(device, non_blocking=True)
+                    if encoder in preprocessing_map:
+                        # Apply preprocessing specific to the selected encoder
+                        data = preprocessing_map[encoder](data)
+                    
+                    # Forward the preprocessed data through the encoder
+                    # Assuming forward_encoder can handle different encoder types
                     embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
+                else:
+                    logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
 
             # Calculate the loss across all pairs of modalities
             loss, loss_dict = info_nce_loss(*embeddings)
@@ -160,23 +196,58 @@ def align_modalities_process(multi_modality_model,
 
         with torch.no_grad():
             for batch_data, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
-                """
-                embeddings = {}
-                for modality in batch_data.keys():
-                    if modality in multi_modality_model.module.modalities_encoders:
-                        data = batch_data[modality].cuda(device)
-                        embeddings[modality] = multi_modality_model.module.forward_encoder(modality, data)
-
-                modality_keys = list(embeddings.keys())
-                loss = info_nce_loss(embeddings[modality_keys[1]], embeddings[modality_keys[0]])
+                
+                
                 """
                 embeddings = []
                 for modality in batch_data.keys():
                     if modality in multi_modality_model.module.modalities_encoders:
                         data = batch_data[modality].cuda(device, non_blocking=True)
-                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
+                        if config['encoder_model'] == 'CLIP-VIP':
+                            embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
+                        elif config['encoder_model'] == 'MAE':
+                            embeddings.append(multi_modality_model.module.forward_encoder(modality, data.permute(0,2,1,3,4)))
+                        else:
+                            logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
+                """
+                #now allowing mixed encoders
+                def preprocess_for_clip_vip(data):
+                    return data  # Assuming no special preprocessing is needed for CLIP-VIP
 
-                # Calculate the loss across all pairs of modalities
+                def preprocess_for_mae(data):
+                    return data.permute(0, 2, 1, 3, 4)  # Example permutation for MAE
+
+                def preprocess_for_omnivore(data):
+                    # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
+                    return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+
+                # Mapping encoders to their preprocessing functions
+                preprocessing_map = {
+                    'CLIP-VIP': preprocess_for_clip_vip,
+                    'MAE': preprocess_for_mae,
+                    'OMNIVORE': preprocess_for_omnivore
+                }
+                embeddings = []
+                for modality, data in batch_data.items():
+                    # Determine the encoder to use for this modality
+                    if config['encoder_model'] == 'MIX':
+                        encoder = config['modalities_encoders'].get(modality)
+                    else:
+                        encoder = config['encoder_model']  # Use the unified encoder for all modalities
+                    
+                    # Check if the modality is supported and preprocess data accordingly
+                    if modality in multi_modality_model.module.modalities_encoders:
+                        data = data.cuda(device, non_blocking=True)
+                        if encoder in preprocessing_map:
+                            # Apply preprocessing specific to the selected encoder
+                            data = preprocessing_map[encoder](data)
+                        
+                        # Forward the preprocessed data through the encoder
+                        # Assuming forward_encoder can handle different encoder types
+                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
+                    else:
+                        logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
+                    # Calculate the loss across all pairs of modalities
                 loss, loss_dict = info_nce_loss(*embeddings)
                 val_loss += loss.item()
 

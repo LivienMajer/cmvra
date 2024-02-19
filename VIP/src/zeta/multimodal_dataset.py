@@ -122,7 +122,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
     def _deterministic_sample_frame_idx(self, length):
         # Evenly sample 12 frames throughout the video
-        return np.linspace(0, length-1, self.frame_count).astype(int).tolist() # -2 daa 16 
+        return np.linspace(0, length-2, self.frame_count).astype(int).tolist() # -2 daa 16 
     
     def _extract_frames(self, path, sample_indices):
         if 'depth' in path and 'ntu' in path:

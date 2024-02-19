@@ -1,0 +1,85 @@
+2024-02-07 11:07:10,854 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "120",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU120",
+    "split": "CV",
+    "num_classes": 120,
+    "in_features": 512,
+    "full_train_classifiers": false,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240206_115652.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-02-07 11:07:10,930 - INFO - Training classifiers...
+2024-02-07 11:07:11,167 - INFO - Training on the following GPUs [0]
+2024-02-07 11:07:22,893 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-02-07 11:07:22,896 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-02-07 11:07:22,899 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-02-07 11:07:22,901 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-02-07 12:41:11,119 - INFO - Epoch [1/5]
+2024-02-07 12:41:11,120 - INFO - Modality: rgb, Loss: 3.2991, Accuracy: 0.4885
+2024-02-07 12:41:11,120 - INFO - Modality: ir, Loss: 2.2535, Accuracy: 0.6239
+2024-02-07 12:43:16,905 - INFO - Validation/Test Epoch [1/5]
+2024-02-07 12:43:16,906 - INFO - Modality: rgb, Loss: 2.3817, Accuracy: 0.6733
+2024-02-07 12:43:16,906 - INFO - Modality: ir, Loss: 1.3404, Accuracy: 0.6671
+2024-02-07 12:43:20,220 - INFO - New best model saved at epoch 1 with val loss: 1.8611
+2024-02-07 14:15:50,232 - INFO - Epoch [2/5]
+2024-02-07 14:15:50,232 - INFO - Modality: rgb, Loss: 1.9246, Accuracy: 0.7165
+2024-02-07 14:15:50,232 - INFO - Modality: ir, Loss: 0.9302, Accuracy: 0.7682
+2024-02-07 14:17:53,591 - INFO - Validation/Test Epoch [2/5]
+2024-02-07 14:17:53,592 - INFO - Modality: rgb, Loss: 1.6274, Accuracy: 0.7117
+2024-02-07 14:17:53,592 - INFO - Modality: ir, Loss: 1.0079, Accuracy: 0.6930
+2024-02-07 14:18:10,422 - INFO - New best model saved at epoch 2 with val loss: 1.3176
+2024-02-07 15:37:51,076 - INFO - Epoch [3/5]
+2024-02-07 15:37:51,076 - INFO - Modality: rgb, Loss: 1.4879, Accuracy: 0.7496
+2024-02-07 15:37:51,076 - INFO - Modality: ir, Loss: 0.7526, Accuracy: 0.7870
+2024-02-07 15:39:26,968 - INFO - Validation/Test Epoch [3/5]
+2024-02-07 15:39:26,968 - INFO - Modality: rgb, Loss: 1.4221, Accuracy: 0.7416
+2024-02-07 15:39:26,968 - INFO - Modality: ir, Loss: 0.9430, Accuracy: 0.7001
+2024-02-07 15:39:43,577 - INFO - New best model saved at epoch 3 with val loss: 1.1825
+2024-02-07 16:50:49,892 - INFO - Epoch [4/5]
+2024-02-07 16:50:49,893 - INFO - Modality: rgb, Loss: 1.3105, Accuracy: 0.7605
+2024-02-07 16:50:49,893 - INFO - Modality: ir, Loss: 0.6947, Accuracy: 0.7938
+2024-02-07 16:52:28,226 - INFO - Validation/Test Epoch [4/5]
+2024-02-07 16:52:28,226 - INFO - Modality: rgb, Loss: 1.2741, Accuracy: 0.7496
+2024-02-07 16:52:28,226 - INFO - Modality: ir, Loss: 0.9007, Accuracy: 0.7078
+2024-02-07 16:52:31,026 - INFO - New best model saved at epoch 4 with val loss: 1.0874
+2024-02-07 18:04:20,073 - INFO - Epoch [5/5]
+2024-02-07 18:04:20,073 - INFO - Modality: rgb, Loss: 1.2067, Accuracy: 0.7685
+2024-02-07 18:04:20,073 - INFO - Modality: ir, Loss: 0.6610, Accuracy: 0.7992
+2024-02-07 18:05:57,301 - INFO - Validation/Test Epoch [5/5]
+2024-02-07 18:05:57,301 - INFO - Modality: rgb, Loss: 1.2131, Accuracy: 0.7519
+2024-02-07 18:05:57,301 - INFO - Modality: ir, Loss: 0.8848, Accuracy: 0.7037
+2024-02-07 18:06:26,775 - INFO - New best model saved at epoch 5 with val loss: 1.0490
+2024-02-07 18:06:26,779 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20240207_110722.json
+2024-02-07 18:06:26,782 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_20240207_110722.pth
+2024-02-07 19:25:50,813 - INFO - Validation/Test Epoch [5/5]
+2024-02-07 19:25:50,813 - INFO - Modality: rgb, Loss: 1.5731, Accuracy: 0.6206
+2024-02-07 19:25:50,813 - INFO - Modality: ir, Loss: 1.7979, Accuracy: 0.5171
+2024-02-07 19:25:50,813 - INFO - Test Loss: {'rgb': 1.5730560722200466, 'ir': 1.797875787480485}, Test Accuracy: {'rgb': 0.620583511777302, 'ir': 0.5171473501070664}

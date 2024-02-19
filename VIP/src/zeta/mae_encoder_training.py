@@ -15,7 +15,7 @@ import random
 from zeta.loss import mse_loss, create_scheduler
 
 
-# Function to generate a random mask
+
 def generate_random_mask(batch_size, num_patches, mask_ratio):
     num_masked = int(mask_ratio * num_patches)
     mask = torch.zeros((batch_size, num_patches), dtype=torch.bool)
@@ -24,7 +24,7 @@ def generate_random_mask(batch_size, num_patches, mask_ratio):
         mask[i, masked_indices] = True
     return mask
 
-# Function to find the latest checkpoint
+
 def find_latest_checkpoint(checkpoint_dir, modalities):
     list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
     if list_of_files:
@@ -32,7 +32,7 @@ def find_latest_checkpoint(checkpoint_dir, modalities):
     return None
 
 
-# Function to save model and training statistics
+
 def save_checkpoint(model, optimizer, scheduler, epoch, best_val_loss, training_stats, checkpoint_dir, timestamp, config):
     modalities = '_'.join(config['modalities'])
     checkpoint_filename = f"checkpoint_{modalities}_{config['split']}_{timestamp}.pth"
