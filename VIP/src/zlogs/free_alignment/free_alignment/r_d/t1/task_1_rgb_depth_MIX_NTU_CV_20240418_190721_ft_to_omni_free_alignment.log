@@ -1,0 +1,137 @@
+2024-04-18 19:07:21,144 - INFO - Configuration:
+{
+    "task": "1",
+    "topic": "ft_to_omni_free_alignment",
+    "align_pre_training": false,
+    "number_gpus": "3",
+    "bind_to_rgb": false,
+    "modalities": [
+        "rgb",
+        "depth"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "depth": "OMNIVORE"
+    },
+    "dataset": "NTU",
+    "split": "CV",
+    "overfit_on_one_batch": false,
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
+    "learning_rate": 1e-05,
+    "gradient_accumulation_steps": 2,
+    "scheduler_config": {
+        "type": "step",
+        "params": {
+            "step_size": 4,
+            "gamma": 0.1
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 16,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/fts/CV.pt"
+}
+2024-04-18 19:07:21,197 - INFO - Aligning modalities......
+2024-04-18 19:07:21,274 - INFO - Training on the following GPUs [3, 4, 5]
+2024-04-18 19:07:23,660 - INFO - Using depth mode summed_rgb_d_tokens
+2024-04-18 19:07:26,008 - INFO - Starting training loop
+2024-04-18 19:07:26,010 - INFO - Epoch 1/10 - Training
+2024-04-18 20:32:35,345 - INFO - Epoch [1/10], modality_0_to_modality_1 Avg Loss: 0.4180
+2024-04-18 20:32:35,345 - INFO - Epoch [1/10], Avg Loss: 0.2090
+2024-04-18 20:32:35,349 - INFO - Epoch 1/10 - Validation
+2024-04-18 20:33:24,125 - INFO - Epoch [1/10], Validation Loss: 0.1141
+2024-04-18 20:33:28,307 - INFO - Best val loss 0.1140698092058301
+2024-04-18 20:33:28,308 - INFO - New best model saved at epoch 1
+2024-04-18 20:33:28,312 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-18 20:33:28,317 - INFO - Epoch 2/10 - Training
+2024-04-18 22:04:26,014 - INFO - Epoch [2/10], modality_0_to_modality_1 Avg Loss: 0.0985
+2024-04-18 22:04:26,015 - INFO - Epoch [2/10], Avg Loss: 0.0493
+2024-04-18 22:04:26,019 - INFO - Epoch 2/10 - Validation
+2024-04-18 22:05:13,097 - INFO - Epoch [2/10], Validation Loss: 0.0659
+2024-04-18 22:05:18,788 - INFO - Best val loss 0.0658782929725324
+2024-04-18 22:05:18,789 - INFO - New best model saved at epoch 2
+2024-04-18 22:05:18,793 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-18 22:05:18,796 - INFO - Epoch 3/10 - Training
+2024-04-18 23:34:00,193 - INFO - Epoch [3/10], modality_0_to_modality_1 Avg Loss: 0.0614
+2024-04-18 23:34:00,194 - INFO - Epoch [3/10], Avg Loss: 0.0307
+2024-04-18 23:34:00,199 - INFO - Epoch 3/10 - Validation
+2024-04-18 23:35:18,136 - INFO - Epoch [3/10], Validation Loss: 0.0579
+2024-04-18 23:35:26,261 - INFO - Best val loss 0.05794633513626953
+2024-04-18 23:35:26,261 - INFO - New best model saved at epoch 3
+2024-04-18 23:35:26,269 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-18 23:35:26,273 - INFO - Epoch 4/10 - Training
+2024-04-19 00:59:31,879 - INFO - Epoch [4/10], modality_0_to_modality_1 Avg Loss: 0.0468
+2024-04-19 00:59:31,880 - INFO - Epoch [4/10], Avg Loss: 0.0234
+2024-04-19 00:59:31,884 - INFO - Epoch 4/10 - Validation
+2024-04-19 01:01:24,219 - INFO - Epoch [4/10], Validation Loss: 0.0440
+2024-04-19 01:01:31,847 - INFO - Best val loss 0.04395661708743622
+2024-04-19 01:01:31,847 - INFO - New best model saved at epoch 4
+2024-04-19 01:01:31,852 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 01:01:31,854 - INFO - Epoch 5/10 - Training
+2024-04-19 02:24:06,447 - INFO - Epoch [5/10], modality_0_to_modality_1 Avg Loss: 0.0345
+2024-04-19 02:24:06,448 - INFO - Epoch [5/10], Avg Loss: 0.0173
+2024-04-19 02:24:06,452 - INFO - Epoch 5/10 - Validation
+2024-04-19 02:25:28,452 - INFO - Epoch [5/10], Validation Loss: 0.0326
+2024-04-19 02:25:35,941 - INFO - Best val loss 0.03264592369669117
+2024-04-19 02:25:35,942 - INFO - New best model saved at epoch 5
+2024-04-19 02:25:35,947 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 02:25:35,950 - INFO - Epoch 6/10 - Training
+2024-04-19 03:47:18,180 - INFO - Epoch [6/10], modality_0_to_modality_1 Avg Loss: 0.0318
+2024-04-19 03:47:18,181 - INFO - Epoch [6/10], Avg Loss: 0.0159
+2024-04-19 03:47:18,184 - INFO - Epoch 6/10 - Validation
+2024-04-19 03:48:02,621 - INFO - Epoch [6/10], Validation Loss: 0.0311
+2024-04-19 03:48:10,112 - INFO - Best val loss 0.031083271285751835
+2024-04-19 03:48:10,113 - INFO - New best model saved at epoch 6
+2024-04-19 03:48:10,118 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 03:48:10,122 - INFO - Epoch 7/10 - Training
+2024-04-19 05:09:11,757 - INFO - Epoch [7/10], modality_0_to_modality_1 Avg Loss: 0.0303
+2024-04-19 05:09:11,758 - INFO - Epoch [7/10], Avg Loss: 0.0152
+2024-04-19 05:09:11,760 - INFO - Epoch 7/10 - Validation
+2024-04-19 05:09:56,809 - INFO - Epoch [7/10], Validation Loss: 0.0301
+2024-04-19 05:10:04,967 - INFO - Best val loss 0.030133461870718747
+2024-04-19 05:10:04,967 - INFO - New best model saved at epoch 7
+2024-04-19 05:10:04,971 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 05:10:04,974 - INFO - Epoch 8/10 - Training
+2024-04-19 06:30:45,292 - INFO - Epoch [8/10], modality_0_to_modality_1 Avg Loss: 0.0290
+2024-04-19 06:30:45,294 - INFO - Epoch [8/10], Avg Loss: 0.0145
+2024-04-19 06:30:45,298 - INFO - Epoch 8/10 - Validation
+2024-04-19 06:31:30,021 - INFO - Epoch [8/10], Validation Loss: 0.0293
+2024-04-19 06:31:37,612 - INFO - Best val loss 0.029298637605582673
+2024-04-19 06:31:37,613 - INFO - New best model saved at epoch 8
+2024-04-19 06:31:37,618 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 06:31:37,622 - INFO - Epoch 9/10 - Training
+2024-04-19 07:52:01,598 - INFO - Epoch [9/10], modality_0_to_modality_1 Avg Loss: 0.0280
+2024-04-19 07:52:01,599 - INFO - Epoch [9/10], Avg Loss: 0.0140
+2024-04-19 07:52:01,601 - INFO - Epoch 9/10 - Validation
+2024-04-19 07:52:45,561 - INFO - Epoch [9/10], Validation Loss: 0.0284
+2024-04-19 07:52:53,162 - INFO - Best val loss 0.028398831777546246
+2024-04-19 07:52:53,162 - INFO - New best model saved at epoch 9
+2024-04-19 07:52:53,168 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 07:52:53,172 - INFO - Epoch 10/10 - Training
+2024-04-19 09:09:32,703 - INFO - Epoch [10/10], modality_0_to_modality_1 Avg Loss: 0.0268
+2024-04-19 09:09:32,704 - INFO - Epoch [10/10], Avg Loss: 0.0134
+2024-04-19 09:09:32,706 - INFO - Epoch 10/10 - Validation
+2024-04-19 09:10:15,982 - INFO - Epoch [10/10], Validation Loss: 0.0281
+2024-04-19 09:10:23,373 - INFO - Best val loss 0.028102085906236123
+2024-04-19 09:10:23,373 - INFO - New best model saved at epoch 10
+2024-04-19 09:10:23,378 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_MIX_NTU_CV_20240418_190726
+2024-04-19 09:10:23,378 - INFO - Training complete!

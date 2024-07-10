@@ -1,0 +1,78 @@
+2024-03-21 14:34:10,224 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "ft_omni3ch_on_ir_views_no_training",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/alesalaikum",
+    "number_gpus": "1",
+    "modalities": [
+        "steering_wheel",
+        "a_column_driver",
+        "a_column_co_driver",
+        "ceiling",
+        "inner_mirror"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "steering_wheel": "OMNIVORE",
+        "a_column_driver": "OMNIVORE",
+        "a_column_co_driver": "OMNIVORE",
+        "ceiling": "OMNIVORE",
+        "inner_mirror": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "1",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 0,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "classifier_checkpoints/checkpoint_rgb_ir_MIX_DAA_1_20240317_133510.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-21 14:34:10,283 - INFO - Training classifiers...
+2024-03-21 14:34:10,329 - INFO - Training on the following GPUs [1]
+2024-03-21 14:34:10,331 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 14:34:13,540 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 14:34:16,462 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 14:34:19,055 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 14:34:21,570 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 14:34:49,305 - INFO - ['module.steering_wheel_classifier.weight', 'module.steering_wheel_classifier.bias']
+2024-03-21 14:34:49,319 - INFO - ['module.a_column_driver_classifier.weight', 'module.a_column_driver_classifier.bias']
+2024-03-21 14:34:49,332 - INFO - ['module.a_column_co_driver_classifier.weight', 'module.a_column_co_driver_classifier.bias']
+2024-03-21 14:34:49,345 - INFO - ['module.ceiling_classifier.weight', 'module.ceiling_classifier.bias']
+2024-03-21 14:34:49,357 - INFO - ['module.inner_mirror_classifier.weight', 'module.inner_mirror_classifier.bias']
+2024-03-21 14:34:49,406 - INFO - Parameters successfully verified for steering_wheel_classifier.
+2024-03-21 14:34:49,417 - INFO - Parameters successfully verified for a_column_driver_classifier.
+2024-03-21 14:34:49,427 - INFO - Parameters successfully verified for a_column_co_driver_classifier.
+2024-03-21 14:34:49,436 - INFO - Parameters successfully verified for ceiling_classifier.
+2024-03-21 14:34:49,445 - INFO - Parameters successfully verified for inner_mirror_classifier.
+2024-03-21 14:34:53,813 - INFO - Applying balance loss
+2024-03-21 15:10:07,356 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_steering_wheel_a_column_driver_a_column_co_driver_ceiling_inner_mirror_MIX_DAA_1_20240321_144537.pth
+2024-03-21 15:10:07,364 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_steering_wheel_a_column_driver_a_column_co_driver_ceiling_inner_mirror_20240321_144537.json
+2024-03-21 15:10:07,367 - INFO - Loading checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_steering_wheel_a_column_driver_a_column_co_driver_ceiling_inner_mirror_MIX_DAA_1_20240321_144537.pth
+2024-03-21 15:10:12,202 - INFO - Resumed from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_steering_wheel_a_column_driver_a_column_co_driver_ceiling_inner_mirror_MIX_DAA_1_20240321_144537.pth
+2024-03-21 15:10:12,211 - INFO - Updated file counts from saved features.
+2024-03-21 15:10:12,396 - INFO - Epoch 1, Test steering_wheel - Loss: 0.1271, Accuracy: 0.1431, Balanced Accuracy: 0.1631
+2024-03-21 15:10:12,399 - INFO - Epoch 1, Test a_column_driver - Loss: 0.1260, Accuracy: 0.1099, Balanced Accuracy: 0.1947
+2024-03-21 15:10:12,401 - INFO - Epoch 1, Test a_column_co_driver - Loss: 0.0764, Accuracy: 0.2863, Balanced Accuracy: 0.3032
+2024-03-21 15:10:12,403 - INFO - Epoch 1, Test ceiling - Loss: 0.1123, Accuracy: 0.1872, Balanced Accuracy: 0.2264
+2024-03-21 15:10:12,406 - INFO - Epoch 1, Test inner_mirror - Loss: 0.1478, Accuracy: 0.1129, Balanced Accuracy: 0.1664

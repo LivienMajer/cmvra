@@ -1,0 +1,8 @@
+{
+    "metric_files": [
+        "/home/bas06400/Thesis/VIP/src/predictions/test_metrics_rgb_rgb2_MIX_DAA_0_20240706_230408.json",
+        "/home/bas06400/Thesis/VIP/src/predictions/test_metrics_rgb_rgb2_MIX_DAA_1_20240707_154518.json",
+        "/home/bas06400/Thesis/VIP/src/predictions/test_metrics_rgb_rgb2_MIX_DAA_2_20240707_144540.json"
+    ],
+    "output_file": "combined_balanced_accuracies.json"
+}

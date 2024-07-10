@@ -1,0 +1,263 @@
+2024-05-03 14:44:50,239 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "base_rgb_to_rgb_pre",
+    "use_words": false,
+    "word_key": "DAAWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "rgb2"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "rgb2": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_DAA_0_20240503_132808.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-05-03 14:44:50,286 - INFO - Evaluing alginment with VIP text encoder...
+2024-05-03 14:44:50,321 - INFO - Evaluing on the following GPUs [0]
+2024-05-03 14:44:51,976 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-03 14:46:18,912 - INFO - Modality: rgb
+2024-05-03 14:46:18,913 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 2: Correct Predictions - 3
+2024-05-03 14:46:18,913 - INFO - Class 3: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 4: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 5: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 6: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 7: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 8: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 11: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 14: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 26: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 12: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 18: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 21: Correct Predictions - 72
+2024-05-03 14:46:18,913 - INFO - Class 24: Correct Predictions - 10
+2024-05-03 14:46:18,913 - INFO - Class 22: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 23: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 25: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 15: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 16: Correct Predictions - 3
+2024-05-03 14:46:18,913 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 27: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 9: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 10: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 13: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:46:18,913 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 19: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 20: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 33: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 32: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Modality: rgb2
+2024-05-03 14:46:18,914 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 2: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 3: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 4: Correct Predictions - 2
+2024-05-03 14:46:18,914 - INFO - Class 5: Correct Predictions - 2
+2024-05-03 14:46:18,914 - INFO - Class 6: Correct Predictions - 61
+2024-05-03 14:46:18,914 - INFO - Class 7: Correct Predictions - 6
+2024-05-03 14:46:18,914 - INFO - Class 8: Correct Predictions - 8
+2024-05-03 14:46:18,914 - INFO - Class 11: Correct Predictions - 17
+2024-05-03 14:46:18,914 - INFO - Class 14: Correct Predictions - 1
+2024-05-03 14:46:18,914 - INFO - Class 26: Correct Predictions - 1
+2024-05-03 14:46:18,914 - INFO - Class 12: Correct Predictions - 2
+2024-05-03 14:46:18,914 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 18: Correct Predictions - 1
+2024-05-03 14:46:18,914 - INFO - Class 21: Correct Predictions - 121
+2024-05-03 14:46:18,914 - INFO - Class 24: Correct Predictions - 111
+2024-05-03 14:46:18,914 - INFO - Class 22: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 23: Correct Predictions - 5
+2024-05-03 14:46:18,914 - INFO - Class 25: Correct Predictions - 31
+2024-05-03 14:46:18,914 - INFO - Class 15: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 16: Correct Predictions - 24
+2024-05-03 14:46:18,914 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:46:18,914 - INFO - Class 27: Correct Predictions - 112
+2024-05-03 14:46:18,914 - INFO - Class 9: Correct Predictions - 8
+2024-05-03 14:46:18,914 - INFO - Class 10: Correct Predictions - 1
+2024-05-03 14:46:18,915 - INFO - Class 13: Correct Predictions - 2
+2024-05-03 14:46:18,915 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:46:18,915 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:46:18,915 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:46:18,915 - INFO - Class 19: Correct Predictions - 2
+2024-05-03 14:46:18,915 - INFO - Class 20: Correct Predictions - 1
+2024-05-03 14:46:18,915 - INFO - Class 33: Correct Predictions - 0
+2024-05-03 14:46:18,915 - INFO - Class 32: Correct Predictions - 0
+2024-05-03 14:46:18,919 - INFO - Val Set: Modality: rgb, Accuracy: 0.0615, Balanced Accuracy: 0.0346
+2024-05-03 14:46:18,919 - INFO - Val Set: Modality: rgb2, Accuracy: 0.3629, Balanced Accuracy: 0.2044
+2024-05-03 14:52:08,374 - INFO - Modality: rgb
+2024-05-03 14:52:08,374 - INFO - Class 4: Correct Predictions - 0
+2024-05-03 14:52:08,374 - INFO - Class 6: Correct Predictions - 0
+2024-05-03 14:52:08,374 - INFO - Class 8: Correct Predictions - 0
+2024-05-03 14:52:08,374 - INFO - Class 10: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 11: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 16: Correct Predictions - 39
+2024-05-03 14:52:08,375 - INFO - Class 19: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 21: Correct Predictions - 213
+2024-05-03 14:52:08,375 - INFO - Class 23: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 25: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 26: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 27: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 32: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 7: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 14: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 15: Correct Predictions - 6
+2024-05-03 14:52:08,375 - INFO - Class 20: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 24: Correct Predictions - 81
+2024-05-03 14:52:08,375 - INFO - Class 33: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 5: Correct Predictions - 4
+2024-05-03 14:52:08,375 - INFO - Class 12: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 22: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 31: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 2: Correct Predictions - 25
+2024-05-03 14:52:08,375 - INFO - Class 13: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 18: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 3: Correct Predictions - 0
+2024-05-03 14:52:08,375 - INFO - Class 9: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Modality: rgb2
+2024-05-03 14:52:08,376 - INFO - Class 4: Correct Predictions - 15
+2024-05-03 14:52:08,376 - INFO - Class 6: Correct Predictions - 100
+2024-05-03 14:52:08,376 - INFO - Class 8: Correct Predictions - 7
+2024-05-03 14:52:08,376 - INFO - Class 10: Correct Predictions - 24
+2024-05-03 14:52:08,376 - INFO - Class 11: Correct Predictions - 124
+2024-05-03 14:52:08,376 - INFO - Class 16: Correct Predictions - 96
+2024-05-03 14:52:08,376 - INFO - Class 19: Correct Predictions - 1
+2024-05-03 14:52:08,376 - INFO - Class 21: Correct Predictions - 224
+2024-05-03 14:52:08,376 - INFO - Class 23: Correct Predictions - 10
+2024-05-03 14:52:08,376 - INFO - Class 25: Correct Predictions - 82
+2024-05-03 14:52:08,376 - INFO - Class 26: Correct Predictions - 41
+2024-05-03 14:52:08,376 - INFO - Class 27: Correct Predictions - 341
+2024-05-03 14:52:08,376 - INFO - Class 32: Correct Predictions - 5
+2024-05-03 14:52:08,376 - INFO - Class 7: Correct Predictions - 62
+2024-05-03 14:52:08,376 - INFO - Class 14: Correct Predictions - 3
+2024-05-03 14:52:08,376 - INFO - Class 15: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 20: Correct Predictions - 8
+2024-05-03 14:52:08,376 - INFO - Class 24: Correct Predictions - 282
+2024-05-03 14:52:08,376 - INFO - Class 33: Correct Predictions - 2
+2024-05-03 14:52:08,376 - INFO - Class 5: Correct Predictions - 24
+2024-05-03 14:52:08,376 - INFO - Class 12: Correct Predictions - 75
+2024-05-03 14:52:08,376 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 22: Correct Predictions - 1
+2024-05-03 14:52:08,376 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 31: Correct Predictions - 4
+2024-05-03 14:52:08,376 - INFO - Class 2: Correct Predictions - 0
+2024-05-03 14:52:08,376 - INFO - Class 13: Correct Predictions - 3
+2024-05-03 14:52:08,376 - INFO - Class 18: Correct Predictions - 10
+2024-05-03 14:52:08,377 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:52:08,377 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:52:08,377 - INFO - Class 3: Correct Predictions - 1
+2024-05-03 14:52:08,377 - INFO - Class 9: Correct Predictions - 7
+2024-05-03 14:52:08,380 - INFO - Train Set: Modality: rgb, Accuracy: 0.0554, Balanced Accuracy: 0.0600
+2024-05-03 14:52:08,380 - INFO - Train Set: Modality: rgb2, Accuracy: 0.2337, Balanced Accuracy: 0.1982
+2024-05-03 14:54:11,935 - INFO - Modality: rgb
+2024-05-03 14:54:11,936 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 2: Correct Predictions - 8
+2024-05-03 14:54:11,936 - INFO - Class 3: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 4: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 5: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 6: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 7: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 8: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 9: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 10: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 14: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 31: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 11: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 13: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:54:11,936 - INFO - Class 21: Correct Predictions - 67
+2024-05-03 14:54:11,937 - INFO - Class 12: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 18: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 20: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 24: Correct Predictions - 10
+2024-05-03 14:54:11,937 - INFO - Class 19: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 22: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 23: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 25: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 26: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 27: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 16: Correct Predictions - 3
+2024-05-03 14:54:11,937 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 15: Correct Predictions - 3
+2024-05-03 14:54:11,937 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 32: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 33: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Modality: rgb2
+2024-05-03 14:54:11,937 - INFO - Class 1: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 2: Correct Predictions - 0
+2024-05-03 14:54:11,937 - INFO - Class 3: Correct Predictions - 1
+2024-05-03 14:54:11,937 - INFO - Class 4: Correct Predictions - 4
+2024-05-03 14:54:11,937 - INFO - Class 5: Correct Predictions - 14
+2024-05-03 14:54:11,937 - INFO - Class 6: Correct Predictions - 40
+2024-05-03 14:54:11,937 - INFO - Class 7: Correct Predictions - 23
+2024-05-03 14:54:11,937 - INFO - Class 8: Correct Predictions - 4
+2024-05-03 14:54:11,937 - INFO - Class 9: Correct Predictions - 7
+2024-05-03 14:54:11,937 - INFO - Class 10: Correct Predictions - 10
+2024-05-03 14:54:11,937 - INFO - Class 14: Correct Predictions - 18
+2024-05-03 14:54:11,937 - INFO - Class 31: Correct Predictions - 3
+2024-05-03 14:54:11,938 - INFO - Class 11: Correct Predictions - 67
+2024-05-03 14:54:11,938 - INFO - Class 13: Correct Predictions - 2
+2024-05-03 14:54:11,938 - INFO - Class 17: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 21: Correct Predictions - 83
+2024-05-03 14:54:11,938 - INFO - Class 12: Correct Predictions - 22
+2024-05-03 14:54:11,938 - INFO - Class 18: Correct Predictions - 10
+2024-05-03 14:54:11,938 - INFO - Class 20: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 24: Correct Predictions - 120
+2024-05-03 14:54:11,938 - INFO - Class 19: Correct Predictions - 1
+2024-05-03 14:54:11,938 - INFO - Class 22: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 23: Correct Predictions - 1
+2024-05-03 14:54:11,938 - INFO - Class 25: Correct Predictions - 12
+2024-05-03 14:54:11,938 - INFO - Class 26: Correct Predictions - 4
+2024-05-03 14:54:11,938 - INFO - Class 27: Correct Predictions - 92
+2024-05-03 14:54:11,938 - INFO - Class 16: Correct Predictions - 31
+2024-05-03 14:54:11,938 - INFO - Class 28: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 15: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 29: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 30: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 0: Correct Predictions - 0
+2024-05-03 14:54:11,938 - INFO - Class 32: Correct Predictions - 1
+2024-05-03 14:54:11,938 - INFO - Class 33: Correct Predictions - 0
+2024-05-03 14:54:11,940 - INFO - Test Set: Modality: rgb, Accuracy: 0.0410, Balanced Accuracy: 0.0430
+2024-05-03 14:54:11,940 - INFO - Test Set: Modality: rgb2, Accuracy: 0.2565, Balanced Accuracy: 0.2467

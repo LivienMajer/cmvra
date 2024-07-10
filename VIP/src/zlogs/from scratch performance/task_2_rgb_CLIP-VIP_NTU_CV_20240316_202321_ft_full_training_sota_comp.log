@@ -1,0 +1,437 @@
+2024-03-16 20:23:21,783 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "ft_full_training_sota_comp",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features1657758",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": true,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240227_115808.pth",
+    "learning_rate": 1e-05,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 8,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-16 20:23:21,832 - INFO - Training classifiers...
+2024-03-16 20:23:21,882 - INFO - Training on the following GPUs [2]
+2024-03-16 20:23:21,882 - INFO - Encoders are now trainable
+2024-03-16 20:23:26,283 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.proj.weight due to size mismatch.
+2024-03-16 20:23:26,284 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.proj.bias due to size mismatch.
+2024-03-16 20:23:26,286 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.norm.weight due to size mismatch.
+2024-03-16 20:23:26,287 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.norm.bias due to size mismatch.
+2024-03-16 20:23:26,288 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.proj.weight due to size mismatch.
+2024-03-16 20:23:26,289 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.proj.bias due to size mismatch.
+2024-03-16 20:23:26,290 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.norm.weight due to size mismatch.
+2024-03-16 20:23:26,291 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.norm.bias due to size mismatch.
+2024-03-16 20:23:26,292 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,294 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,295 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,298 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,301 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,302 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,303 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,304 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,305 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,309 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,311 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,312 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,313 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,314 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,315 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,319 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,320 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,322 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,323 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,324 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,325 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,329 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,331 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,332 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,333 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,334 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,335 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,339 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,340 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.reduction.weight due to size mismatch.
+2024-03-16 20:23:26,341 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.norm.weight due to size mismatch.
+2024-03-16 20:23:26,343 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.norm.bias due to size mismatch.
+2024-03-16 20:23:26,344 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,346 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,349 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,351 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,352 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,353 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,355 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,356 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,357 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,358 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,362 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,363 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,365 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,366 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,367 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,368 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,372 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,373 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,374 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,377 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,378 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,379 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,380 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,384 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,385 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,387 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,388 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,389 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,390 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.reduction.weight due to size mismatch.
+2024-03-16 20:23:26,394 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.norm.weight due to size mismatch.
+2024-03-16 20:23:26,396 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.norm.bias due to size mismatch.
+2024-03-16 20:23:26,397 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,398 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,399 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,403 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,405 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,406 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,410 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,411 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,412 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,416 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,417 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,418 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,422 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,425 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,426 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,428 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,429 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,430 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,431 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,432 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,433 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,434 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,435 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,437 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,438 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,440 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,441 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,442 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,443 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,444 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,448 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,450 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,451 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,452 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,453 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,454 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,457 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,459 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,460 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,461 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,462 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,463 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,464 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,465 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,467 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,468 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,469 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,474 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,475 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,477 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,481 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,482 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,483 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,484 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,485 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,487 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,490 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,491 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,493 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,494 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,495 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,496 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,501 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,502 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,503 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,504 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,505 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,507 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,508 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,509 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,510 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,511 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,512 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,513 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,514 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,515 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,517 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,518 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,519 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,520 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,524 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,525 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,526 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,530 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,531 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,533 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,537 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,538 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,540 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,543 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,544 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,546 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,547 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,548 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,549 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,551 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,552 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,553 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,555 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,556 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,560 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,563 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,564 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,565 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,566 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,568 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,569 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,573 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,574 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,576 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,577 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,578 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,580 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,583 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,584 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,586 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,587 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,588 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,590 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,591 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,593 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,598 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,599 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,601 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,603 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,604 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,605 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,609 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,610 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,612 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,614 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,616 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,617 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,621 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,626 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,627 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,629 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,630 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,632 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,636 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,638 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,639 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,640 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,642 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,643 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,644 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,646 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,647 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,651 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,653 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,654 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,658 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,659 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,661 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,662 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,663 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,665 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,669 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,670 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,672 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,675 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,677 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,678 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,682 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,683 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,685 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,689 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,691 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,692 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,693 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,694 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,696 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,697 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,698 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,700 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,702 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,703 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,707 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,708 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,709 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,711 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,712 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,713 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,714 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,718 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,719 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,720 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,721 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,723 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,724 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,727 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,729 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,730 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,731 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,732 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,733 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,735 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,736 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,737 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,738 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,740 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,744 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,745 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,746 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,750 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,751 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,752 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,753 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,754 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,756 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,759 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,761 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,762 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,763 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,764 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,766 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,770 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,771 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,772 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,774 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,775 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,776 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,777 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,779 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,780 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,781 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,782 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,783 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,787 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,788 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,789 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,790 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,792 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,793 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,796 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,800 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,801 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,805 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,806 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,808 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,811 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,813 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,814 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,818 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,819 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,820 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,822 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,823 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,825 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,826 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,827 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,828 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,830 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.reduction.weight due to size mismatch.
+2024-03-16 20:23:26,831 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.norm.weight due to size mismatch.
+2024-03-16 20:23:26,834 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.norm.bias due to size mismatch.
+2024-03-16 20:23:26,835 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,836 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,838 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,839 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,840 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,841 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,844 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,846 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,847 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,849 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,850 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,851 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,855 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,856 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,857 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 20:23:26,858 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 20:23:26,859 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 20:23:26,861 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 20:23:26,864 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 20:23:26,868 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 20:23:26,869 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 20:23:26,870 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 20:23:26,871 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 20:23:26,875 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 20:23:26,876 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 20:23:26,877 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 20:23:26,881 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 20:23:26,883 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 20:23:26,884 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.norm.weight due to size mismatch.
+2024-03-16 20:23:26,885 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.norm.bias due to size mismatch.
+2024-03-16 20:23:26,886 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.heads.weight due to size mismatch.
+2024-03-16 20:23:26,892 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-03-16 20:23:26,893 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-03-16 20:23:26,901 - INFO - Setting grads
+2024-03-16 20:23:26,902 - INFO - Full Training enabled
+2024-03-16 20:58:58,987 - INFO - Epoch 1, Train rgb - Loss: 0.4670, Accuracy: 0.2151, Balanced Accuracy: 0.2152
+2024-03-16 20:59:45,525 - INFO - Epoch 1, Val rgb - Loss: 0.4250, Accuracy: 0.4545, Balanced Accuracy: 0.4607
+2024-03-16 20:59:55,563 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-16 21:35:30,215 - INFO - Epoch 2, Train rgb - Loss: 0.3883, Accuracy: 0.5731, Balanced Accuracy: 0.5730
+2024-03-16 21:36:16,968 - INFO - Epoch 2, Val rgb - Loss: 0.3598, Accuracy: 0.6350, Balanced Accuracy: 0.6388
+2024-03-16 21:36:27,275 - INFO - Checkpoint saved at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-16 22:10:18,022 - INFO - Epoch 3, Train rgb - Loss: 0.3309, Accuracy: 0.6742, Balanced Accuracy: 0.6741
+2024-03-16 22:11:04,890 - INFO - Epoch 3, Val rgb - Loss: 0.3108, Accuracy: 0.6917, Balanced Accuracy: 0.6936
+2024-03-16 22:11:13,421 - INFO - Checkpoint saved at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-16 22:46:50,379 - INFO - Epoch 4, Train rgb - Loss: 0.2873, Accuracy: 0.7060, Balanced Accuracy: 0.7059
+2024-03-16 22:47:29,579 - INFO - Epoch 4, Val rgb - Loss: 0.2729, Accuracy: 0.7101, Balanced Accuracy: 0.7109
+2024-03-16 22:47:40,049 - INFO - Checkpoint saved at epoch 3 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-16 23:22:59,246 - INFO - Epoch 5, Train rgb - Loss: 0.2672, Accuracy: 0.7191, Balanced Accuracy: 0.7190
+2024-03-16 23:23:36,782 - INFO - Epoch 5, Val rgb - Loss: 0.2696, Accuracy: 0.7154, Balanced Accuracy: 0.7162
+2024-03-16 23:23:38,432 - INFO - Checkpoint saved at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-16 23:53:47,191 - INFO - Epoch 6, Train rgb - Loss: 0.2639, Accuracy: 0.7209, Balanced Accuracy: 0.7208
+2024-03-16 23:54:15,006 - INFO - Epoch 6, Val rgb - Loss: 0.2663, Accuracy: 0.7141, Balanced Accuracy: 0.7150
+2024-03-16 23:54:23,459 - INFO - Checkpoint saved at epoch 5 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 00:15:46,855 - INFO - Epoch 7, Train rgb - Loss: 0.2607, Accuracy: 0.7227, Balanced Accuracy: 0.7226
+2024-03-17 00:16:14,379 - INFO - Epoch 7, Val rgb - Loss: 0.2632, Accuracy: 0.7167, Balanced Accuracy: 0.7173
+2024-03-17 00:16:23,193 - INFO - Checkpoint saved at epoch 6 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 00:40:41,769 - INFO - Epoch 8, Train rgb - Loss: 0.2575, Accuracy: 0.7241, Balanced Accuracy: 0.7240
+2024-03-17 00:41:28,497 - INFO - Epoch 8, Val rgb - Loss: 0.2601, Accuracy: 0.7167, Balanced Accuracy: 0.7168
+2024-03-17 00:41:34,785 - INFO - Checkpoint saved at epoch 7 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 01:17:18,598 - INFO - Epoch 9, Train rgb - Loss: 0.2558, Accuracy: 0.7254, Balanced Accuracy: 0.7254
+2024-03-17 01:18:05,591 - INFO - Epoch 9, Val rgb - Loss: 0.2598, Accuracy: 0.7167, Balanced Accuracy: 0.7168
+2024-03-17 01:18:15,562 - INFO - Checkpoint saved at epoch 8 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 01:54:09,744 - INFO - Epoch 10, Train rgb - Loss: 0.2555, Accuracy: 0.7256, Balanced Accuracy: 0.7255
+2024-03-17 01:54:56,743 - INFO - Epoch 10, Val rgb - Loss: 0.2595, Accuracy: 0.7167, Balanced Accuracy: 0.7168
+2024-03-17 01:55:03,191 - INFO - Checkpoint saved at epoch 9 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 01:55:03,195 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_20240316_202326.json
+2024-03-17 01:55:03,197 - INFO - Loading checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 01:55:04,070 - INFO - Resumed from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_202326.pth
+2024-03-17 01:55:04,072 - INFO - Updated file counts from saved features.
+2024-03-17 02:13:15,476 - INFO - Epoch 1, Test rgb - Loss: 0.2661, Accuracy: 0.6770, Balanced Accuracy: 0.6770

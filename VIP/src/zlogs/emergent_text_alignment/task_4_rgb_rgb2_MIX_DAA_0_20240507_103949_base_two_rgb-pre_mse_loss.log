@@ -1,0 +1,55 @@
+2024-05-07 10:39:49,433 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "base_two_rgb-pre_mse_loss",
+    "use_words": false,
+    "word_key": "DAAWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "rgb2"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "rgb2": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_DAA_0_20240507_021330.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-05-07 10:39:49,502 - INFO - Evaluing alginment with VIP text encoder...
+2024-05-07 10:39:49,536 - INFO - Evaluing on the following GPUs [0]
+2024-05-07 10:39:54,035 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-07 10:41:27,772 - INFO - Val Set: Modality: rgb, Accuracy: 0.0615, Balanced Accuracy: 0.0346
+2024-05-07 10:41:27,772 - INFO - Val Set: Modality: rgb2, Accuracy: 0.1350, Balanced Accuracy: 0.0728
+2024-05-07 10:47:28,468 - INFO - Train Set: Modality: rgb, Accuracy: 0.0554, Balanced Accuracy: 0.0600
+2024-05-07 10:47:28,469 - INFO - Train Set: Modality: rgb2, Accuracy: 0.0536, Balanced Accuracy: 0.0534
+2024-05-07 10:49:37,671 - INFO - Test Set: Modality: rgb, Accuracy: 0.0410, Balanced Accuracy: 0.0430
+2024-05-07 10:49:37,671 - INFO - Test Set: Modality: rgb2, Accuracy: 0.0360, Balanced Accuracy: 0.0405

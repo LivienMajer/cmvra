@@ -228,14 +228,14 @@ def start_training():
     set_random_seed(cfg.seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    torch.cuda.set_device(0)  # Assuming a single device for now
+    torch.cuda.set_device(1)  # Assuming a single device for now
     
     LOGGER.info(f"device: {device}, 16-bits training: {cfg.fp16}")
 
     model = setup_model(cfg, device=device)
 
     # Use DataParallel to wrap the model
-    model = torch.nn.DataParallel(model, device_ids=[0,1,2,3])
+    model = torch.nn.DataParallel(model, device_ids=[1,2])
     model.train()
 
     optimizer = setup_e2e_optimizer(model, cfg)

@@ -41,7 +41,7 @@ class HDVILAVideoRetrievalDataset(Dataset):
             self.pos_num = cfg.pos_num
         else:
             self.pos_num = 1
-        self.transform = init_transform_dict_simple(video_res=cfg.video_res,
+        self.transform = init_transform_dict(video_res=cfg.video_res,
                                              input_res=cfg.input_res)[mode]
         self.frame_sampler = SampleFrames(clip_len=self.num_frm, 
                                           frame_interval=self.sample_rate, 

@@ -1,0 +1,63 @@
+2024-03-22 22:28:56,669 - INFO - Configuration:
+{
+    "task": "1",
+    "topic": "ft_wordes",
+    "number_gpus": "2",
+    "bind_to_rgb": true,
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CV",
+    "overfit_on_one_batch": false,
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 1,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_20231118_222300.pth",
+    "learning_rate": 0.0001,
+    "gradient_accumulation_steps": 2,
+    "scheduler_config": {
+        "type": "step",
+        "params": {
+            "step_size": 4,
+            "gamma": 0.1
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/only_words_cvmodel_step_56850.pt"
+}
+2024-03-22 22:28:56,738 - INFO - Aligning modalities......
+2024-03-22 22:28:56,786 - INFO - Training on the following GPUs [1, 0]
+2024-03-22 22:28:56,786 - INFO - rgb
+2024-03-22 22:28:56,788 - INFO - True
+2024-03-22 22:28:59,478 - INFO - ir
+2024-03-22 22:28:59,478 - INFO - False
+2024-03-22 22:29:01,368 - INFO - Starting training loop
+2024-03-22 22:29:01,370 - INFO - Epoch 1/1 - Training
+2024-03-22 23:18:06,392 - INFO - Epoch [1/1], modality_0_to_modality_1 Avg Loss: 2.8404
+2024-03-22 23:18:06,393 - INFO - Epoch [1/1], Avg Loss: 1.4202
+2024-03-22 23:18:06,394 - INFO - Epoch 1/1 - Validation
+2024-03-22 23:18:49,124 - INFO - Epoch [1/1], Validation Loss: 2.3629
+2024-03-22 23:19:02,196 - INFO - Best val loss 2.3628647923469543
+2024-03-22 23:19:02,197 - INFO - New best model saved at epoch 1
+2024-03-22 23:19:02,203 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CV_20240322_222901
+2024-03-22 23:19:02,203 - INFO - Training complete!

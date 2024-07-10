@@ -1,0 +1,55 @@
+2024-04-29 19:44:05,545 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "base_sentences",
+    "use_words": false,
+    "word_key": "NTUWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "ir": "OMNIVORE"
+    },
+    "dataset": "NTU",
+    "split": "CS",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_MIX_NTU_CS_20240330_141132.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-04-29 19:44:05,607 - INFO - Evaluing alginment with VIP text encoder...
+2024-04-29 19:44:05,656 - INFO - Evaluing on the following GPUs [2]
+2024-04-29 19:44:08,450 - INFO - Using depth mode summed_rgb_d_tokens
+2024-04-29 19:45:17,754 - INFO - Val Set: Modality: rgb, Accuracy: 0.0397, Balanced Accuracy: 0.0387
+2024-04-29 19:45:17,754 - INFO - Val Set: Modality: ir, Accuracy: 0.1041, Balanced Accuracy: 0.1156
+2024-04-29 20:24:56,363 - INFO - Train Set: Modality: rgb, Accuracy: 0.0485, Balanced Accuracy: 0.0485
+2024-04-29 20:24:56,364 - INFO - Train Set: Modality: ir, Accuracy: 0.1120, Balanced Accuracy: 0.1119
+2024-04-29 20:41:39,564 - INFO - Test Set: Modality: rgb, Accuracy: 0.0546, Balanced Accuracy: 0.0546
+2024-04-29 20:41:39,564 - INFO - Test Set: Modality: ir, Accuracy: 0.1191, Balanced Accuracy: 0.1191

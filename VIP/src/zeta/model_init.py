@@ -18,6 +18,7 @@ from modeling.vision_transformer import (
     VisionTransformer,
 )
 from modeling.omnivore import omnivore_swinB_imagenet21k
+from modeling.MaeSkeletonPretrained import TransformerModel
 from functools import partial
 from timm.models.layers import trunc_normal_
 
@@ -264,6 +265,9 @@ class MultiModalityModel(nn.Module):
         for modality in modalities_encoders:
             setattr(self, f"{modality}_classifier", nn.Linear(in_features, num_classes))
 
+        self.attention = nn.MultiheadAttention(in_features, num_heads=8, batch_first=True)
+        self.final_classifier = nn.Linear(in_features, num_classes)
+
     def forward_encoder(self, modality, x):
         if modality in self.modalities_encoders:
             return self.modalities_encoders[modality](x)
@@ -278,6 +282,18 @@ class MultiModalityModel(nn.Module):
     def forward_classifier_only(self, modality, x):
         classifier = getattr(self, f"{modality}_classifier")
         return classifier(x)
+    
+    def forward_fusion(self, x):
+        # concatenated_features should be of shape (batch_size, num_modalities, in_features)
+        
+        # Applying attention directly on the concatenated features
+        attention_output, _ = self.attention(x, x, x)
+        
+        # Reducing sequence dimension by taking the mean to get (batch_size, in_features)
+        attention_output = attention_output.mean(dim=1)
+        
+        # Final classification
+        return self.final_classifier(attention_output)
     
 
 class MaeModel(nn.Module):
@@ -374,6 +390,18 @@ def init_mae_model(gpus, config):
     
     return torch.nn.DataParallel(model, device_ids=sorted(gpus))
 
+class MAEEncoderWithLinear(torch.nn.Module):
+    def __init__(self, encoder, classifier):
+        super(MAEEncoderWithLinear, self).__init__()
+        self.encoder = encoder
+        self.classifier = classifier
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.classifier(x)
+        return x
+
+
 def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
     encoder = VisionTransformer(
         img_size=[3, 16, 224, 224],
@@ -440,8 +468,8 @@ def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
         # Proceed with loading the checkpoint since it exists
         encoder.load_state_dict(torch.load(checkpoint_path, map_location=f'cuda:{device}')['model_state_dict'], strict=False)
         logging.info(f"Checkpoint {checkpoint} loaded succesfully")
-    
-
+    embbeding = LinearClassifier(cfg.get('input_dim', 768), 512 )
+    encoder = MAEEncoderWithLinear(encoder, embbeding)
     # Freeze the encoder parameters if freeze is True
     if freeze:
         for param in encoder.parameters():
@@ -458,6 +486,15 @@ def init_omnivore_encoder(cfg, device, freeze=False):
     model = omnivore_swinB_imagenet21k()
     
     model.heads = nn.Linear(1024, cfg['in_features'], bias=False)
+    if freeze:
+        # Freeze all parameters in the model
+        for param in model.parameters():
+            param.requires_grad = False
+        #print('we frooze')  
+        # Unfreeze the parameters in the newly initialized head 
+        for param in model.heads.parameters():
+            param.requires_grad = True
+            
     return model.to(f'cuda:{device}')
 
 class DINOVforIR(nn.Module):
@@ -508,5 +545,44 @@ class LinearClassifier(nn.Module):
 
     def forward(self, x):
         return self.fc(x)
-
     
+
+def init_mae_skeleton_pretrained(cfg, device ,freeze=False):
+
+    model = TransformerModel(75 ,512, depth=2)
+    #print(model)
+    cktp = torch.load('/home/bas06400/Thesis/checkpoint_best_transformer.pth', map_location=f'cuda:{device}')
+    
+    model.load_state_dict(cktp['model'])
+    if freeze == True:
+        for param in model.parameters():
+            param.requires_grad = False
+    else:
+        for param in model.parameters():
+            param.requires_grad = True
+
+    return model
+
+
+def init_omnivore_for_ceval(cfg, device, freeze=False):
+    model = omnivore_swinB_imagenet21k()
+    
+    model.heads = nn.Linear(1024, cfg['in_features'], bias=False)
+    if freeze:
+        # Freeze all parameters in the model
+        for param in model.parameters():
+            param.requires_grad = False
+            
+        # Unfreeze the parameters in the newly initialized head
+        for param in model.heads.parameters():
+            param.requires_grad = True
+    cktp = torch.load(os.path.join(cfg['cktp_dir'],cfg['aligned_model']), map_location=f"cuda:{device}")
+    # Adjust for DataParallel state_dict keys
+    new_state_dict = {k.replace('module.modalities_encoders.ir.module.', ''): v for k, v in cktp['model_state_dict'].items()}
+    model.load_state_dict(new_state_dict, strict=False)  
+    # Freeze all parameters in the model
+    for param in model.parameters():
+        param.requires_grad = False
+    for param in model.heads.parameters():
+            param.requires_grad = True  
+    return model.to(f'cuda:{device}')

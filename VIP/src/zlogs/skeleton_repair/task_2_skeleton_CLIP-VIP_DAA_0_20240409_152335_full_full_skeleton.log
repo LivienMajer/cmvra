@@ -1,0 +1,98 @@
+2024-04-09 15:23:35,837 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "full_full_skeleton",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/loopingpoopin",
+    "number_gpus": "1",
+    "modalities": [
+        "skeleton"
+    ],
+    "dataset": "DAA",
+    "encoder_model": "CLIP-VIP",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "full_train_classifiers": true,
+    "epochs": 100,
+    "res_cktp": false,
+    "mixed_frames": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_CLIP-VIP_DAA_0_20240407_113217.pth",
+    "learning_rate": 1e-05,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 16,
+    "random_sample": true,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-04-09 15:23:35,875 - INFO - Training classifiers...
+2024-04-09 15:23:35,932 - INFO - Training on the following GPUs [0]
+2024-04-09 15:23:35,932 - INFO - Encoders are now trainable
+2024-04-09 15:23:39,608 - INFO - Setting grads
+2024-04-09 15:23:39,644 - INFO - Applying balance loss
+2024-04-09 15:24:00,940 - INFO - Full Training enabled
+2024-04-09 15:33:46,537 - INFO - Epoch 1, Train skeleton - Loss: 0.1913, Accuracy: 0.3372, Balanced Accuracy: 0.1648
+2024-04-09 15:34:34,780 - INFO - Epoch 1, Val skeleton - Loss: 0.1704, Accuracy: 0.3350, Balanced Accuracy: 0.2395
+2024-04-09 15:34:53,699 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 15:44:42,160 - INFO - Epoch 2, Train skeleton - Loss: 0.1684, Accuracy: 0.3862, Balanced Accuracy: 0.2316
+2024-04-09 15:45:27,698 - INFO - Epoch 2, Val skeleton - Loss: 0.1633, Accuracy: 0.3182, Balanced Accuracy: 0.2482
+2024-04-09 15:45:41,169 - INFO - Checkpoint saved at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 15:55:29,264 - INFO - Epoch 3, Train skeleton - Loss: 0.1572, Accuracy: 0.4012, Balanced Accuracy: 0.2688
+2024-04-09 15:56:20,413 - INFO - Epoch 3, Val skeleton - Loss: 0.1524, Accuracy: 0.3790, Balanced Accuracy: 0.2738
+2024-04-09 15:56:40,418 - INFO - Checkpoint saved at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 16:06:32,420 - INFO - Epoch 4, Train skeleton - Loss: 0.1509, Accuracy: 0.4142, Balanced Accuracy: 0.3034
+2024-04-09 16:07:21,060 - INFO - Epoch 4, Val skeleton - Loss: 0.1547, Accuracy: 0.3601, Balanced Accuracy: 0.2579
+2024-04-09 16:17:11,713 - INFO - Epoch 5, Train skeleton - Loss: 0.1438, Accuracy: 0.4307, Balanced Accuracy: 0.3235
+2024-04-09 16:18:01,959 - INFO - Epoch 5, Val skeleton - Loss: 0.1476, Accuracy: 0.3566, Balanced Accuracy: 0.2706
+2024-04-09 16:18:25,092 - INFO - Checkpoint saved at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 16:28:13,261 - INFO - Epoch 6, Train skeleton - Loss: 0.1374, Accuracy: 0.4542, Balanced Accuracy: 0.3492
+2024-04-09 16:28:59,927 - INFO - Epoch 6, Val skeleton - Loss: 0.1498, Accuracy: 0.3748, Balanced Accuracy: 0.2698
+2024-04-09 16:38:51,960 - INFO - Epoch 7, Train skeleton - Loss: 0.1326, Accuracy: 0.4509, Balanced Accuracy: 0.3715
+2024-04-09 16:39:40,945 - INFO - Epoch 7, Val skeleton - Loss: 0.1461, Accuracy: 0.3783, Balanced Accuracy: 0.2761
+2024-04-09 16:39:51,957 - INFO - Checkpoint saved at epoch 6 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 16:49:40,671 - INFO - Epoch 8, Train skeleton - Loss: 0.1229, Accuracy: 0.4732, Balanced Accuracy: 0.4053
+2024-04-09 16:50:26,091 - INFO - Epoch 8, Val skeleton - Loss: 0.1417, Accuracy: 0.4189, Balanced Accuracy: 0.3247
+2024-04-09 16:50:36,997 - INFO - Checkpoint saved at epoch 7 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 17:00:23,391 - INFO - Epoch 9, Train skeleton - Loss: 0.1183, Accuracy: 0.4851, Balanced Accuracy: 0.4574
+2024-04-09 17:01:08,697 - INFO - Epoch 9, Val skeleton - Loss: 0.1394, Accuracy: 0.3825, Balanced Accuracy: 0.3380
+2024-04-09 17:01:29,465 - INFO - Checkpoint saved at epoch 8 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 17:11:14,712 - INFO - Epoch 10, Train skeleton - Loss: 0.1133, Accuracy: 0.4928, Balanced Accuracy: 0.4705
+2024-04-09 17:11:59,970 - INFO - Epoch 10, Val skeleton - Loss: 0.1355, Accuracy: 0.3902, Balanced Accuracy: 0.3030
+2024-04-09 17:12:05,779 - INFO - Checkpoint saved at epoch 9 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 17:21:51,706 - INFO - Epoch 11, Train skeleton - Loss: 0.1061, Accuracy: 0.5102, Balanced Accuracy: 0.4923
+2024-04-09 17:22:37,007 - INFO - Epoch 11, Val skeleton - Loss: 0.1548, Accuracy: 0.3510, Balanced Accuracy: 0.3210
+2024-04-09 17:32:23,310 - INFO - Epoch 12, Train skeleton - Loss: 0.1006, Accuracy: 0.5233, Balanced Accuracy: 0.5370
+2024-04-09 17:33:08,657 - INFO - Epoch 12, Val skeleton - Loss: 0.1360, Accuracy: 0.3657, Balanced Accuracy: 0.3137
+2024-04-09 17:42:56,556 - INFO - Epoch 13, Train skeleton - Loss: 0.0942, Accuracy: 0.5503, Balanced Accuracy: 0.5700
+2024-04-09 17:43:42,414 - INFO - Epoch 13, Val skeleton - Loss: 0.1453, Accuracy: 0.3427, Balanced Accuracy: 0.3268
+2024-04-09 17:53:39,043 - INFO - Epoch 14, Train skeleton - Loss: 0.0901, Accuracy: 0.5590, Balanced Accuracy: 0.5859
+2024-04-09 17:54:25,065 - INFO - Epoch 14, Val skeleton - Loss: 0.1410, Accuracy: 0.4231, Balanced Accuracy: 0.3779
+2024-04-09 18:04:21,461 - INFO - Epoch 15, Train skeleton - Loss: 0.0842, Accuracy: 0.5723, Balanced Accuracy: 0.6001
+2024-04-09 18:05:07,434 - INFO - Epoch 15, Val skeleton - Loss: 0.1390, Accuracy: 0.4133, Balanced Accuracy: 0.3582
+2024-04-09 18:15:03,533 - INFO - Epoch 16, Train skeleton - Loss: 0.0798, Accuracy: 0.5813, Balanced Accuracy: 0.6165
+2024-04-09 18:15:49,446 - INFO - Epoch 16, Val skeleton - Loss: 0.1460, Accuracy: 0.3755, Balanced Accuracy: 0.3107
+2024-04-09 18:25:45,504 - INFO - Epoch 17, Train skeleton - Loss: 0.0738, Accuracy: 0.6070, Balanced Accuracy: 0.6583
+2024-04-09 18:26:31,456 - INFO - Epoch 17, Val skeleton - Loss: 0.1294, Accuracy: 0.4483, Balanced Accuracy: 0.3609
+2024-04-09 18:26:34,249 - INFO - Checkpoint saved at epoch 16 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_skeleton_CLIP-VIP_DAA_0_20240409_152400.pth
+2024-04-09 18:36:30,007 - INFO - Epoch 18, Train skeleton - Loss: 0.0713, Accuracy: 0.6165, Balanced Accuracy: 0.6652
+2024-04-09 18:37:15,988 - INFO - Epoch 18, Val skeleton - Loss: 0.1363, Accuracy: 0.4266, Balanced Accuracy: 0.3586
+2024-04-09 18:47:12,155 - INFO - Epoch 19, Train skeleton - Loss: 0.0667, Accuracy: 0.6367, Balanced Accuracy: 0.6893
+2024-04-09 18:47:58,161 - INFO - Epoch 19, Val skeleton - Loss: 0.1391, Accuracy: 0.4308, Balanced Accuracy: 0.3725
+2024-04-09 18:57:54,025 - INFO - Epoch 20, Train skeleton - Loss: 0.0627, Accuracy: 0.6412, Balanced Accuracy: 0.7039
+2024-04-09 18:58:40,032 - INFO - Epoch 20, Val skeleton - Loss: 0.1304, Accuracy: 0.4476, Balanced Accuracy: 0.3913
+2024-04-09 19:08:36,450 - INFO - Epoch 21, Train skeleton - Loss: 0.0569, Accuracy: 0.6653, Balanced Accuracy: 0.7315
+2024-04-09 19:09:22,424 - INFO - Epoch 21, Val skeleton - Loss: 0.1417, Accuracy: 0.4399, Balanced Accuracy: 0.3817
+2024-04-09 19:19:18,767 - INFO - Epoch 22, Train skeleton - Loss: 0.0547, Accuracy: 0.6715, Balanced Accuracy: 0.7492
+2024-04-09 19:20:04,717 - INFO - Epoch 22, Val skeleton - Loss: 0.1464, Accuracy: 0.4329, Balanced Accuracy: 0.3746

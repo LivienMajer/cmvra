@@ -5,7 +5,7 @@
     "model_config": null,
     "tokenizer_dir": null,
     "output_dir": "vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16",
-    "max_txt_len": 50,
+    "max_txt_len": 77,
     "max_img_size": 448,
     "img_pixel_mean": null,
     "img_pixel_std": null,
@@ -17,14 +17,14 @@
     "train_n_clips": 1,
     "score_agg_func": "mean",
     "random_sample_clips": 1,
-    "train_batch_size": 64,
+    "train_batch_size": 32,
     "val_batch_size": 128,
     "gradient_accumulation_steps": 1,
     "learning_rate": 1e-06,
-    "num_valid": 5,
+    "num_valid": 1,
     "min_valid_steps": 1,
     "save_steps_ratio": 0.9,
-    "num_train_epochs": 10,
+    "num_train_epochs": 5,
     "optim": "adamw",
     "betas": [
         0.9,
@@ -73,25 +73,25 @@
     "use_itc": 0,
     "pixel_random_sampling_size": 0,
     "train_datasets": {
-        "name": "ntu_train",
+        "name": "daa_train",
         "vis_format": "video",
-        "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/annotations_rgb_comp_CV_training_120set.jsonl",
-        "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
+        "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/data_zero_shot_train_0.jsonl",
+        "vis": "/home/bas06400/daa/kinect_color/clips/all_clips"
     },
     "val_datasets": [
         {
-            "name": "ntu_val",
+            "name": "daa_val",
             "vis_format": "video",
-            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/unique_samples120test.jsonl",
-            "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
+            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/testdaa0.jsonl",
+            "vis": "/home/bas06400/daa/kinect_color/clips/test"
         }
     ],
     "inference_datasets": [
         {
-            "name": "ntu_test",
+            "name": "daa_test",
             "vis_format": "video",
-            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/unique_samples120test.jsonl",
-            "vis": "/net/polaris/storage/deeplearning/ntu/nturgb+d_rgb_low_res2"
+            "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/testdaa0.jsonl",
+            "vis": "/home/bas06400/daa/kinect_color/clips/test"
         }
     ],
     "train_num_frms": 12,
@@ -100,8 +100,8 @@
     "sample_rate": 0,
     "sample_jitter": 1,
     "video_res": [
-        240,
-        320
+        540,
+        960
     ],
     "input_res": [
         224,
@@ -128,6 +128,6 @@
     "if_model_saver": 1,
     "if_log2file": 1,
     "dummy_data": 0,
-    "num_train_steps": 8550,
-    "valid_steps": 1710
+    "num_train_steps": 6119,
+    "valid_steps": 6119
 }

@@ -1,6 +1,7 @@
 import random
 import torch
 import logging
+import os
 from torch.utils.data import DataLoader, random_split
 
 # Assuming MultiModalVideoDataset is defined elsewhere, import it
@@ -13,21 +14,32 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     input_frames_for_model = {
         'CLIP-VIP': 12,
         'MAE': 16,
-        'MIX': 12
+        'MIX': 12,
+        'OMNIVORE':12
     }
+    if config['encoder_model'] == 'MIX' and any('MAE' == encoder for encoder in config['modalities_encoders'].values()):
+        mixed_frames = {}
+        for modality, encoder in config['modalities_encoders'].items():
+            # Check if this modality is listed in 'modalities' and its encoder is 'MAE'
+            if modality in config['modalities']:
+                # Fetch the cowrresponding frames
+                mixed_frames[modality] = input_frames_for_model[encoder]
+    else:
+        mixed_frames = False
     frame_count = input_frames_for_model[config['encoder_model']]
-    
+    augs = config.get('augs',False)
     seed = 42
     random.seed(seed)  # Seed for Python's random module
     torch.manual_seed(seed)  # Seed for PyTorch random number generators
     if config['dataset'] == 'NTU':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/CS_training_set_low_res.txt'
-            test_data_list = '/home/bas06400/Thesis/CS_testing_set_low_res.txt'
+            train_data_list = '/home/bas06400/Thesis/CS_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/CS_testing_set.txt'
+            print('CS')
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/CV_training_set_low_res_cleaned2.txt'
-            test_data_list = '/home/bas06400/Thesis/CV_testing_set_low_res_cleaned2.txt'
+            train_data_list = '/home/bas06400/Thesis/CV_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/CV_testing_set.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
@@ -35,8 +47,32 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
         #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
 
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        # Calculate lengths of splits for training and validation
+        train_len = int(0.98 * len(train_data))
+        val_len = len(train_data) - train_len
+
+        # Split the training dataset into training and validation sets
+        train_data, val_data = random_split(train_data, [train_len, val_len])
+
+    elif config['dataset'] == 'NTUcropped':
+        # Define file paths for datasets based on mode
+        if split == 'CS':
+            train_data_list = '/home/bas06400/Thesis/CS_training_set_cropped.txt'
+            test_data_list = '/home/bas06400/Thesis/CS_testing_set_cropped.txt'
+        elif split == 'CV':
+            train_data_list = '/home/bas06400/Thesis/CV_training_set_cropped_low_res_cleaned2.txt'
+            test_data_list = '/home/bas06400/Thesis/CV_testing_set_cropped_low_res_cleaned2.txt'
+        else:
+            raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
+        
+        # Load the datasets
+        #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+        #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
         val_len = len(train_data) - train_len
@@ -48,7 +84,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         # Define file paths for datasets based on mode
         if split == 'CS':
             train_data_list = '/home/bas06400/Thesis/CS120_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CS120_testing.txt'
+            test_data_list = '/home/bas06400/Thesis/CS120_testing_set.txt'
         elif split == 'CV':
             train_data_list = '/home/bas06400/Thesis/CV120_training_set.txt'
             test_data_list = '/home/bas06400/Thesis/CV120_testing_set.txt'
@@ -59,8 +95,8 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
         #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
 
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
         val_len = len(train_data) - train_len
@@ -69,32 +105,34 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         train_data, val_data = random_split(train_data, [train_len, val_len])
         
     elif config['dataset'] == 'DAA':
-        # Define file paths for datasets based on mode
-        if split == '0':
-            train_data_list = '/home/bas06400/daa/daa_split0train.txt'
-            val_data_list = '/home/bas06400/daa/daa_split0val.txt'
-            test_data_list = '/home/bas06400/daa/daa_split0test.txt'
-        elif split == '1':
-            train_data_list = '/home/bas06400/daa/daa_split_train1.txt'
-            val_data_list = '/home/bas06400/daa/daa_split_val1.txt'
-            test_data_list = '/home/bas06400/daa/daa_split_test1.txt'
-        elif split == '2':
-            train_data_list = '/home/bas06400/daa/daa_split_train2.txt'
-            val_data_list = '/home/bas06400/daa/daa_split_val2.txt'
-            test_data_list = '/home/bas06400/daa/daa_split_test2.txt'
+        # Base path for zero-shot splits
+        zero_shot_base_path = '/home/bas06400/daa/zero_shot_splits'
+        
+        # Define file paths for datasets based on split
+        if split in ['0', '1', '2']:
+            # Original splits
+            train_data_list = f'/home/bas06400/daa/daa_split_train{split}_full_balanced.txt'
+            val_data_list = f'/home/bas06400/daa/daa_split_val{split}_full.txt'
+            test_data_list = f'/home/bas06400/daa/daa_split_test{split}_full.txt'
+        elif split.startswith('zs'):
+            # Zero-shot splits
+            zs_index = split[2:]  # Extract the index from 'zs0', 'zs1', etc.
+            train_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_train_{zs_index}_balanced.txt')
+            val_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_val_{zs_index}.txt')
+            test_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_test_{zs_index}.txt')
         else:
-            raise ValueError("Invalid mode. Choose '0', '1' or '2'.")
+            raise ValueError("Invalid split. Choose '0', '1', '2' for original splits or 'zs0', 'zs1', ..., 'zs9' for zero-shot splits.")
         
         data_root = '/home/bas06400/daa'
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
-        val_data = MultiModalVideoDataset3(val_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
+        val_data = MultiModalVideoDataset3(val_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='val', augs =augs)
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
 
 
     else:
         logging.info('Currently only DAA or NTU are supported dataset options')
     shift_label = False
-    if config['dataset'] =='NTU' or config['dataset'] =='NTU120':
+    if config['dataset'] =='NTU' or config['dataset'] =='NTU120' or config['dataset'] =='NTUcropped':
         shift_label = True
      # Create the DataLoaders
     train_loader = DataLoader(

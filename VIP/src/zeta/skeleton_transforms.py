@@ -3,7 +3,109 @@ import numpy as np
 
 EPS = 1e-4
 
+class Normalize3D:
+    """
+    Code base from https://github.com/kennymckormick/pyskl:
+    PreNormalize for NTURGB+D 3D keypoints (x, y, z).
+    Codes adapted from https://github.com/lshiwjx/2s-AGCN.
+    """
 
+    def unit_vector(self, vector):
+        """Returns the unit vector of the vector. """
+        return vector / np.linalg.norm(vector)
+
+    def angle_between(self, v1, v2):
+        """Returns the angle in radians between vectors 'v1' and 'v2'. """
+        if np.abs(v1).sum() < 1e-6 or np.abs(v2).sum() < 1e-6:
+            return 0
+        v1_u = self.unit_vector(v1)
+        v2_u = self.unit_vector(v2)
+        return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
+    def rotation_matrix(self, axis, theta):
+        """Return the rotation matrix associated with counterclockwise rotation
+        about the given axis by theta radians."""
+        if np.abs(axis).sum() < 1e-6 or np.abs(theta) < 1e-6:
+            return np.eye(3)
+        axis = np.asarray(axis)
+        axis = axis / np.sqrt(np.dot(axis, axis))
+        a = np.cos(theta / 2.0)
+        b, c, d = -axis * np.sin(theta / 2.0)
+        aa, bb, cc, dd = a * a, b * b, c * c, d * d
+        bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+        return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+                        [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+                        [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
+
+    def __init__(self, zaxis=[0, 20], xaxis=[8, 4], align_spine=True,
+                 align_center=True, scale=None, dataset: str = "NTU"):
+        self.zaxis = zaxis
+        self.xaxis = xaxis
+        self.align_spine = align_spine
+        self.align_center = align_center
+        self.scale = scale
+        self.dataset = dataset
+
+    def __call__(self, results):
+        skeleton = results['keypoint']
+        total_frames = results.get('total_frames', skeleton.shape[1])
+        skeleton = skeleton.reshape(total_frames,25,3) # added
+        T, V, C = skeleton.shape
+        if T != total_frames:
+            total_frames = T
+        # assert T == total_frames
+        if skeleton.sum() == 0:
+            return results
+
+        # index0 = [i for i in range(T) if not np.all(np.isclose(skeleton[i], 0))]
+        # skeleton = skeleton[np.array(index0)]
+
+        T_new = skeleton.shape[1]
+
+        if self.align_center:
+            if self.dataset == "NTU" or self.dataset == 'PKU' or self.dataset == 'NUCLA':
+                main_body_center = skeleton[0, 1].copy()
+            elif self.dataset == "DAA":
+                # main_body_center = np.asarray([0.0929, -0.0121, 0.2954])
+                main_body_center = np.mean(np.mean(skeleton, axis=1), axis=0)
+            else:
+                raise NotImplemented
+                # main_body_center = skeleton[0, -1].copy()
+            mask = ((skeleton != 0).sum(-1) > 0)[..., None]
+            skeleton = (skeleton - main_body_center) * mask
+        if self.align_spine:
+            if self.dataset == "NTU" or self.dataset == 'PKU' or self.dataset == 'NUCLA':
+                joint_bottom = skeleton[0, self.zaxis[0]]
+                joint_top = skeleton[0, self.zaxis[1]]
+            elif self.dataset == "DAA" or self.dataset == "NTU_DAA":
+                joint_bottom = np.mean(skeleton[:, self.zaxis[0]], axis=0)
+                joint_top = np.mean(skeleton[:, self.zaxis[1]], axis=0)
+            axis = np.cross(joint_top - joint_bottom, [0, 0, 1])
+            angle = self.angle_between(joint_top - joint_bottom, [0, 0, 1])
+            matrix_z = self.rotation_matrix(axis, angle)
+            skeleton = np.einsum('bcd,kd->bck', skeleton, matrix_z)
+            if self.dataset == "NTU" or self.dataset == 'PKU' or self.dataset == 'NUCLA':
+                joint_rshoulder = skeleton[0, self.xaxis[0]]
+                joint_lshoulder = skeleton[0, self.xaxis[1]]
+            elif self.dataset == "DAA" or self.dataset == "NTU_DAA":
+                joint_rshoulder = np.mean(skeleton[:, self.xaxis[0]], axis=0)
+                joint_lshoulder = np.mean(skeleton[:, self.xaxis[1]], axis=0)
+            axis = np.cross(joint_rshoulder - joint_lshoulder, [1, 0, 0])
+            angle = self.angle_between(joint_rshoulder - joint_lshoulder, [1, 0, 0])
+            matrix_x = self.rotation_matrix(axis, angle)
+            skeleton = np.einsum('bcd,kd->bck', skeleton, matrix_x)
+
+        if self.scale is not None:
+            size = np.linalg.norm(np.median(skeleton[:, self.zaxis[1]], axis=0) -
+                                  np.median(skeleton[:, self.zaxis[0]], axis=0))
+            if size > 0:
+                skeleton *= self.scale / np.amax(np.abs(skeleton))
+                # print(np.amax(skeleton), np.amax(skeleton_))
+
+        results['keypoint'] = skeleton
+        results['total_frames'] = T_new
+        results['body_center'] = main_body_center
+        return results
 
 class RandomRot:
 

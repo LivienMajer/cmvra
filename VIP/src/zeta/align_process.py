@@ -35,7 +35,7 @@ def align_modalities_process(multi_modality_model,
     """
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    checkpoint_filename = f"checkpoint_{modalities}_{config['split']}_{timestamp}.pth"
+    checkpoint_filename = f"checkpoint_{modalities}_{config['encoder_model']}_{config['dataset']}_{config['split']}_{timestamp}.pth"
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
     gradient_accumulation_steps = config.get('gradient_accumulation_steps', 1)
@@ -114,23 +114,30 @@ def align_modalities_process(multi_modality_model,
                     else:
                         logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
             """
-            #now allowing mixed encoders
-            def preprocess_for_clip_vip(data):
-                return data  # Assuming no special preprocessing is needed for CLIP-VIP
+            #allowing mixed encoders
+            def preprocess_for_clip_vip(data, modality):
+                return data  
 
-            def preprocess_for_mae(data):
-                return data.permute(0, 2, 1, 3, 4)  # Example permutation for MAE
+            def preprocess_for_mae(data, modality):
+                return data.permute(0, 2, 1, 3, 4)  
+            
+            def preprocess_for_maeps(data, modality):
+                return data.view(data.size(0), data.size(1), -1) 
 
-            def preprocess_for_omnivore(data):
-                # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
-                return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+            def preprocess_for_omnivore(data, modality):
+                if modality =='depth':
+                    # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
+                    return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+                else:
+                    return data.permute(0, 2, 1, 3, 4)
 
             # Mapping encoders to their preprocessing functions
             preprocessing_map = {
                 'CLIP-VIP': preprocess_for_clip_vip,
                 'MAE': preprocess_for_mae,
                 'OMNIVORE': preprocess_for_omnivore,
-                'DINO': preprocess_for_clip_vip # DINO requires the same structure
+                'DINO': preprocess_for_clip_vip, # DINO requires the same structure
+                'MAEPS': preprocess_for_maeps
             }
             embeddings = []
             for modality, data in batch_data.items():
@@ -145,7 +152,7 @@ def align_modalities_process(multi_modality_model,
                     data = data.cuda(device, non_blocking=True)
                     if encoder in preprocessing_map:
                         # Apply preprocessing specific to the selected encoder
-                        data = preprocessing_map[encoder](data)
+                        data = preprocessing_map[encoder](data, modality)
                     
                     # Forward the preprocessed data through the encoder
                     # Assuming forward_encoder can handle different encoder types
@@ -210,22 +217,30 @@ def align_modalities_process(multi_modality_model,
                         else:
                             logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
                 """
-                #now allowing mixed encoders
-                def preprocess_for_clip_vip(data):
-                    return data  # Assuming no special preprocessing is needed for CLIP-VIP
+                #allowing mixed encoders
+                def preprocess_for_clip_vip(data, modality):
+                    return data  
 
-                def preprocess_for_mae(data):
-                    return data.permute(0, 2, 1, 3, 4)  # Example permutation for MAE
+                def preprocess_for_mae(data, modality):
+                    return data.permute(0, 2, 1, 3, 4)  
+                
+                def preprocess_for_maeps(data, modality):
+                    return data.view(data.size(0), data.size(1), -1) 
 
-                def preprocess_for_omnivore(data):
-                    # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
-                    return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+                def preprocess_for_omnivore(data, modality):
+                    if modality =='depth':
+                        # Concatenate the first channel with the original tensor along the channel dimension to add a fourth channel
+                        return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+                    else:
+                        return data.permute(0, 2, 1, 3, 4)
 
                 # Mapping encoders to their preprocessing functions
                 preprocessing_map = {
                     'CLIP-VIP': preprocess_for_clip_vip,
                     'MAE': preprocess_for_mae,
-                    'OMNIVORE': preprocess_for_omnivore
+                    'OMNIVORE': preprocess_for_omnivore,
+                    'DINO': preprocess_for_clip_vip, # DINO requires the same structure
+                    'MAEPS': preprocess_for_maeps
                 }
                 embeddings = []
                 for modality, data in batch_data.items():
@@ -240,7 +255,7 @@ def align_modalities_process(multi_modality_model,
                         data = data.cuda(device, non_blocking=True)
                         if encoder in preprocessing_map:
                             # Apply preprocessing specific to the selected encoder
-                            data = preprocessing_map[encoder](data)
+                            data = preprocessing_map[encoder](data, modality)
                         
                         # Forward the preprocessed data through the encoder
                         # Assuming forward_encoder can handle different encoder types

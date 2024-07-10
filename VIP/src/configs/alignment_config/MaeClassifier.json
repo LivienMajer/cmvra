@@ -1,20 +1,20 @@
 {
     "task": "5",
-    "topic": "classifier",
+    "topic": "CS",
     "train_classifier": true,
     "number_gpus": "1",
     "modalities": [
-        "depth"
+        "ir"
     ],
     "encoder_model": "MAE",
     "mask_ratio": 0.8,
-    "dataset": "DAA",
-    "split": "2",
-    "num_classes": 34,
+    "dataset": "NTU",
+    "split": "CS",
+    "num_classes": 60,
     "epochs": 500,
     "res_cktp": false,
     "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/",
-    "trained_encoder": "checkpoint_depth_2_20240205_000420.pth",
+    "trained_encoder": "checkpoint_ir_CS_20240131_005847.pth",
     "learning_rate": 0.001,
     "temperature": 0.1,
     "num_workers": 10,

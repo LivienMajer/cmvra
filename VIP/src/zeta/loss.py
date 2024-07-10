@@ -18,12 +18,74 @@ class NCEContrastiveLoss(nn.Module):
         v2t = t2v.permute(1, 0)
         t2v_label = torch.arange(t2v.shape[0], device=t2v.device)
         v2t_label = t2v_label
-        loss = (F.cross_entropy(t2v, t2v_label) + F.cross_entropy(v2t, v2t_label)) / 2
+        loss =    (F.cross_entropy(t2v, t2v_label) + F.cross_entropy(v2t, v2t_label) ) / 2
         return loss
 
 def normalize(*xs):
     return [None if x is None else F.normalize(x, dim=-1) for x in xs]
 
+
+class DiagonalMSEContrastiveLoss(nn.Module):
+    """
+    Compute Mean Squared Error (MSE) loss between corresponding embeddings in the batch
+    across two modalities (i.e., diagonal pairs only).
+    """
+
+    def __init__(self):
+        super(DiagonalMSEContrastiveLoss, self).__init__()
+        self.mse_loss = nn.MSELoss()  # Default reduction is 'mean'
+
+    def forward(self, vis_feat, text_feat):
+        # Ensure input features have the same dimensions
+        if vis_feat.size(0) != text_feat.size(0):
+            raise ValueError("The number of features in each set must match")
+
+        # Compute MSE loss directly between corresponding elements
+        loss = self.mse_loss(vis_feat, text_feat)
+        return loss
+
+
+class SoftLabelCrossEntropyLoss(nn.Module):
+    """
+    Compute cross-entropy loss using label smoothing for soft labeling.
+    This involves setting the label_smoothing parameter of the CrossEntropyLoss.
+    """
+    def __init__(self, num_classes=34, smoothing=0.1):
+        super(SoftLabelCrossEntropyLoss, self).__init__()
+        self.num_classes = num_classes
+        self.smoothing = smoothing
+        self.loss_fn = nn.CrossEntropyLoss(label_smoothing=self.smoothing)
+
+    def forward(self, logits, hard_labels):
+        # hard_labels are expected to be class indices; for true soft targets, you would need a different approach
+        return self.loss_fn(logits, hard_labels)
+    
+
+class DiagonalKLDivLoss(nn.Module):
+    """
+    Compute KL divergence loss between logits and soft targets.
+    This uses log_softmax on logits and assumes targets are given as
+    probability distributions.
+    """
+    def __init__(self, temperature=1.0):
+        super(DiagonalKLDivLoss, self).__init__()
+        self.temperature = temperature
+        self.kl_div = nn.KLDivLoss(reduction='batchmean')
+
+    def forward(self, logits, targets):
+        if logits.size(0) != targets.size(0):
+            raise ValueError("The number of features in each set must match")
+
+        # Apply softmax to targets to convert them into probability distributions
+        targets = F.softmax(targets / self.temperature, dim=-1)
+
+        # Apply log_softmax to logits
+        logits = F.log_softmax(logits / self.temperature, dim=-1)
+
+        # Compute KL divergence
+        loss = self.kl_div(logits, targets)
+        return loss
+    
 class InfoNCELoss1(nn.Module):
     def __init__(self, temperature=0.1):
         super(InfoNCELoss1, self).__init__()

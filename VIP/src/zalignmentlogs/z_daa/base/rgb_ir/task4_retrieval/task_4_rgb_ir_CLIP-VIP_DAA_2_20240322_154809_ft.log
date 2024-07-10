@@ -1,0 +1,48 @@
+2024-03-22 15:48:09,011 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "ft",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "DAA",
+    "split": "2",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CLIP-VIP_DAA_2_20240313_113504.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/fts/daa2.pt"
+}
+2024-03-22 15:48:09,065 - INFO - Evaluing alginment with VIP text encoder...
+2024-03-22 15:48:09,113 - INFO - Evaluing on the following GPUs [0]
+2024-03-22 15:50:04,988 - INFO - Val Set: Modality: rgb, Accuracy: 0.8230, Balanced Accuracy: 0.7022
+2024-03-22 15:50:04,989 - INFO - Val Set: Modality: ir, Accuracy: 0.5118, Balanced Accuracy: 0.2788
+2024-03-22 15:57:51,035 - INFO - Train Set: Modality: rgb, Accuracy: 0.9915, Balanced Accuracy: 0.9613
+2024-03-22 15:57:51,035 - INFO - Train Set: Modality: ir, Accuracy: 0.8058, Balanced Accuracy: 0.5495
+2024-03-22 16:00:31,275 - INFO - Test Set: Modality: rgb, Accuracy: 0.6953, Balanced Accuracy: 0.5453
+2024-03-22 16:00:31,276 - INFO - Test Set: Modality: ir, Accuracy: 0.3853, Balanced Accuracy: 0.2343

@@ -1,0 +1,707 @@
+2024-03-16 13:15:23,838 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "ft_full_training_sota_comp",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features1657758",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": true,
+    "epochs": 100,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240227_115808.pth",
+    "learning_rate": 1e-05,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 8,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-16 13:15:23,921 - INFO - Training classifiers...
+2024-03-16 13:15:23,981 - INFO - Training on the following GPUs [3]
+2024-03-16 13:15:23,982 - INFO - Encoders are now trainable
+2024-03-16 13:15:31,649 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.proj.weight due to size mismatch.
+2024-03-16 13:15:31,651 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.proj.bias due to size mismatch.
+2024-03-16 13:15:31,655 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.norm.weight due to size mismatch.
+2024-03-16 13:15:31,659 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.patch_embed.norm.bias due to size mismatch.
+2024-03-16 13:15:31,662 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.proj.weight due to size mismatch.
+2024-03-16 13:15:31,665 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.proj.bias due to size mismatch.
+2024-03-16 13:15:31,669 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.norm.weight due to size mismatch.
+2024-03-16 13:15:31,673 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.depth_patch_embed.norm.bias due to size mismatch.
+2024-03-16 13:15:31,681 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 13:15:31,684 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 13:15:31,687 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:31,691 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:31,695 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:31,701 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:31,704 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:31,709 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:31,712 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 13:15:31,716 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 13:15:31,722 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:31,725 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:31,733 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:31,740 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:31,747 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 13:15:31,753 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 13:15:31,760 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:31,766 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:31,770 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:31,776 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:31,780 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:31,785 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:31,788 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 13:15:31,794 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 13:15:31,800 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:31,804 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:31,810 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:31,816 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:31,822 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.reduction.weight due to size mismatch.
+2024-03-16 13:15:31,830 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.norm.weight due to size mismatch.
+2024-03-16 13:15:31,837 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.0.downsample.norm.bias due to size mismatch.
+2024-03-16 13:15:31,843 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 13:15:31,850 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 13:15:31,854 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:31,859 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:31,866 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:31,869 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:31,872 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:31,875 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:31,881 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 13:15:31,887 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 13:15:31,894 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:31,898 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:31,900 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:31,903 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:31,906 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 13:15:31,908 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 13:15:31,911 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:31,913 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:31,916 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:31,918 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:31,920 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:31,923 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:31,925 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 13:15:31,927 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 13:15:31,929 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:31,931 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:31,933 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:31,939 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:31,945 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.reduction.weight due to size mismatch.
+2024-03-16 13:15:31,950 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.norm.weight due to size mismatch.
+2024-03-16 13:15:31,954 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.1.downsample.norm.bias due to size mismatch.
+2024-03-16 13:15:31,957 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 13:15:31,960 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 13:15:31,964 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:31,968 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:31,971 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:31,973 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:31,979 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:31,985 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:31,991 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 13:15:31,997 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,003 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,007 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,010 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,013 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,019 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,023 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,029 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,035 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,043 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,048 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,054 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,061 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,064 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,070 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,077 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,081 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,086 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,092 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,099 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,105 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,110 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,115 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,121 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,128 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,132 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,139 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,145 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,151 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,158 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,172 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,178 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,182 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.2.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,188 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,194 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,200 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,204 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,210 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,216 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,223 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,226 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,232 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,238 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,243 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,248 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,255 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,260 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.3.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,267 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,273 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,279 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,286 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,292 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,299 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,305 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,308 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,311 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,318 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,322 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,329 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,333 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,336 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.4.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,340 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,343 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,350 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,354 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,357 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,364 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,367 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,374 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,378 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,382 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,385 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,392 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,396 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,399 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.5.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,402 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,405 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,408 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,411 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,413 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,416 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,418 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,421 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,423 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,425 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,428 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,430 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,432 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,434 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.6.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,436 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,438 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,439 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,441 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,443 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,446 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,448 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,451 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,453 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,455 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,457 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,459 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,461 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,466 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.7.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,472 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,479 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,486 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,492 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,498 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,505 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,511 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,518 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,523 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,527 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,531 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,537 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,541 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,547 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.8.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,553 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,559 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,566 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,569 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,575 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,581 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,588 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,594 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,600 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,604 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,610 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,613 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,620 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,625 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.9.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,633 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,642 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,648 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,654 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,660 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,667 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,673 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,679 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,686 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,692 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,698 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,703 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,708 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,714 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.10.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,718 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,724 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,730 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,734 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,741 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,748 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,750 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,757 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,763 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,770 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,775 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,782 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,789 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,797 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.11.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,803 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,809 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,814 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,819 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,825 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,828 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,831 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,838 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,842 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,847 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,854 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,860 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,866 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,870 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.12.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,875 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,881 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,886 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,893 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,899 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,906 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,914 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,920 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:32,926 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm2.weight due to size mismatch.
+2024-03-16 13:15:32,932 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.norm2.bias due to size mismatch.
+2024-03-16 13:15:32,939 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:32,945 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:32,952 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:32,958 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.13.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:32,964 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm1.weight due to size mismatch.
+2024-03-16 13:15:32,971 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm1.bias due to size mismatch.
+2024-03-16 13:15:32,977 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:32,984 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:32,988 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:32,991 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:32,996 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:32,999 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,002 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,005 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,008 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,011 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,014 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,016 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.14.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,019 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm1.weight due to size mismatch.
+2024-03-16 13:15:33,021 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm1.bias due to size mismatch.
+2024-03-16 13:15:33,023 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:33,025 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:33,027 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:33,029 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:33,033 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:33,035 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,037 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,039 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,040 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,042 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,046 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,048 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.15.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,050 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm1.weight due to size mismatch.
+2024-03-16 13:15:33,052 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm1.bias due to size mismatch.
+2024-03-16 13:15:33,053 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:33,055 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:33,057 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:33,059 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:33,067 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:33,073 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,077 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,080 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,082 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,090 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,094 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,097 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.16.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,100 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm1.weight due to size mismatch.
+2024-03-16 13:15:33,103 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm1.bias due to size mismatch.
+2024-03-16 13:15:33,105 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:33,107 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:33,110 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:33,114 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:33,116 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:33,118 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,120 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,122 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,124 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,126 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,128 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,129 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.blocks.17.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,131 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.reduction.weight due to size mismatch.
+2024-03-16 13:15:33,133 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.norm.weight due to size mismatch.
+2024-03-16 13:15:33,134 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.2.downsample.norm.bias due to size mismatch.
+2024-03-16 13:15:33,136 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm1.weight due to size mismatch.
+2024-03-16 13:15:33,137 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm1.bias due to size mismatch.
+2024-03-16 13:15:33,139 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:33,140 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:33,142 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:33,143 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:33,144 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:33,146 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,147 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,148 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,149 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,157 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,160 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,166 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.0.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,170 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm1.weight due to size mismatch.
+2024-03-16 13:15:33,176 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm1.bias due to size mismatch.
+2024-03-16 13:15:33,182 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.relative_position_bias_table due to size mismatch.
+2024-03-16 13:15:33,184 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.relative_position_index due to size mismatch.
+2024-03-16 13:15:33,186 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.qkv.weight due to size mismatch.
+2024-03-16 13:15:33,192 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.qkv.bias due to size mismatch.
+2024-03-16 13:15:33,197 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.proj.weight due to size mismatch.
+2024-03-16 13:15:33,199 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.attn.proj.bias due to size mismatch.
+2024-03-16 13:15:33,203 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm2.weight due to size mismatch.
+2024-03-16 13:15:33,208 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.norm2.bias due to size mismatch.
+2024-03-16 13:15:33,215 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc1.weight due to size mismatch.
+2024-03-16 13:15:33,221 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc1.bias due to size mismatch.
+2024-03-16 13:15:33,225 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc2.weight due to size mismatch.
+2024-03-16 13:15:33,231 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.layers.3.blocks.1.mlp.fc2.bias due to size mismatch.
+2024-03-16 13:15:33,239 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.norm.weight due to size mismatch.
+2024-03-16 13:15:33,243 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.trunk.norm.bias due to size mismatch.
+2024-03-16 13:15:33,250 - WARNING - Skipping loading parameter: module.modalities_encoders.ir.module.heads.weight due to size mismatch.
+2024-03-16 13:15:33,266 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-03-16 13:15:33,268 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-03-16 13:15:33,287 - INFO - Setting grads
+2024-03-16 13:15:33,291 - INFO - Full Training enabled
+2024-03-16 14:03:06,458 - INFO - Epoch 1, Train rgb - Loss: 0.4670, Accuracy: 0.2151, Balanced Accuracy: 0.2152
+2024-03-16 14:04:19,813 - INFO - Epoch 1, Val rgb - Loss: 0.4250, Accuracy: 0.4545, Balanced Accuracy: 0.4607
+2024-03-16 14:04:20,872 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 14:57:31,518 - INFO - Epoch 2, Train rgb - Loss: 0.3883, Accuracy: 0.5731, Balanced Accuracy: 0.5730
+2024-03-16 14:58:24,496 - INFO - Epoch 2, Val rgb - Loss: 0.3598, Accuracy: 0.6350, Balanced Accuracy: 0.6388
+2024-03-16 14:58:27,934 - INFO - Checkpoint saved at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 15:38:23,227 - INFO - Epoch 3, Train rgb - Loss: 0.3309, Accuracy: 0.6742, Balanced Accuracy: 0.6741
+2024-03-16 15:39:08,644 - INFO - Epoch 3, Val rgb - Loss: 0.3108, Accuracy: 0.6917, Balanced Accuracy: 0.6936
+2024-03-16 15:39:10,898 - INFO - Checkpoint saved at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 16:02:01,259 - INFO - Epoch 4, Train rgb - Loss: 0.2873, Accuracy: 0.7060, Balanced Accuracy: 0.7059
+2024-03-16 16:02:28,271 - INFO - Epoch 4, Val rgb - Loss: 0.2729, Accuracy: 0.7101, Balanced Accuracy: 0.7109
+2024-03-16 16:02:40,039 - INFO - Checkpoint saved at epoch 3 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 16:23:09,212 - INFO - Epoch 5, Train rgb - Loss: 0.2535, Accuracy: 0.7237, Balanced Accuracy: 0.7236
+2024-03-16 16:23:36,330 - INFO - Epoch 5, Val rgb - Loss: 0.2433, Accuracy: 0.7233, Balanced Accuracy: 0.7227
+2024-03-16 16:23:39,876 - INFO - Checkpoint saved at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 16:44:09,257 - INFO - Epoch 6, Train rgb - Loss: 0.2270, Accuracy: 0.7367, Balanced Accuracy: 0.7367
+2024-03-16 16:44:36,259 - INFO - Epoch 6, Val rgb - Loss: 0.2199, Accuracy: 0.7286, Balanced Accuracy: 0.7279
+2024-03-16 16:44:46,908 - INFO - Checkpoint saved at epoch 5 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 17:05:15,415 - INFO - Epoch 7, Train rgb - Loss: 0.2058, Accuracy: 0.7454, Balanced Accuracy: 0.7454
+2024-03-16 17:05:42,257 - INFO - Epoch 7, Val rgb - Loss: 0.2012, Accuracy: 0.7431, Balanced Accuracy: 0.7416
+2024-03-16 17:05:45,064 - INFO - Checkpoint saved at epoch 6 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 17:31:53,207 - INFO - Epoch 8, Train rgb - Loss: 0.1888, Accuracy: 0.7548, Balanced Accuracy: 0.7547
+2024-03-16 17:32:38,406 - INFO - Epoch 8, Val rgb - Loss: 0.1860, Accuracy: 0.7536, Balanced Accuracy: 0.7505
+2024-03-16 17:32:40,308 - INFO - Checkpoint saved at epoch 7 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 18:06:58,180 - INFO - Epoch 9, Train rgb - Loss: 0.1749, Accuracy: 0.7609, Balanced Accuracy: 0.7609
+2024-03-16 18:07:43,051 - INFO - Epoch 9, Val rgb - Loss: 0.1734, Accuracy: 0.7655, Balanced Accuracy: 0.7594
+2024-03-16 18:07:51,144 - INFO - Checkpoint saved at epoch 8 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 18:42:32,640 - INFO - Epoch 10, Train rgb - Loss: 0.1633, Accuracy: 0.7673, Balanced Accuracy: 0.7672
+2024-03-16 18:43:12,999 - INFO - Epoch 10, Val rgb - Loss: 0.1630, Accuracy: 0.7668, Balanced Accuracy: 0.7611
+2024-03-16 18:43:22,104 - INFO - Checkpoint saved at epoch 9 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 19:12:10,967 - INFO - Epoch 11, Train rgb - Loss: 0.1537, Accuracy: 0.7714, Balanced Accuracy: 0.7714
+2024-03-16 19:12:37,929 - INFO - Epoch 11, Val rgb - Loss: 0.1543, Accuracy: 0.7721, Balanced Accuracy: 0.7669
+2024-03-16 19:12:41,594 - INFO - Checkpoint saved at epoch 10 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 19:33:10,898 - INFO - Epoch 12, Train rgb - Loss: 0.1455, Accuracy: 0.7755, Balanced Accuracy: 0.7755
+2024-03-16 19:33:37,864 - INFO - Epoch 12, Val rgb - Loss: 0.1468, Accuracy: 0.7721, Balanced Accuracy: 0.7660
+2024-03-16 19:33:39,943 - INFO - Checkpoint saved at epoch 11 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 19:54:09,367 - INFO - Epoch 13, Train rgb - Loss: 0.1385, Accuracy: 0.7800, Balanced Accuracy: 0.7800
+2024-03-16 19:54:36,233 - INFO - Epoch 13, Val rgb - Loss: 0.1403, Accuracy: 0.7760, Balanced Accuracy: 0.7696
+2024-03-16 19:54:42,259 - INFO - Checkpoint saved at epoch 12 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 20:27:20,770 - INFO - Epoch 14, Train rgb - Loss: 0.1325, Accuracy: 0.7833, Balanced Accuracy: 0.7833
+2024-03-16 20:28:06,169 - INFO - Epoch 14, Val rgb - Loss: 0.1348, Accuracy: 0.7787, Balanced Accuracy: 0.7745
+2024-03-16 20:28:07,845 - INFO - Checkpoint saved at epoch 13 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 21:02:31,888 - INFO - Epoch 15, Train rgb - Loss: 0.1273, Accuracy: 0.7868, Balanced Accuracy: 0.7868
+2024-03-16 21:03:09,519 - INFO - Epoch 15, Val rgb - Loss: 0.1299, Accuracy: 0.7852, Balanced Accuracy: 0.7805
+2024-03-16 21:03:19,376 - INFO - Checkpoint saved at epoch 14 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 21:37:41,302 - INFO - Epoch 16, Train rgb - Loss: 0.1227, Accuracy: 0.7891, Balanced Accuracy: 0.7891
+2024-03-16 21:38:13,301 - INFO - Epoch 16, Val rgb - Loss: 0.1256, Accuracy: 0.7892, Balanced Accuracy: 0.7849
+2024-03-16 21:38:20,450 - INFO - Checkpoint saved at epoch 15 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 22:11:30,483 - INFO - Epoch 17, Train rgb - Loss: 0.1186, Accuracy: 0.7914, Balanced Accuracy: 0.7914
+2024-03-16 22:12:16,380 - INFO - Epoch 17, Val rgb - Loss: 0.1217, Accuracy: 0.7905, Balanced Accuracy: 0.7850
+2024-03-16 22:12:24,046 - INFO - Checkpoint saved at epoch 16 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 22:46:54,723 - INFO - Epoch 18, Train rgb - Loss: 0.1149, Accuracy: 0.7946, Balanced Accuracy: 0.7946
+2024-03-16 22:47:32,506 - INFO - Epoch 18, Val rgb - Loss: 0.1183, Accuracy: 0.7918, Balanced Accuracy: 0.7861
+2024-03-16 22:47:36,131 - INFO - Checkpoint saved at epoch 17 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 23:22:05,570 - INFO - Epoch 19, Train rgb - Loss: 0.1116, Accuracy: 0.7966, Balanced Accuracy: 0.7966
+2024-03-16 23:22:45,070 - INFO - Epoch 19, Val rgb - Loss: 0.1153, Accuracy: 0.7945, Balanced Accuracy: 0.7896
+2024-03-16 23:22:48,811 - INFO - Checkpoint saved at epoch 18 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-16 23:52:35,032 - INFO - Epoch 20, Train rgb - Loss: 0.1087, Accuracy: 0.7987, Balanced Accuracy: 0.7987
+2024-03-16 23:53:02,388 - INFO - Epoch 20, Val rgb - Loss: 0.1125, Accuracy: 0.7945, Balanced Accuracy: 0.7886
+2024-03-16 23:53:11,906 - INFO - Checkpoint saved at epoch 19 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 00:14:10,775 - INFO - Epoch 21, Train rgb - Loss: 0.1060, Accuracy: 0.8010, Balanced Accuracy: 0.8010
+2024-03-17 00:14:37,869 - INFO - Epoch 21, Val rgb - Loss: 0.1099, Accuracy: 0.7958, Balanced Accuracy: 0.7906
+2024-03-17 00:14:40,929 - INFO - Checkpoint saved at epoch 20 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 00:36:53,371 - INFO - Epoch 22, Train rgb - Loss: 0.1036, Accuracy: 0.8021, Balanced Accuracy: 0.8021
+2024-03-17 00:37:39,199 - INFO - Epoch 22, Val rgb - Loss: 0.1077, Accuracy: 0.7971, Balanced Accuracy: 0.7922
+2024-03-17 00:37:41,160 - INFO - Checkpoint saved at epoch 21 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 01:12:16,724 - INFO - Epoch 23, Train rgb - Loss: 0.1014, Accuracy: 0.8040, Balanced Accuracy: 0.8040
+2024-03-17 01:13:02,083 - INFO - Epoch 23, Val rgb - Loss: 0.1055, Accuracy: 0.7984, Balanced Accuracy: 0.7943
+2024-03-17 01:13:03,628 - INFO - Checkpoint saved at epoch 22 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 01:47:48,837 - INFO - Epoch 24, Train rgb - Loss: 0.0993, Accuracy: 0.8050, Balanced Accuracy: 0.8050
+2024-03-17 01:48:33,975 - INFO - Epoch 24, Val rgb - Loss: 0.1035, Accuracy: 0.7997, Balanced Accuracy: 0.7955
+2024-03-17 01:48:43,794 - INFO - Checkpoint saved at epoch 23 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 02:23:29,576 - INFO - Epoch 25, Train rgb - Loss: 0.0975, Accuracy: 0.8075, Balanced Accuracy: 0.8075
+2024-03-17 02:24:14,553 - INFO - Epoch 25, Val rgb - Loss: 0.1018, Accuracy: 0.7984, Balanced Accuracy: 0.7937
+2024-03-17 02:24:23,710 - INFO - Checkpoint saved at epoch 24 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 02:48:27,112 - INFO - Epoch 26, Train rgb - Loss: 0.0957, Accuracy: 0.8086, Balanced Accuracy: 0.8086
+2024-03-17 02:48:54,108 - INFO - Epoch 26, Val rgb - Loss: 0.1001, Accuracy: 0.7997, Balanced Accuracy: 0.7950
+2024-03-17 02:48:58,754 - INFO - Checkpoint saved at epoch 25 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 03:22:08,386 - INFO - Epoch 27, Train rgb - Loss: 0.0941, Accuracy: 0.8099, Balanced Accuracy: 0.8099
+2024-03-17 03:22:54,349 - INFO - Epoch 27, Val rgb - Loss: 0.0987, Accuracy: 0.8037, Balanced Accuracy: 0.7998
+2024-03-17 03:23:04,983 - INFO - Checkpoint saved at epoch 26 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 03:58:35,574 - INFO - Epoch 28, Train rgb - Loss: 0.0926, Accuracy: 0.8112, Balanced Accuracy: 0.8112
+2024-03-17 03:59:21,075 - INFO - Epoch 28, Val rgb - Loss: 0.0973, Accuracy: 0.8076, Balanced Accuracy: 0.8031
+2024-03-17 03:59:32,396 - INFO - Checkpoint saved at epoch 27 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 04:34:34,744 - INFO - Epoch 29, Train rgb - Loss: 0.0912, Accuracy: 0.8119, Balanced Accuracy: 0.8119
+2024-03-17 04:35:20,333 - INFO - Epoch 29, Val rgb - Loss: 0.0959, Accuracy: 0.8037, Balanced Accuracy: 0.7995
+2024-03-17 04:35:23,275 - INFO - Checkpoint saved at epoch 28 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 05:10:54,234 - INFO - Epoch 30, Train rgb - Loss: 0.0899, Accuracy: 0.8142, Balanced Accuracy: 0.8142
+2024-03-17 05:11:39,966 - INFO - Epoch 30, Val rgb - Loss: 0.0946, Accuracy: 0.8050, Balanced Accuracy: 0.8002
+2024-03-17 05:11:41,696 - INFO - Checkpoint saved at epoch 29 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 05:46:41,390 - INFO - Epoch 31, Train rgb - Loss: 0.0887, Accuracy: 0.8150, Balanced Accuracy: 0.8150
+2024-03-17 05:47:26,663 - INFO - Epoch 31, Val rgb - Loss: 0.0935, Accuracy: 0.8129, Balanced Accuracy: 0.8074
+2024-03-17 05:47:34,753 - INFO - Checkpoint saved at epoch 30 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 06:23:05,924 - INFO - Epoch 32, Train rgb - Loss: 0.0875, Accuracy: 0.8160, Balanced Accuracy: 0.8160
+2024-03-17 06:23:51,328 - INFO - Epoch 32, Val rgb - Loss: 0.0924, Accuracy: 0.8116, Balanced Accuracy: 0.8068
+2024-03-17 06:24:01,946 - INFO - Checkpoint saved at epoch 31 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 06:59:33,133 - INFO - Epoch 33, Train rgb - Loss: 0.0864, Accuracy: 0.8180, Balanced Accuracy: 0.8179
+2024-03-17 07:00:18,646 - INFO - Epoch 33, Val rgb - Loss: 0.0913, Accuracy: 0.8169, Balanced Accuracy: 0.8108
+2024-03-17 07:00:28,663 - INFO - Checkpoint saved at epoch 32 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 07:35:36,884 - INFO - Epoch 34, Train rgb - Loss: 0.0854, Accuracy: 0.8185, Balanced Accuracy: 0.8185
+2024-03-17 07:36:22,764 - INFO - Epoch 34, Val rgb - Loss: 0.0903, Accuracy: 0.8129, Balanced Accuracy: 0.8063
+2024-03-17 07:36:33,422 - INFO - Checkpoint saved at epoch 33 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 08:12:04,923 - INFO - Epoch 35, Train rgb - Loss: 0.0844, Accuracy: 0.8202, Balanced Accuracy: 0.8202
+2024-03-17 08:12:50,444 - INFO - Epoch 35, Val rgb - Loss: 0.0895, Accuracy: 0.8169, Balanced Accuracy: 0.8100
+2024-03-17 08:13:01,035 - INFO - Checkpoint saved at epoch 34 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 08:48:09,526 - INFO - Epoch 36, Train rgb - Loss: 0.0835, Accuracy: 0.8203, Balanced Accuracy: 0.8203
+2024-03-17 08:48:54,893 - INFO - Epoch 36, Val rgb - Loss: 0.0886, Accuracy: 0.8208, Balanced Accuracy: 0.8146
+2024-03-17 08:49:05,867 - INFO - Checkpoint saved at epoch 35 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 09:24:35,249 - INFO - Epoch 37, Train rgb - Loss: 0.0826, Accuracy: 0.8220, Balanced Accuracy: 0.8220
+2024-03-17 09:25:20,310 - INFO - Epoch 37, Val rgb - Loss: 0.0878, Accuracy: 0.8208, Balanced Accuracy: 0.8150
+2024-03-17 09:25:28,054 - INFO - Checkpoint saved at epoch 36 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 10:00:34,640 - INFO - Epoch 38, Train rgb - Loss: 0.0818, Accuracy: 0.8232, Balanced Accuracy: 0.8232
+2024-03-17 10:01:20,280 - INFO - Epoch 38, Val rgb - Loss: 0.0870, Accuracy: 0.8182, Balanced Accuracy: 0.8124
+2024-03-17 10:01:31,128 - INFO - Checkpoint saved at epoch 37 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 10:37:01,539 - INFO - Epoch 39, Train rgb - Loss: 0.0810, Accuracy: 0.8229, Balanced Accuracy: 0.8228
+2024-03-17 10:37:47,173 - INFO - Epoch 39, Val rgb - Loss: 0.0862, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 10:37:54,062 - INFO - Checkpoint saved at epoch 38 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 11:13:24,456 - INFO - Epoch 40, Train rgb - Loss: 0.0802, Accuracy: 0.8236, Balanced Accuracy: 0.8235
+2024-03-17 11:14:09,513 - INFO - Epoch 40, Val rgb - Loss: 0.0855, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 11:14:12,943 - INFO - Checkpoint saved at epoch 39 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 11:49:07,820 - INFO - Epoch 41, Train rgb - Loss: 0.0797, Accuracy: 0.8250, Balanced Accuracy: 0.8250
+2024-03-17 11:49:54,076 - INFO - Epoch 41, Val rgb - Loss: 0.0851, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 11:50:05,351 - INFO - Checkpoint saved at epoch 40 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 12:25:36,504 - INFO - Epoch 42, Train rgb - Loss: 0.0793, Accuracy: 0.8255, Balanced Accuracy: 0.8255
+2024-03-17 12:26:22,135 - INFO - Epoch 42, Val rgb - Loss: 0.0848, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 12:26:29,601 - INFO - Checkpoint saved at epoch 41 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 13:01:34,253 - INFO - Epoch 43, Train rgb - Loss: 0.0789, Accuracy: 0.8256, Balanced Accuracy: 0.8256
+2024-03-17 13:02:19,580 - INFO - Epoch 43, Val rgb - Loss: 0.0845, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 13:02:23,590 - INFO - Checkpoint saved at epoch 42 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 13:37:48,758 - INFO - Epoch 44, Train rgb - Loss: 0.0786, Accuracy: 0.8261, Balanced Accuracy: 0.8261
+2024-03-17 13:38:34,141 - INFO - Epoch 44, Val rgb - Loss: 0.0842, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 13:38:35,711 - INFO - Checkpoint saved at epoch 43 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 14:13:46,502 - INFO - Epoch 45, Train rgb - Loss: 0.0783, Accuracy: 0.8262, Balanced Accuracy: 0.8262
+2024-03-17 14:14:32,146 - INFO - Epoch 45, Val rgb - Loss: 0.0839, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 14:14:45,014 - INFO - Checkpoint saved at epoch 44 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 14:50:14,323 - INFO - Epoch 46, Train rgb - Loss: 0.0780, Accuracy: 0.8264, Balanced Accuracy: 0.8263
+2024-03-17 14:50:59,506 - INFO - Epoch 46, Val rgb - Loss: 0.0836, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 14:51:01,003 - INFO - Checkpoint saved at epoch 45 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 15:26:32,103 - INFO - Epoch 47, Train rgb - Loss: 0.0776, Accuracy: 0.8270, Balanced Accuracy: 0.8270
+2024-03-17 15:27:17,903 - INFO - Epoch 47, Val rgb - Loss: 0.0833, Accuracy: 0.8221, Balanced Accuracy: 0.8153
+2024-03-17 15:27:19,230 - INFO - Checkpoint saved at epoch 46 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 16:02:24,152 - INFO - Epoch 48, Train rgb - Loss: 0.0773, Accuracy: 0.8272, Balanced Accuracy: 0.8272
+2024-03-17 16:03:09,179 - INFO - Epoch 48, Val rgb - Loss: 0.0830, Accuracy: 0.8235, Balanced Accuracy: 0.8164
+2024-03-17 16:03:20,596 - INFO - Checkpoint saved at epoch 47 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 16:38:51,432 - INFO - Epoch 49, Train rgb - Loss: 0.0770, Accuracy: 0.8276, Balanced Accuracy: 0.8276
+2024-03-17 16:39:36,910 - INFO - Epoch 49, Val rgb - Loss: 0.0827, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 16:39:48,844 - INFO - Checkpoint saved at epoch 48 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 17:09:02,971 - INFO - Epoch 50, Train rgb - Loss: 0.0767, Accuracy: 0.8276, Balanced Accuracy: 0.8276
+2024-03-17 17:09:30,025 - INFO - Epoch 50, Val rgb - Loss: 0.0824, Accuracy: 0.8261, Balanced Accuracy: 0.8186
+2024-03-17 17:09:31,959 - INFO - Checkpoint saved at epoch 49 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 17:30:01,337 - INFO - Epoch 51, Train rgb - Loss: 0.0764, Accuracy: 0.8281, Balanced Accuracy: 0.8281
+2024-03-17 17:30:28,462 - INFO - Epoch 51, Val rgb - Loss: 0.0822, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 17:30:30,325 - INFO - Checkpoint saved at epoch 50 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 17:50:59,636 - INFO - Epoch 52, Train rgb - Loss: 0.0761, Accuracy: 0.8283, Balanced Accuracy: 0.8283
+2024-03-17 17:51:26,771 - INFO - Epoch 52, Val rgb - Loss: 0.0819, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 17:51:28,599 - INFO - Checkpoint saved at epoch 51 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 18:11:57,707 - INFO - Epoch 53, Train rgb - Loss: 0.0758, Accuracy: 0.8289, Balanced Accuracy: 0.8288
+2024-03-17 18:12:24,816 - INFO - Epoch 53, Val rgb - Loss: 0.0816, Accuracy: 0.8235, Balanced Accuracy: 0.8164
+2024-03-17 18:12:26,338 - INFO - Checkpoint saved at epoch 52 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 18:32:55,078 - INFO - Epoch 54, Train rgb - Loss: 0.0756, Accuracy: 0.8290, Balanced Accuracy: 0.8290
+2024-03-17 18:33:22,153 - INFO - Epoch 54, Val rgb - Loss: 0.0814, Accuracy: 0.8235, Balanced Accuracy: 0.8164
+2024-03-17 18:33:26,158 - INFO - Checkpoint saved at epoch 53 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 18:53:55,122 - INFO - Epoch 55, Train rgb - Loss: 0.0753, Accuracy: 0.8296, Balanced Accuracy: 0.8296
+2024-03-17 18:54:22,280 - INFO - Epoch 55, Val rgb - Loss: 0.0811, Accuracy: 0.8248, Balanced Accuracy: 0.8174
+2024-03-17 18:54:34,067 - INFO - Checkpoint saved at epoch 54 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 19:15:03,061 - INFO - Epoch 56, Train rgb - Loss: 0.0750, Accuracy: 0.8296, Balanced Accuracy: 0.8296
+2024-03-17 19:15:30,334 - INFO - Epoch 56, Val rgb - Loss: 0.0809, Accuracy: 0.8248, Balanced Accuracy: 0.8174
+2024-03-17 19:15:34,119 - INFO - Checkpoint saved at epoch 55 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 19:36:03,535 - INFO - Epoch 57, Train rgb - Loss: 0.0748, Accuracy: 0.8302, Balanced Accuracy: 0.8302
+2024-03-17 19:36:30,605 - INFO - Epoch 57, Val rgb - Loss: 0.0806, Accuracy: 0.8248, Balanced Accuracy: 0.8174
+2024-03-17 19:36:32,154 - INFO - Checkpoint saved at epoch 56 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 19:57:01,066 - INFO - Epoch 58, Train rgb - Loss: 0.0745, Accuracy: 0.8303, Balanced Accuracy: 0.8303
+2024-03-17 19:57:28,307 - INFO - Epoch 58, Val rgb - Loss: 0.0804, Accuracy: 0.8248, Balanced Accuracy: 0.8174
+2024-03-17 19:57:36,884 - INFO - Checkpoint saved at epoch 57 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 20:18:05,733 - INFO - Epoch 59, Train rgb - Loss: 0.0743, Accuracy: 0.8308, Balanced Accuracy: 0.8308
+2024-03-17 20:18:33,081 - INFO - Epoch 59, Val rgb - Loss: 0.0801, Accuracy: 0.8248, Balanced Accuracy: 0.8174
+2024-03-17 20:18:34,705 - INFO - Checkpoint saved at epoch 58 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 20:39:03,797 - INFO - Epoch 60, Train rgb - Loss: 0.0740, Accuracy: 0.8310, Balanced Accuracy: 0.8310
+2024-03-17 20:39:30,949 - INFO - Epoch 60, Val rgb - Loss: 0.0799, Accuracy: 0.8261, Balanced Accuracy: 0.8186
+2024-03-17 20:39:36,696 - INFO - Checkpoint saved at epoch 59 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 21:00:05,580 - INFO - Epoch 61, Train rgb - Loss: 0.0738, Accuracy: 0.8319, Balanced Accuracy: 0.8319
+2024-03-17 21:00:32,722 - INFO - Epoch 61, Val rgb - Loss: 0.0797, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 21:00:34,351 - INFO - Checkpoint saved at epoch 60 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 21:21:03,393 - INFO - Epoch 62, Train rgb - Loss: 0.0735, Accuracy: 0.8314, Balanced Accuracy: 0.8314
+2024-03-17 21:21:30,581 - INFO - Epoch 62, Val rgb - Loss: 0.0795, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 21:21:31,954 - INFO - Checkpoint saved at epoch 61 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 21:42:00,456 - INFO - Epoch 63, Train rgb - Loss: 0.0733, Accuracy: 0.8318, Balanced Accuracy: 0.8318
+2024-03-17 21:42:27,754 - INFO - Epoch 63, Val rgb - Loss: 0.0793, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 21:42:39,345 - INFO - Checkpoint saved at epoch 62 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 22:03:08,006 - INFO - Epoch 64, Train rgb - Loss: 0.0731, Accuracy: 0.8319, Balanced Accuracy: 0.8319
+2024-03-17 22:03:34,958 - INFO - Epoch 64, Val rgb - Loss: 0.0791, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 22:03:36,567 - INFO - Checkpoint saved at epoch 63 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 22:24:05,302 - INFO - Epoch 65, Train rgb - Loss: 0.0729, Accuracy: 0.8325, Balanced Accuracy: 0.8324
+2024-03-17 22:24:32,442 - INFO - Epoch 65, Val rgb - Loss: 0.0788, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-17 22:24:34,008 - INFO - Checkpoint saved at epoch 64 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 22:45:02,853 - INFO - Epoch 66, Train rgb - Loss: 0.0726, Accuracy: 0.8325, Balanced Accuracy: 0.8325
+2024-03-17 22:45:29,813 - INFO - Epoch 66, Val rgb - Loss: 0.0786, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-17 22:45:31,062 - INFO - Checkpoint saved at epoch 65 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 23:05:59,730 - INFO - Epoch 67, Train rgb - Loss: 0.0724, Accuracy: 0.8330, Balanced Accuracy: 0.8330
+2024-03-17 23:06:26,877 - INFO - Epoch 67, Val rgb - Loss: 0.0784, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-17 23:06:29,515 - INFO - Checkpoint saved at epoch 66 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 23:26:58,074 - INFO - Epoch 68, Train rgb - Loss: 0.0722, Accuracy: 0.8333, Balanced Accuracy: 0.8333
+2024-03-17 23:27:25,120 - INFO - Epoch 68, Val rgb - Loss: 0.0782, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-17 23:27:26,555 - INFO - Checkpoint saved at epoch 67 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-17 23:49:11,515 - INFO - Epoch 69, Train rgb - Loss: 0.0720, Accuracy: 0.8332, Balanced Accuracy: 0.8332
+2024-03-17 23:49:52,934 - INFO - Epoch 69, Val rgb - Loss: 0.0780, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-17 23:50:04,726 - INFO - Checkpoint saved at epoch 68 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 00:21:46,219 - INFO - Epoch 70, Train rgb - Loss: 0.0718, Accuracy: 0.8336, Balanced Accuracy: 0.8336
+2024-03-18 00:22:27,373 - INFO - Epoch 70, Val rgb - Loss: 0.0779, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-18 00:22:39,917 - INFO - Checkpoint saved at epoch 69 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 00:54:06,651 - INFO - Epoch 71, Train rgb - Loss: 0.0716, Accuracy: 0.8339, Balanced Accuracy: 0.8339
+2024-03-18 00:54:47,925 - INFO - Epoch 71, Val rgb - Loss: 0.0777, Accuracy: 0.8248, Balanced Accuracy: 0.8176
+2024-03-18 00:54:50,189 - INFO - Checkpoint saved at epoch 70 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 01:26:17,832 - INFO - Epoch 72, Train rgb - Loss: 0.0714, Accuracy: 0.8335, Balanced Accuracy: 0.8335
+2024-03-18 01:26:51,634 - INFO - Epoch 72, Val rgb - Loss: 0.0775, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-18 01:27:04,751 - INFO - Checkpoint saved at epoch 71 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 01:58:45,240 - INFO - Epoch 73, Train rgb - Loss: 0.0712, Accuracy: 0.8345, Balanced Accuracy: 0.8345
+2024-03-18 01:59:26,284 - INFO - Epoch 73, Val rgb - Loss: 0.0773, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-18 01:59:27,883 - INFO - Checkpoint saved at epoch 72 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 02:30:50,643 - INFO - Epoch 74, Train rgb - Loss: 0.0711, Accuracy: 0.8346, Balanced Accuracy: 0.8346
+2024-03-18 02:31:32,133 - INFO - Epoch 74, Val rgb - Loss: 0.0771, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-18 02:31:44,974 - INFO - Checkpoint saved at epoch 73 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 02:58:46,849 - INFO - Epoch 75, Train rgb - Loss: 0.0708, Accuracy: 0.8352, Balanced Accuracy: 0.8352
+2024-03-18 02:59:25,614 - INFO - Epoch 75, Val rgb - Loss: 0.0769, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 02:59:37,668 - INFO - Checkpoint saved at epoch 74 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 03:28:06,406 - INFO - Epoch 76, Train rgb - Loss: 0.0706, Accuracy: 0.8354, Balanced Accuracy: 0.8354
+2024-03-18 03:28:44,905 - INFO - Epoch 76, Val rgb - Loss: 0.0768, Accuracy: 0.8261, Balanced Accuracy: 0.8188
+2024-03-18 03:28:56,570 - INFO - Checkpoint saved at epoch 75 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 03:56:55,243 - INFO - Epoch 77, Train rgb - Loss: 0.0704, Accuracy: 0.8355, Balanced Accuracy: 0.8355
+2024-03-18 03:57:29,665 - INFO - Epoch 77, Val rgb - Loss: 0.0766, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 03:57:40,938 - INFO - Checkpoint saved at epoch 76 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 04:26:25,941 - INFO - Epoch 78, Train rgb - Loss: 0.0702, Accuracy: 0.8352, Balanced Accuracy: 0.8352
+2024-03-18 04:27:03,969 - INFO - Epoch 78, Val rgb - Loss: 0.0764, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 04:27:16,309 - INFO - Checkpoint saved at epoch 77 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 04:56:26,262 - INFO - Epoch 79, Train rgb - Loss: 0.0701, Accuracy: 0.8357, Balanced Accuracy: 0.8357
+2024-03-18 04:57:07,316 - INFO - Epoch 79, Val rgb - Loss: 0.0763, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 04:57:17,054 - INFO - Checkpoint saved at epoch 78 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 05:26:17,810 - INFO - Epoch 80, Train rgb - Loss: 0.0699, Accuracy: 0.8361, Balanced Accuracy: 0.8361
+2024-03-18 05:26:56,962 - INFO - Epoch 80, Val rgb - Loss: 0.0761, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 05:27:05,944 - INFO - Checkpoint saved at epoch 79 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 05:55:57,743 - INFO - Epoch 81, Train rgb - Loss: 0.0697, Accuracy: 0.8361, Balanced Accuracy: 0.8361
+2024-03-18 05:56:44,486 - INFO - Epoch 81, Val rgb - Loss: 0.0760, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 05:56:52,785 - INFO - Checkpoint saved at epoch 80 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 06:25:48,564 - INFO - Epoch 82, Train rgb - Loss: 0.0696, Accuracy: 0.8365, Balanced Accuracy: 0.8365
+2024-03-18 06:26:28,570 - INFO - Epoch 82, Val rgb - Loss: 0.0759, Accuracy: 0.8274, Balanced Accuracy: 0.8202
+2024-03-18 06:26:30,159 - INFO - Checkpoint saved at epoch 81 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 06:55:34,621 - INFO - Epoch 83, Train rgb - Loss: 0.0696, Accuracy: 0.8366, Balanced Accuracy: 0.8366
+2024-03-18 06:56:12,658 - INFO - Epoch 83, Val rgb - Loss: 0.0759, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 06:56:20,585 - INFO - Checkpoint saved at epoch 82 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 07:25:30,004 - INFO - Epoch 84, Train rgb - Loss: 0.0695, Accuracy: 0.8364, Balanced Accuracy: 0.8364
+2024-03-18 07:26:09,246 - INFO - Epoch 84, Val rgb - Loss: 0.0758, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 07:26:17,598 - INFO - Checkpoint saved at epoch 83 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 07:55:18,892 - INFO - Epoch 85, Train rgb - Loss: 0.0694, Accuracy: 0.8364, Balanced Accuracy: 0.8364
+2024-03-18 07:55:57,270 - INFO - Epoch 85, Val rgb - Loss: 0.0757, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 07:56:05,795 - INFO - Checkpoint saved at epoch 84 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 08:25:08,620 - INFO - Epoch 86, Train rgb - Loss: 0.0693, Accuracy: 0.8366, Balanced Accuracy: 0.8366
+2024-03-18 08:25:53,482 - INFO - Epoch 86, Val rgb - Loss: 0.0756, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 08:26:01,281 - INFO - Checkpoint saved at epoch 85 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 08:55:05,779 - INFO - Epoch 87, Train rgb - Loss: 0.0692, Accuracy: 0.8371, Balanced Accuracy: 0.8371
+2024-03-18 08:55:45,179 - INFO - Epoch 87, Val rgb - Loss: 0.0755, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 08:55:54,980 - INFO - Checkpoint saved at epoch 86 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 09:25:04,635 - INFO - Epoch 88, Train rgb - Loss: 0.0691, Accuracy: 0.8371, Balanced Accuracy: 0.8371
+2024-03-18 09:25:41,533 - INFO - Epoch 88, Val rgb - Loss: 0.0755, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 09:25:50,647 - INFO - Checkpoint saved at epoch 87 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 09:54:55,845 - INFO - Epoch 89, Train rgb - Loss: 0.0692, Accuracy: 0.8371, Balanced Accuracy: 0.8371
+2024-03-18 09:55:34,369 - INFO - Epoch 89, Val rgb - Loss: 0.0754, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 09:55:46,363 - INFO - Checkpoint saved at epoch 88 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 10:24:36,841 - INFO - Epoch 90, Train rgb - Loss: 0.0690, Accuracy: 0.8375, Balanced Accuracy: 0.8375
+2024-03-18 10:25:06,329 - INFO - Epoch 90, Val rgb - Loss: 0.0753, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 10:25:07,740 - INFO - Checkpoint saved at epoch 89 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 10:54:44,863 - INFO - Epoch 91, Train rgb - Loss: 0.0689, Accuracy: 0.8374, Balanced Accuracy: 0.8374
+2024-03-18 10:55:23,250 - INFO - Epoch 91, Val rgb - Loss: 0.0752, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 10:55:32,166 - INFO - Checkpoint saved at epoch 90 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 11:24:33,707 - INFO - Epoch 92, Train rgb - Loss: 0.0688, Accuracy: 0.8378, Balanced Accuracy: 0.8378
+2024-03-18 11:25:11,791 - INFO - Epoch 92, Val rgb - Loss: 0.0752, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 11:25:22,974 - INFO - Checkpoint saved at epoch 91 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 11:54:24,824 - INFO - Epoch 93, Train rgb - Loss: 0.0687, Accuracy: 0.8379, Balanced Accuracy: 0.8379
+2024-03-18 11:55:03,092 - INFO - Epoch 93, Val rgb - Loss: 0.0751, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 11:55:11,791 - INFO - Checkpoint saved at epoch 92 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 12:23:57,230 - INFO - Epoch 94, Train rgb - Loss: 0.0686, Accuracy: 0.8377, Balanced Accuracy: 0.8377
+2024-03-18 12:24:35,694 - INFO - Epoch 94, Val rgb - Loss: 0.0750, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 12:24:37,053 - INFO - Checkpoint saved at epoch 93 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 12:53:23,758 - INFO - Epoch 95, Train rgb - Loss: 0.0686, Accuracy: 0.8382, Balanced Accuracy: 0.8382
+2024-03-18 12:53:55,332 - INFO - Epoch 95, Val rgb - Loss: 0.0749, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 12:53:56,880 - INFO - Checkpoint saved at epoch 94 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 13:23:22,454 - INFO - Epoch 96, Train rgb - Loss: 0.0685, Accuracy: 0.8382, Balanced Accuracy: 0.8382
+2024-03-18 13:24:01,732 - INFO - Epoch 96, Val rgb - Loss: 0.0749, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 13:24:37,691 - INFO - Checkpoint saved at epoch 95 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 13:53:33,060 - INFO - Epoch 97, Train rgb - Loss: 0.0684, Accuracy: 0.8379, Balanced Accuracy: 0.8379
+2024-03-18 13:54:12,772 - INFO - Epoch 97, Val rgb - Loss: 0.0748, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 13:54:13,975 - INFO - Checkpoint saved at epoch 96 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 14:23:30,595 - INFO - Epoch 98, Train rgb - Loss: 0.0684, Accuracy: 0.8385, Balanced Accuracy: 0.8385
+2024-03-18 14:24:08,775 - INFO - Epoch 98, Val rgb - Loss: 0.0747, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 14:24:11,221 - INFO - Checkpoint saved at epoch 97 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 14:53:16,015 - INFO - Epoch 99, Train rgb - Loss: 0.0682, Accuracy: 0.8386, Balanced Accuracy: 0.8386
+2024-03-18 14:53:51,161 - INFO - Epoch 99, Val rgb - Loss: 0.0747, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 14:54:01,936 - INFO - Checkpoint saved at epoch 98 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 15:19:32,178 - INFO - Epoch 100, Train rgb - Loss: 0.0682, Accuracy: 0.8388, Balanced Accuracy: 0.8388
+2024-03-18 15:20:00,020 - INFO - Epoch 100, Val rgb - Loss: 0.0746, Accuracy: 0.8287, Balanced Accuracy: 0.8208
+2024-03-18 15:20:09,128 - INFO - Checkpoint saved at epoch 99 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 15:20:09,133 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_20240316_131533.json
+2024-03-18 15:20:09,135 - INFO - Loading checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 15:20:09,946 - INFO - Resumed from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_CLIP-VIP_NTU_CV_20240316_131533.pth
+2024-03-18 15:20:09,948 - INFO - Updated file counts from saved features.
+2024-03-18 15:30:39,464 - INFO - Epoch 1, Test rgb - Loss: 0.1038, Accuracy: 0.7519, Balanced Accuracy: 0.7519

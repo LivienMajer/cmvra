@@ -1,0 +1,52 @@
+2024-04-09 00:41:59,192 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "fuck",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/loopingpoopin",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "skeleton"
+    ],
+    "dataset": "DAA",
+    "encoder_model": "CLIP-VIP",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "full_train_classifiers": true,
+    "epochs": 40,
+    "res_cktp": false,
+    "mixed_frames": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_CLIP-VIP_DAA_0_20240407_113217.pth",
+    "learning_rate": 0.01,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 8,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-04-09 00:41:59,252 - INFO - Training classifiers...
+2024-04-09 00:41:59,389 - INFO - Training on the following GPUs [1]
+2024-04-09 00:41:59,390 - INFO - Encoders are now trainable
+2024-04-09 00:42:01,975 - INFO - Encoders are now trainable
+2024-04-09 00:42:07,629 - INFO - Setting grads
+2024-04-09 00:42:07,631 - INFO - Applying balance loss
+2024-04-09 00:43:26,488 - INFO - Full Training enabled
+2024-04-09 00:48:46,253 - INFO - Epoch 1, Train rgb - Loss: 0.1771, Accuracy: 0.7969, Balanced Accuracy: 0.5788
+2024-04-09 00:48:46,277 - INFO - Epoch 1, Train skeleton - Loss: 0.6657, Accuracy: 0.0351, Balanced Accuracy: 0.0261
+2024-04-09 00:49:43,184 - INFO - Epoch 1, Val rgb - Loss: 0.1745, Accuracy: 0.7322, Balanced Accuracy: 0.5316
+2024-04-09 00:49:43,793 - INFO - Epoch 1, Val skeleton - Loss: 0.4387, Accuracy: 0.0014, Balanced Accuracy: 0.0303
+2024-04-09 00:50:27,692 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_skeleton_CLIP-VIP_DAA_0_20240409_004326.pth

@@ -13,6 +13,10 @@ import math
 from sklearn.metrics import accuracy_score, balanced_accuracy_score
 import numpy as np
 import shutil
+import random
+from itertools import combinations
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
 
 
 def train_classefier_process(multi_modality_model, device, train_loader, val_loader, test_loader, config):
@@ -35,7 +39,7 @@ def train_classefier_process(multi_modality_model, device, train_loader, val_loa
 
     # Initialize Step LR learning rate scheduler
     step_size = int(math.floor(num_epochs * 0.4))
-    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.5)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
     best_val_loss = float('inf')
     epoch = 5
     
@@ -206,6 +210,7 @@ class MultiModalityClassifierTrainer:
         self.modalities = '_'.join(self.cfg['modalities'])
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.cfg['learning_rate'])
         self.criterion = torch.nn.CrossEntropyLoss()
+        """
         if config['dataset'] == 'DAA':
             logging.info("Applying balance loss")
             accumulated_labels = []
@@ -217,12 +222,18 @@ class MultiModalityClassifierTrainer:
             class_weights = 1. / class_counts
             class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
             self.criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+        """
         self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=int(math.floor(self.cfg['epochs'] * 0.4)), gamma=0.5)
         self.best_val_loss = float('inf')
         stats_keys = ['train_loss', 'train_accuracy', 'val_loss', 'val_accuracy', 'train_balanced_accuracy', 'val_balanced_accuracy']
         self.training_stats = {key: {modality: [] for modality in config['modalities']} for key in stats_keys}
+        if self.cfg.get('fusion'):
+            for key in stats_keys:
+                self.training_stats[key]['fusion'] = []
         self.training_stats['epochs'] = []
-        self.save_dir = config.get('feature_save_dir','/home/bas06400/Thesis/VIP/src/features')
+        self.save_dir = self.cfg.get('feature_save_dir')
+        if not self.save_dir:  # This will be True if self.save_dir is None or an empty string
+            self.save_dir = f"/home/bas06400/Thesis/VIP/src/features/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         self.initialize_training()
 
     def initialize_training(self):
@@ -295,7 +306,9 @@ class MultiModalityClassifierTrainer:
                 'balanced_accuracy': balanced_accuracy_score(metrics['labels'], metrics['predictions'])
             } for modality, metrics in modality_metrics.items()
         }
-
+        # Save test metrics if flag is set and mode is test
+        if mode == 'test' and self.cfg.get('save_test_metrics', False):
+            self.save_test_metrics(modality_metrics)
         return epoch_metrics
 
 
@@ -308,22 +321,29 @@ class MultiModalityClassifierTrainer:
             else:
                 logging.info("Full Training enabled")
         for epoch in range(self.start_epoch, self.cfg['epochs']):
-            if not self.cfg['full_train_classifiers']:
-                train_metrics = self.process_epoch(epoch, mode='train')
-                val_metrics = self.process_epoch(epoch, mode='val')
+            if self.cfg['fusion']:
+                train_metrics = self.process_epoch_fusion(epoch, mode='train')
+                val_metrics = self.process_epoch_fusion(epoch, mode='val')
+                # Here, process_epoch should return metrics in a structure that update_training_stats expects
+                self.update_training_stats(epoch, train_metrics, val_metrics, fusion=True)
             else:
-                train_metrics = self.process_epoch_full_training(epoch, mode='train')
-                val_metrics = self.process_epoch_full_training(epoch, mode='val')
-            # Here, process_epoch should return metrics in a structure that update_training_stats expects
-            self.update_training_stats(epoch, train_metrics, val_metrics)
+                if not self.cfg['full_train_classifiers']:
+                    train_metrics = self.process_epoch(epoch, mode='train')
+                    val_metrics = self.process_epoch(epoch, mode='val')
+                else:
+                    train_metrics = self.process_epoch_full_training(epoch, mode='train')
+                    val_metrics = self.process_epoch_full_training(epoch, mode='val')
+                # Here, process_epoch should return metrics in a structure that update_training_stats expects
+                self.update_training_stats(epoch, train_metrics, val_metrics)
 
-            overall_val_loss = sum(val_metrics[modality]['loss'] for modality in self.cfg['modalities']) / len(self.cfg['modalities'])
+            overall_val_loss = sum(val_metrics[modality]['loss'] for modality in self.cfg['modalities']) / len(self.cfg['modalities']) if not self.cfg['fusion'] else val_metrics['loss']
             if overall_val_loss < self.best_val_loss:
                 self.best_val_loss = overall_val_loss
                 self.save_checkpoint(epoch)
-
+        
             self.lr_scheduler.step()
-
+        if self.cfg['epochs'] == 0:
+            self.save_checkpoint(0)
         self.save_training_stats()
         self.resume_from_checkpoint()
         self.evaluate_test_set()
@@ -332,13 +352,13 @@ class MultiModalityClassifierTrainer:
     def process_epoch_full_training(self, epoch, mode='train'):
         if mode == 'train':
             self.model.train()
-            dataloader = self.train_loader  # Assuming self.train_loader is your training dataloader
+            dataloader = self.train_loader  
         elif mode == 'val':
             self.model.eval()
-            dataloader = self.val_loader  # Assuming self.val_loader is your validation dataloader
+            dataloader = self.val_loader  
         elif mode == 'test':
             self.model.eval()
-            dataloader = self.test_loader  # Assuming self.test_loader is your test dataloader
+            dataloader = self.test_loader  
         else:
             raise ValueError("Invalid mode. Expected one of: 'train', 'val', 'test'.")
         modality_metrics = {modality: {'total_loss': 0, 'predictions': [], 'labels': []} for modality in self.cfg['modalities']}
@@ -391,30 +411,133 @@ class MultiModalityClassifierTrainer:
         }
 
         return epoch_metrics
+    
+    def process_epoch_fusion(self, epoch, mode='train', zeroing_probability=0.1):
+        
+        if mode == 'train':
+            self.model.train()
+        else:
+            self.model.eval()
+        
+        total_loss = 0
+        total_correct = 0
+        total_samples = 0
+        all_labels = []
+        all_predictions = []
 
+        
+        test_results = {}
+        # old modality_combinations = ['all'] + self.cfg['modalities'] if mode == 'test' else ['all']
+
+        if mode == 'test':
+            modality_indices = range(len(self.cfg['modalities']))
+            modality_combinations = ['all']  # Start with 'all' (no modalities blocked)
+            # Generate combinations, excluding the one that includes all modalities
+            for r in range(1, len(self.cfg['modalities'])):  # Up to but not including all modalities
+                modality_combinations += ['+'.join(self.cfg['modalities'][idx] for idx in combo) for combo in combinations(modality_indices, r)]
+        else:
+            modality_combinations = ['all']
+        num_files = self.cfg['num_files'][self.cfg['modalities'][-1]][mode]
+
+        for combination in modality_combinations:
+            for file_index in range(num_files):
+                # Construct file paths for features and labels
+                feature_files = [os.path.join(self.save_dir, mode, f"{mode}_{modality}_features_{file_index}.pt") for modality in self.cfg['modalities']]
+                label_file = os.path.join(self.save_dir, mode, f"{mode}_{self.cfg['modalities'][-1]}_labels_{file_index}.pt")
+
+                # Load features and labels
+                features = [torch.load(f).to(self.device).unsqueeze(1) for f in feature_files]
+                labels = torch.load(label_file).to(self.device)
+
+                for start in range(0, labels.size(0), self.cfg['batch_size']):
+                    end = start + self.cfg['batch_size']
+                    batch_features = [f[start:end] for f in features]
+                    batch_labels = labels[start:end]
+
+                    if mode == 'train':
+                        # Randomly zero out modalities for training
+                        for i in range(len(batch_features)):
+                            if random.random() < zeroing_probability:
+                                batch_features[i] = torch.zeros_like(batch_features[i])
+                    elif mode == 'test':
+                        # Systematically zero out one modality for testing
+                        #if combination != 'all':
+                        #    batch_features[self.cfg['modalities'].index(combination)] = torch.zeros_like(batch_features[self.cfg['modalities'].index(combination)])
+                        if combination != 'all':
+                            modalities_to_block = combination.split('+')  # Assuming combination like 'mod1+mod2'
+                            for modality in modalities_to_block:
+                                index = self.cfg['modalities'].index(modality)
+                                batch_features[index] = torch.zeros_like(batch_features[index])
+                    # Concatenate features along the last dimension
+                    concatenated_features = torch.cat(batch_features, dim=1)
+
+                    # Forward pass
+                    outputs = self.model.module.forward_fusion(concatenated_features)
+                    loss = self.criterion(outputs, batch_labels)
+
+                    if mode == 'train':
+                        self.optimizer.zero_grad()
+                        loss.backward()
+                        self.optimizer.step()
+
+                    total_loss += loss.item() * batch_labels.size(0)
+                    _, predicted = torch.max(outputs, 1)
+                    total_correct += (predicted == batch_labels).sum().item()
+                    total_samples += batch_labels.size(0)
+                    all_labels.extend(batch_labels.cpu().numpy())
+                    all_predictions.extend(predicted.cpu().numpy())
+
+            average_loss = total_loss / total_samples
+            accuracy = total_correct / total_samples
+            balanced_acc = balanced_accuracy_score(all_labels, all_predictions)
+            # Log epoch metrics
+            logging.info(f'Epoch {epoch+1}, {mode.capitalize()} - {combination} - Loss: {average_loss:.4f}, Accuracy: {accuracy:.4f}, Balanced Accuracy: {balanced_acc:.4f}')
+            test_results[combination] = {'loss': average_loss, 'accuracy': accuracy, 'balanced_accuracy': balanced_acc}
+
+            # Reset metrics for the next modality combination
+            total_loss = 0
+            total_correct = 0
+            total_samples = 0
+            all_labels = []
+            all_predictions = []
+        
+        return test_results if mode == 'test' else {'loss': average_loss, 'accuracy': accuracy}
 
     def evaluate_test_set(self):
-        if not self.cfg['full_train_classifiers']:
-            test_metrics = self.process_epoch(0, mode='test')
-        else:
-            test_metrics = self.process_epoch_full_training(0, mode='test')
 
-    def update_training_stats(self, epoch, train_metrics, val_metrics):
+        if self.cfg.get('full_train_classifiers', False):
+            logging.info("Using full training classifiers")
+            test_metrics = self.process_epoch_full_training(0, mode='test')
+        elif self.cfg.get('fusion', False):
+            logging.info("Using fusion model for evaluation")
+            test_metrics = self.process_epoch_fusion(0, mode='test')
+        else:
+            logging.info("Using standard test processing")
+            test_metrics = self.process_epoch(0, mode='test')
+
+    def update_training_stats(self, epoch, train_metrics, val_metrics, fusion=False):
         self.training_stats["epochs"].append(epoch)
-        for modality in self.cfg['modalities']:
-            # Ensure initialization for each modality if not already done
-            for key in ["train_loss", "train_accuracy", "train_balanced_accuracy", "val_loss", "val_accuracy", "val_balanced_accuracy"]:
-                if modality not in self.training_stats[key]:
-                    self.training_stats[key][modality] = []
-            
-            # Update training stats with metrics from process_epoch
-            self.training_stats["train_loss"][modality].append(train_metrics[modality]['loss'])
-            self.training_stats["train_accuracy"][modality].append(train_metrics[modality]['accuracy'])
-            self.training_stats["train_balanced_accuracy"][modality].append(train_metrics[modality]['balanced_accuracy'])
-            
-            self.training_stats["val_loss"][modality].append(val_metrics[modality]['loss'])
-            self.training_stats["val_accuracy"][modality].append(val_metrics[modality]['accuracy'])
-            self.training_stats["val_balanced_accuracy"][modality].append(val_metrics[modality]['balanced_accuracy'])
+
+        if fusion:
+            self.training_stats['train_loss']['fusion'].append(train_metrics['loss'])
+            self.training_stats['train_accuracy']['fusion'].append(train_metrics['accuracy'])
+            self.training_stats['val_loss']['fusion'].append(val_metrics['loss'])
+            self.training_stats['val_accuracy']['fusion'].append(val_metrics['accuracy'])
+        else:
+            for modality in self.cfg['modalities']:
+                # Ensure initialization for each modality if not already done
+                for key in ["train_loss", "train_accuracy", "train_balanced_accuracy", "val_loss", "val_accuracy", "val_balanced_accuracy"]:
+                    if modality not in self.training_stats[key]:
+                        self.training_stats[key][modality] = []
+                
+                # Update training stats with metrics from process_epoch
+                self.training_stats["train_loss"][modality].append(train_metrics[modality]['loss'])
+                self.training_stats["train_accuracy"][modality].append(train_metrics[modality]['accuracy'])
+                self.training_stats["train_balanced_accuracy"][modality].append(train_metrics[modality]['balanced_accuracy'])
+                
+                self.training_stats["val_loss"][modality].append(val_metrics[modality]['loss'])
+                self.training_stats["val_accuracy"][modality].append(val_metrics[modality]['accuracy'])
+                self.training_stats["val_balanced_accuracy"][modality].append(val_metrics[modality]['balanced_accuracy'])
 
     def retrieve_extracted_file_counts(self):
         """
@@ -517,7 +640,12 @@ class MultiModalityClassifierTrainer:
         if encoder_type == 'MAE':
             return inputs.permute(0, 2, 1, 3, 4)  # Example for MAE
         elif encoder_type == 'OMNIVORE':
-            return torch.cat((inputs, inputs[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+            if modality =='depth':
+                return torch.cat((inputs, inputs[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
+            else:
+                return inputs.permute(0, 2, 1, 3, 4)
+        elif encoder_type == 'MAEPS':
+            return inputs.view(inputs.size(0),inputs.size(1), -1)
         return inputs  # Default case (e.g., CLIP-VIP and DINO do not need special preprocessing)
     
     def extract_features_and_save(self, dataloader, cfg, file_prefix, batches_per_file, save_dir):
@@ -616,6 +744,237 @@ class MultiModalityClassifierTrainer:
         # Save checkpoint
         torch.save(checkpoint, self.checkpoint_path)
         logging.info(f"Checkpoint saved at epoch {epoch} to {self.checkpoint_path}")
+
+    def compute_class_stats(self, embeddings, labels):
+        """
+        Compute the centers and covariance matrices for each class in the embeddings.
+        
+        Args:
+            embeddings (torch.Tensor): The embeddings tensor, shape (num_samples, embed_dim)
+            labels (torch.Tensor): The corresponding labels tensor, shape (num_samples,)
+        
+        Returns:
+            dict: A dictionary containing 'centers' and 'covariances' for each class.
+        """
+        unique_labels = labels.unique()
+        class_stats = {}
+        for label in unique_labels:
+            class_embeddings = embeddings[labels == label]
+            center = class_embeddings.mean(dim=0)
+            if class_embeddings.shape[0] > 1:
+                covariance = torch.cov(class_embeddings.T)
+            else:
+                covariance = torch.zeros((class_embeddings.shape[1], class_embeddings.shape[1]))
+            class_stats[label.item()] = {'center': center, 'covariance': covariance}
+        return class_stats
+    
+    def cosine_distance(self, x1, x2):
+        """
+        Compute the cosine distance between two vectors.
+        
+        Args:
+            x1 (torch.Tensor): Vector 1, shape (embed_dim,)
+            x2 (torch.Tensor): Vector 2, shape (embed_dim,)
+        
+        Returns:
+            float: Cosine distance between the two vectors.
+        """
+        cos_sim = F.cosine_similarity(x1.unsqueeze(0), x2.unsqueeze(0), dim=1)
+        return 1 - cos_sim.item()
+
+    def compare_embeddings(self, stats1, stats2):
+        """
+        Compare two sets of embedding statistics. This includes comparing centers using
+        Euclidean distance, cosine distance, and differences in covariance matrices.
+        
+        Args:
+            stats1, stats2 (dict): Dictionaries of class statistics as returned by `compute_class_stats`.
+        
+        Returns:
+            dict: A dictionary of comparison results including center distances and covariance differences.
+        """
+        comparison_results = {}
+        for label in stats1:
+            if label in stats2:
+                center_distance = torch.norm(stats1[label]['center'] - stats2[label]['center']).item()
+                cosine_dist = self.cosine_distance(stats1[label]['center'], stats2[label]['center'])
+                cov_diff = torch.norm(stats1[label]['covariance'] - stats2[label]['covariance']).item()
+                comparison_results[label] = {
+                    'center_distance': center_distance,
+                    'cosine_distance': cosine_dist,
+                    'covariance_difference': cov_diff
+                }
+            else:
+                comparison_results[label] = {
+                    'center_distance': None,
+                    'cosine_distance': None,
+                    'covariance_difference': None
+                }
+        return comparison_results
+    
+    def collect_embeddings(self, epoch):
+        self.model.eval()  # Set model to evaluation mode
+
+        modality_embeddings = {modality: [] for modality in self.cfg['modalities']}
+        modality_labels = {modality: [] for modality in self.cfg['modalities']}
+
+        for modality in self.cfg['modalities']:
+            file_prefix = f"test_{modality}"
+            num_files = self.cfg['num_files'][modality]['test']
+
+            for file_index in range(num_files):
+                feature_file = os.path.join(self.save_dir, "test", f"{file_prefix}_features_{file_index}.pt")
+                label_file = os.path.join(self.save_dir, "test", f"{file_prefix}_labels_{file_index}.pt")
+                features = torch.load(feature_file)
+                labels = torch.load(label_file)
+
+                
+                for start in range(0, features.size(0), self.cfg['batch_size']):
+                    end = start + self.cfg['batch_size']
+                    embeddings = features[start:end]
+                    batch_labels = labels[start:end]
+                    modality_embeddings[modality].extend(embeddings.cpu().numpy())
+                    modality_labels[modality].extend(batch_labels.cpu().numpy())
+
+        # You may process or save the embeddings and labels here, depending on your downstream task
+        embeddings_info = {
+            modality: {
+                'embeddings': np.array(modality_embeddings[modality]),
+                'labels': np.array(modality_labels[modality])
+            } for modality in modality_embeddings
+        }
+
+        return embeddings_info
+    
+    def save_test_metrics(self, metrics):
+        def convert_to_serializable(obj):
+            if isinstance(obj, np.integer):
+                return int(obj)
+            elif isinstance(obj, np.floating):
+                return float(obj)
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            else:
+                return obj
+
+        serializable_metrics = json.loads(
+            json.dumps(metrics, default=convert_to_serializable)
+        )
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"test_metrics_{self.modalities}_{self.cfg['encoder_model']}_{self.cfg['dataset']}_{self.cfg['split']}_{timestamp}.json"
+        filepath = os.path.join('/home/bas06400/Thesis/VIP/src/predictions', filename)
+        
+        with open(filepath, 'w') as f:
+            json.dump(serializable_metrics, f, indent=4)
+        
+        logging.info(f"Test metrics saved to {filepath}")
+    
+    
+    def analyze_embeddings(self, text_embeddings):
+        """
+        Collects embeddings, computes their statistics, and compares them across modalities and with text embeddings.
+
+        Args:
+            text_embeddings (torch.Tensor): Pre-computed text embeddings.
+
+        Returns:
+            dict: A dictionary containing comparison results and statistics for all modalities and text embeddings.
+        """
+        if self.cfg['res_cktp']:
+            self.resume_from_checkpoint()
+        else:
+            self.extract_and_save_all_features()
+        # Step 1: Collect embeddings for each modality
+        modality_embeddings_info = self.collect_embeddings(epoch=None)  # Assuming epoch is not needed or is set elsewhere
+
+        # Step 2: Compute statistics for each modality
+        modality_stats = {}
+        for modality, data in modality_embeddings_info.items():
+            modality_stats[modality] = self.compute_class_stats(torch.tensor(data['embeddings']), torch.tensor(data['labels']))
+
+        # Step 3: Compute statistics for text embeddings
+        text_stats = self.compute_class_stats(torch.tensor(text_embeddings),torch.arange(0, torch.tensor(text_embeddings).size(0)))
+
+    
+
+        # Step 4: Collect cosine distances for individual samples
+        cosine_distances = {modality: [] for modality in modality_stats}
+        text_embeddings_tensor = torch.tensor(text_embeddings)
+        for modality, data in modality_embeddings_info.items():
+            embeddings = torch.tensor(data['embeddings'])
+            for emb in embeddings:
+                for text_emb in text_embeddings_tensor:
+                    cos_dist = self.cosine_distance(emb, text_emb)
+                    cosine_distances[modality].append(cos_dist)
+
+        # Step 5: Create histograms with distinct colors
+        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Add more colors if needed
+        plt.figure(figsize=(10, 6))
+        for idx, (modality, distances) in enumerate(cosine_distances.items()):
+            plt.hist(distances, bins=np.arange(0.5, 1.5, 0.001), alpha=0.5, label=f'{modality} vs Text', color=colors[idx % len(colors)])
+
+        plt.xlabel('Cosine Distance')
+        plt.ylabel('Frequency')
+        plt.title('Histogram of Cosine Distances')
+        plt.legend(loc='upper right')
+        plt.grid(True)
+
+        histogram_path = os.path.join(self.save_dir, 'cosine_distance_histograms_all_distances.png')
+        plt.savefig(histogram_path)
+        plt.close()
+        logging.info(f"Histogram saved at {histogram_path}")
+         # Step 4: Collect cosine similarities and compute ratios for each sample
+        ratios = {modality: [] for modality in modality_stats}
+        text_embeddings_tensor = torch.tensor(text_embeddings)
+        for modality, data in modality_embeddings_info.items():
+            embeddings = torch.tensor(data['embeddings'])
+            labels = torch.tensor(data['labels'])
+            for emb, label in zip(embeddings, labels):
+                true_class_text_emb = text_embeddings_tensor[label]
+                cos_sim_true_class = self.cosine_distance(emb, true_class_text_emb)
+                other_text_embeddings = torch.cat([text_embeddings_tensor[:label], text_embeddings_tensor[label+1:]])
+                cos_sim_other_classes = [self.cosine_distance(emb, other_emb) for other_emb in other_text_embeddings]
+                avg_cos_sim_other_classes = np.mean(cos_sim_other_classes)
+                ratio = cos_sim_true_class / avg_cos_sim_other_classes
+                ratios[modality].append(ratio)
+
+        # Debug: Log ratios
+        for modality, ratio_values in ratios.items():
+            logging.debug(f"{modality} ratios: {ratio_values}")
+
+        # Step 5: Create histograms for the ratios of all samples for each modality
+        plt.figure(figsize=(10, 6))
+        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Add more colors if needed
+        for idx, (modality, ratio_values) in enumerate(ratios.items()):
+            plt.hist(ratio_values, bins=np.arange(0.5, 1.5, 0.001), alpha=0.5, label=f'{modality}', color=colors[idx % len(colors)])
+
+        plt.xlabel('Ratio (True Class Cosine Distance / Average Other Classes Cosine Distance)')
+        plt.ylabel('Frequency')
+        plt.title('Histogram of Cosine Similarity Ratios for All Samples')
+        plt.legend(loc='upper right')
+        plt.grid(True)
+
+        histogram_path = os.path.join(self.save_dir, 'cosine_Distance_ratio_histograms_all_samples.png')
+        plt.savefig(histogram_path)
+        plt.close()
+        logging.info(f"Histogram saved at {histogram_path}")
+
+        # Compare statistics between each modality and text embeddings
+        for modality in modality_stats:
+            comparison_result = self.compare_embeddings(modality_stats[modality], text_stats)
+            logging.info(f"Comparison {modality}_vs_text: {comparison_result}")
+
+        # Compare modalities against each other
+        for modality1 in modality_stats:
+            for modality2 in modality_stats:
+                if modality1 != modality2:
+                    key = f"{modality1}_vs_{modality2}"
+                    comparison_result = self.compare_embeddings(modality_stats[modality1], modality_stats[modality2])
+                    logging.info(f"Comparison {key}: {comparison_result}")
+
+        return 
+
 
 
 #################################################################################################################
@@ -762,7 +1121,7 @@ def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_load
 
 ####################################################
 # saving step
-def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg, save_dir='/home/bas06400/Thesis/VIP/src/features'):
+def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg, save_dir='/home/bas06400/Thesis/VIP/src/features/feat1'):
     logging.info("Starting feature extraction...")
     num_train_files = extract_features2(encoder, train_data, device, cfg, 'train', 10, save_dir)
     num_val_files = extract_features2(encoder, val_data, device, cfg, 'val', 10, save_dir)

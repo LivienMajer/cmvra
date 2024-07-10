@@ -1,28 +1,28 @@
 {
   "train_datasets": 
-    {
-      "name": "ntu_train",
-      "vis_format": "video",
-      "txt": "/home/bas06400/ntu/annotations_train.jsonl",
-      "vis": "/home/bas06400/ntu/nturgb+d_rgb"
-    },
-  "val_datasets": [
+  {
+    "name": "daa_train",
+    "vis_format": "video",
+    "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/train_split2_daa.jsonl",
+    "vis": "/home/bas06400/daa/kinect_color/clips/train2"
+  },
+"val_datasets": [
 
-    {
-      "name": "ntu_val",
-      "vis_format": "video",
-      "txt": "/home/bas06400/ntu/annotations_val.jsonl",
-      "vis": "/home/bas06400/ntu/nturgb+d_rgb"
-    }
-  ],
-  "inference_datasets": [
-    {
-      "name": "ntu_test",
-      "vis_format": "video",
-      "txt": "/home/bas06400/ntu/annotations_test.jsonl",
-      "vis": "/home/bas06400/ntu/nturgb+d_rgb"
-    }
-  ],
+  {
+    "name": "daa_val",
+    "vis_format": "video",
+    "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/test_file_for_split2_daa.jsonl",
+    "vis": "/home/bas06400/daa/kinect_color/clips/test2"
+  }
+],
+"inference_datasets": [
+  {
+    "name": "daa_test",
+    "vis_format": "video",
+    "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/test_file_for_split2_daa.jsonl",
+    "vis": "/home/bas06400/daa/kinect_color/clips/test2"
+  }
+],
 
   "train_n_clips": 1,
   "train_num_frms": 12,
@@ -34,7 +34,7 @@
   "input_res": [224, 224],
   "max_txt_len": 50,
 
-  "e2e_weights_path": "path/to/CLIP-ViP-B/32/checkpoint",
+  "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_32.pt",
   "clip_weights": "openai/clip-vit-base-patch32",
   "clip_config": "openai/clip-vit-base-patch32",
   "clip_vision_additional_config": {
@@ -45,8 +45,8 @@
       "add_cls_num": 3
   },
 
-  "train_batch_size": 16,
-  "test_batch_size": 16,
+  "train_batch_size": 32,
+  "test_batch_size": 32,
   "max_n_example_per_group": 1,
   "gradient_accumulation_steps": 1,
   "n_workers": 8,
@@ -69,7 +69,7 @@
   "decay": "cosine",
   "grad_norm": 1.0,
 
-  "num_train_epochs": 100,
+  "num_train_epochs": 25,
   "min_valid_steps": 1,
   "num_valid": 1,
   "only_valid_steps": 100,

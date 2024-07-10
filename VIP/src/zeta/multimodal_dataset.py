@@ -3,6 +3,7 @@ import av
 import torch
 import numpy as np
 from typing import Optional
+from scipy.interpolate import interp1d
 from PIL import Image
 from torchvision import transforms
 import cv2
@@ -10,14 +11,14 @@ import decord
 from decord import VideoReader
 from decord import cpu, gpu
 from torchvision.io import read_video
-from zeta.skeleton_transforms import RandomGaussianNoise, RandomRot, RandomScale, PreNormalize3D
+from zeta.skeleton_transforms import RandomGaussianNoise, RandomRot, RandomScale, PreNormalize3D, Normalize3D
 import logging
 import re
 
 
 
 class MultiModalVideoDataset3(torch.utils.data.Dataset):
-    def __init__(self, list_path: str, data_root: str, modalities: list, frame_count=12, random_sample=False, mode='train'):
+    def __init__(self, list_path: str, data_root: str, modalities: list, frame_count=12, random_sample=False, mode='train', mixed_frames=None, augs=False):
         with open(list_path) as f:
             self.data_list = f.read().splitlines()
 
@@ -25,10 +26,19 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         self.modalities = modalities
         self.frame_count = frame_count
         self.random_sample = random_sample
+        self.mixed_frames = mixed_frames
         
         
-        
-        self.transform = init_transform_dict_simple(video_res=[1080, 1920],
+        if augs:
+            logging.info('Applying Augmentations')
+            if 'daa' in data_root:
+                video_res=[540, 960]
+            if 'ntu' in data_root:
+                video_res=[1080, 1920]
+            self.transform = init_transform_dict(video_res=video_res,
+                                             input_res=[224, 224])[mode]
+        else:
+            self.transform = init_transform_dict_simple(video_res=[540, 960],
                                              input_res=[224, 224])[mode]
         self.transform_grey = init_transform_dict_simple(video_res=[1080, 1920],
                                              input_res=[224, 224], grey=True)[mode] 
@@ -38,41 +48,72 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         line = self.data_list[idx]
-        # Use a regular expression to split on space preceded by 'i'
+        # split on space preceded by 'i' since some activities from daa contain spaces
         paths = re.split(r'(?<=[iy]) | (?=n)', line)
         label = int(paths[-1])
 
-        modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3}
-        
+        modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3 ,"ceiling": 4, "inner_mirror": 5, "a_column_co_driver": 6, "a_column_driver": 7, "steering_wheel": 8,"rgb2":0, "rgb3":0}
+       
 
         modality_frames = {}
         full_path = os.path.join(self.data_root, paths[0])
-        sample_indices = self._determine_sample_indices(full_path, use_random_sampling=self.random_sample)
+        if self.mixed_frames:
+            sample_indices_dict = {modality: self._determine_sample_indices(full_path, self.mixed_frames.get(modality, self.frame_count), use_random_sampling=self.random_sample) for modality in self.modalities}
+        else:
+            sample_indices = self._determine_sample_indices(full_path, self.frame_count, use_random_sampling=self.random_sample)
+            #sample_indices_dict = {
+            #modality: [index * 2 for index in sample_indices] if modality != "rgb" and "daa" in full_path else sample_indices
+            #for modality in self.modalities}
+            
+            sample_indices_dict = {modality: sample_indices for modality in self.modalities}
+
 
         for modality in self.modalities:
             index = modality_indices[modality]
             path = paths[index]
+            sample_indices = sample_indices_dict[modality]  # Use the computed indices
             if path != 'None':  # Checking if the modality is available
                 if modality == 'skeleton':
                     full_path = os.path.join(self.data_root, path)
                     
-                    skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
-                   
+                    try:
+                        # Attempt to load and sample the skeleton data
+                        skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
+                    except IndexError:
+                        # Handle cases where sample_indices are out of bounds
+                        # Creating a default array with shape (1, 12, 25, 3)
+                        logging.info("There is a broken skeleton)")
+                        skeleton_data = np.zeros((1, 12, 25, 3))
+                    #if skeleton_data.ndim < 4:
+                        # Add a new axis to ensure skeleton_data has 4 dimensions
+                        #skeleton_data = skeleton_data[np.newaxis, :, :, :]
+                    #skeleton_data = self.interpolate_clip(skeleton_data)
+
                     # Apply transformations
                     random_rot = RandomRot(theta=0.3)
                     random_scale = RandomScale(scale=0.2)
                     random_noise = RandomGaussianNoise(sigma=0.01)
                     pre_normalize = PreNormalize3D()
 
-                    skeleton_data = pre_normalize({'keypoint': skeleton_data})['keypoint']
-                    skeleton_data = random_rot({'keypoint': skeleton_data})['keypoint']
-                    skeleton_data = random_scale({'keypoint': skeleton_data})['keypoint']
-                    skeleton_data = random_noise({'keypoint': skeleton_data})['keypoint']
+                    # skeleton_data = Normalize3D()({'keypoint': skeleton_data})['keypoint']
+                    if 'ntu' in full_path:
+                        skeleton_data = pre_normalize({'keypoint': skeleton_data})['keypoint']
+                        
+                    # Check if skeleton_data already has 4 dimensions
+                    if skeleton_data.ndim < 4:
+                        # Add a new axis to ensure skeleton_data has 4 dimensions
+                        skeleton_data = skeleton_data[np.newaxis, :, :, :]
+                    #print(skeleton_data.shape)
+                    if 'ntu' in full_path:
+                        skeleton_data = random_rot({'keypoint': skeleton_data})['keypoint']
+                        skeleton_data = random_scale({'keypoint': skeleton_data})['keypoint']
+                        skeleton_data = random_noise({'keypoint': skeleton_data})['keypoint']
                     
 
                     # Convert to tensor and integrate
                     skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32).permute(1, 0, 2, 3)
                     required_frame_count = 12
+                    
                     current_frame_count = skeleton_tensor.shape[0]
 
                     if current_frame_count < required_frame_count:
@@ -91,8 +132,31 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
         return modality_frames, label
     
+    def interpolate_clip(self, clip, num_frames=12):
+        # Number of frames, vertices, and coordinates in the original clip
+        #print(clip.shape)
+        _, num_original_frames, num_vertices, num_coordinates = clip.shape
 
-    def _determine_sample_indices(self, sample_path, use_random_sampling=True):
+        # Initialize an array to hold the interpolated clip
+        interpolated_clip = np.zeros((1 ,num_frames, num_vertices, num_coordinates))
+
+        # Interpolate each coordinate of each vertex
+        for vertex in range(num_vertices):
+            for coordinate in range(num_coordinates):
+                # Extract the series for the current vertex and coordinate across all frames
+                y_series = clip[0,:, vertex, coordinate]
+                #print(num_original_frames, y_series.shape)
+                # Create an interpolator for this series
+                interpolator = interp1d(np.arange(num_original_frames), y_series, axis=0, kind='linear')
+
+                # Use the interpolator to fill in the interpolated values for this vertex and coordinate
+                interpolated_clip[:,:, vertex, coordinate] = interpolator(
+                    np.linspace(0, num_original_frames - 1, num_frames))
+
+        return interpolated_clip
+
+
+    def _determine_sample_indices(self, sample_path, num_frames, use_random_sampling=True):
         # Open the video file with OpenCV
         cap = cv2.VideoCapture(sample_path)
 
@@ -104,25 +168,25 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
         # Choose the sampling method based on the flag
         if use_random_sampling:
-            return self._random_sample_frame_idx(total_frames)
+            return self._random_sample_frame_idx(total_frames, num_frames)
         else:
-            return self._deterministic_sample_frame_idx(total_frames)
+            return self._deterministic_sample_frame_idx(total_frames, num_frames)
     
-    def _random_sample_frame_idx(self, length):
+    def _random_sample_frame_idx(self, length, num_frames):
         # Ensure the random selection does not exceed the number of frames
-        num_samples = min(self.frame_count, length)
+        #num_samples = min(num_frames, length)
 
         # Randomly select unique frame indices
-        frame_indices = np.random.choice(length, num_samples, replace=False)
+        frame_indices = np.random.choice(length, num_frames, replace=True)
 
         # Sort the indices to maintain correct sequence
         frame_indices.sort()
 
         return frame_indices.tolist()
 
-    def _deterministic_sample_frame_idx(self, length):
+    def _deterministic_sample_frame_idx(self, length, num_frames):
         # Evenly sample 12 frames throughout the video
-        return np.linspace(0, length-2, self.frame_count).astype(int).tolist() # -2 daa 16 
+        return np.linspace(0, length-2, num_frames).astype(int).tolist() # -2 daa 16 
     
     def _extract_frames(self, path, sample_indices):
         if 'depth' in path and 'ntu' in path:
@@ -153,6 +217,8 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         elif 'daa' in skeleton_path:
             skeleton_data = np.load(skeleton_path, allow_pickle=True)
             #logging.info(f'skel frames {skeleton_data.shape}')
+            if len(skeleton_data.shape) != 3:
+                skeleton_data = np.zeros((300,25,3))
             return skeleton_data[np.newaxis, ...]
         else:
             raise ValueError("Unsupported skeleton data format or path incorrect.")
@@ -171,9 +237,12 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
         video_tensor, _, _ = read_video(vis_path, start_pts=0, end_pts=None, pts_unit='sec')
         # video_tensor shape: (T, H, W, C)
-
+        if max(sample_idx) >= video_tensor.size(0):
         # Select frames based on sample_idx
-        img_array = video_tensor[sample_idx]
+            img_array = torch.zeros(12, 224, 224, 3)
+            print('empty file')
+        else:
+            img_array = video_tensor[sample_idx]
         img_array = img_array.permute(0, 3, 1, 2).float() / 255.
 
         #img_array = img_array.asnumpy()  # Convert from MXNet NDArray to NumPy array
@@ -628,27 +697,27 @@ class SingleFrameVideoDataset(MultiModalVideoDataset):
 
 def init_transform_dict(video_res=(240, 320),
                         input_res=(224, 224),
-                        randcrop_scale=(0.8, 1.0),
+                        randcrop_scale=(0.4, 0.8),
                         color_jitter=(0, 0, 0),
                         norm_mean=(0.48145466, 0.4578275, 0.40821073),
                         norm_std=(0.26862954, 0.26130258, 0.27577711)):
     normalize = transforms.Normalize(mean=norm_mean, std=norm_std)
     transform_dict = {
         'train': transforms.Compose([
-            transforms.RandomResizedCrop(input_res, scale=randcrop_scale, interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.RandomResizedCrop(input_res, scale=randcrop_scale, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
             transforms.RandomHorizontalFlip(),
             transforms.ColorJitter(brightness=color_jitter[0], saturation=color_jitter[1], hue=color_jitter[2]),
             normalize,
         ]),
         'val': transforms.Compose([
             transforms.Resize([video_res[0], video_res[1]], antialias=True),
-            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.CenterCrop([int(video_res[0]*0.6), int(video_res[1]*0.6)]),
             transforms.Resize(input_res, antialias=True),
             normalize,
         ]),
         'test': transforms.Compose([
             transforms.Resize([video_res[0], video_res[1]], antialias=True),
-            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.CenterCrop([int(video_res[0]*0.6), int(video_res[1]*0.6)]),
             transforms.Resize(input_res, antialias=True),
             normalize,
         ])

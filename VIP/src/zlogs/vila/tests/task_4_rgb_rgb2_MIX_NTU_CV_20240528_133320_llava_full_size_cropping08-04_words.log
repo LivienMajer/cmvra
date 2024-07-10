@@ -1,0 +1,56 @@
+2024-05-28 13:33:20,817 - INFO - Configuration:
+{
+    "task": "4",
+    "analyse_embbedings": false,
+    "topic": "llava_full_size_cropping08-04_words",
+    "use_words": true,
+    "word_key": "NTUWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/20240514-120129",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "rgb2"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "rgb2": "OMNIVORE"
+    },
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_NTU_CV_20240524_025543.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-05-28 13:33:20,890 - INFO - Evaluing alginment with VIP text encoder...
+2024-05-28 13:33:20,954 - INFO - Evaluing on the following GPUs [2]
+2024-05-28 13:33:23,593 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-28 13:40:58,593 - INFO - Val Set: Modality: rgb, Accuracy: 0.3294, Balanced Accuracy: 0.3254
+2024-05-28 13:40:58,594 - INFO - Val Set: Modality: rgb2, Accuracy: 0.4005, Balanced Accuracy: 0.3881
+2024-05-28 19:17:54,059 - INFO - Train Set: Modality: rgb, Accuracy: 0.3328, Balanced Accuracy: 0.3328
+2024-05-28 19:17:54,059 - INFO - Train Set: Modality: rgb2, Accuracy: 0.3939, Balanced Accuracy: 0.3941
+2024-05-28 21:54:18,551 - INFO - Test Set: Modality: rgb, Accuracy: 0.3361, Balanced Accuracy: 0.3361
+2024-05-28 21:54:18,551 - INFO - Test Set: Modality: rgb2, Accuracy: 0.3924, Balanced Accuracy: 0.3924

@@ -179,27 +179,27 @@ class InfiniteIterator(object):
 
 def init_transform_dict(video_res=(240, 320),
                         input_res=(224, 224),
-                        randcrop_scale=(0.8, 1.0),
+                        randcrop_scale=(0.4, 0.8),
                         color_jitter=(0, 0, 0),
                         norm_mean=(0.48145466, 0.4578275, 0.40821073),
                         norm_std=(0.26862954, 0.26130258, 0.27577711)):
     normalize = transforms.Normalize(mean=norm_mean, std=norm_std)
     transform_dict = {
         'train': transforms.Compose([
-            transforms.RandomResizedCrop(input_res, scale=randcrop_scale, interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.RandomResizedCrop(input_res, scale=randcrop_scale, interpolation=transforms.InterpolationMode.BICUBIC, antialias=True),
             transforms.RandomHorizontalFlip(),
             transforms.ColorJitter(brightness=color_jitter[0], saturation=color_jitter[1], hue=color_jitter[2]),
             normalize,
         ]),
         'val': transforms.Compose([
             transforms.Resize([video_res[0], video_res[1]], antialias=True),
-            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.CenterCrop([int(video_res[0]*0.6), int(video_res[1]*0.6)]),
             transforms.Resize(input_res, antialias=True),
             normalize,
         ]),
         'test': transforms.Compose([
             transforms.Resize([video_res[0], video_res[1]], antialias=True),
-            transforms.CenterCrop([int(video_res[0]*0.9), int(video_res[1]*0.9)]),
+            transforms.CenterCrop([int(video_res[0]*0.6), int(video_res[1]*0.6)]),
             transforms.Resize(input_res, antialias=True),
             normalize,
         ])

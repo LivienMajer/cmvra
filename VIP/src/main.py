@@ -15,11 +15,12 @@ import multiprocessing
 import time
 
 from zeta.data_loader import load_dataloaders
-from zeta.model_init import initialize_vip_encoder, MultiModalityModel, initialize_vip_text_encoder, init_mae_model, init_mae_encoder, init_omnivore_encoder, init_dino_encoder
+from zeta.model_init import initialize_vip_encoder, MultiModalityModel, initialize_vip_text_encoder, init_mae_model, init_mae_encoder, init_omnivore_encoder, init_dino_encoder, init_mae_skeleton_pretrained, init_omnivore_for_ceval
 from zeta.align_process import align_modalities_process, eval_loss_process
 from zeta.train_classefier import train_classefier_process, eval_rgb_classefier_on_ir, train_mae_classifier, MultiModalityClassifierTrainer
 from zeta.eval_vip_textencoder import eval_text_encoder_process
 from zeta.mae_encoder_training import mae_training
+from zeta.eval_knn import eval_knn
 
 def setup_ccname():
     user = getpass.getuser()
@@ -119,6 +120,7 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
         if config['encoder_model'] == 'MIX':
             assert modality in config['modalities_encoders'], f"Encoder type for modality '{modality}' is not specified in 'modalities_encoders' config."
             encoder_model = config['modalities_encoders'][modality]
+            #print(encoder_model)
         else:
             encoder_model = config['encoder_model']
         
@@ -133,6 +135,8 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
             encoder = init_omnivore_encoder(config, device, freeze=freeze)
         elif encoder_model == 'DINO':
             encoder = init_dino_encoder(config, device ,freeze=freeze)
+        elif encoder_model == 'MAEPS':
+            encoder = init_mae_skeleton_pretrained(config, device ,freeze=freeze)
         else:
             logging.warn(f"Unsupported encoder model option: {encoder_model} for modality {modality}")
         # for some reason my encoders have to be a Dataparallel object too otherwise they dodge the wrapping of the parent model
@@ -142,7 +146,26 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
 
     multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
     #print(multi_modality_model)
-    
+
+    if config['align_pre_training'] == True:
+        target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
+        cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
+
+        #if not config['full_train_classifiers']:
+        # Prepare a new state_dict for the model
+        new_state_dict = {}
+
+        for name, param in cktp['model_state_dict'].items():
+            # If the shape of the pretrained parameter doesn't match the model, skip it
+            if name in multi_modality_model.state_dict() and param.size() == multi_modality_model.state_dict()[name].size():
+                new_state_dict[name] = param
+            else:
+                # Log or print the mismatch information for debugging
+                
+                logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
+
+        # Load the updated state_dict
+        multi_modality_model.load_state_dict(new_state_dict, strict=False)
     align_modalities_process(multi_modality_model,
                             train_loader,
                             val_loader, 
@@ -180,6 +203,7 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     ########
     modalities = config['modalities']
     device = sorted(selected_gpu_ids)[0]
+    
     for i, modality in enumerate(modalities):
         freeze = True
         if config['full_train_classifiers']:
@@ -200,9 +224,14 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
             assert modality in checkpoint_name, f"The checkpoint {checkpoint_name} does not match the modality {modality}."
             encoder = init_mae_encoder(config, checkpoint_name, device, return_class=False, freeze=freeze)
         elif encoder_model == 'OMNIVORE':
-            encoder = init_omnivore_encoder(config, device, freeze=freeze)
+            if modality in ['rgb','ir','depth','skeleton']:
+                encoder = init_omnivore_encoder(config, device, freeze=freeze)
+            else:
+                encoder = init_omnivore_for_ceval(config, device, freeze=freeze)
         elif encoder_model == 'DINO':
             encoder = init_dino_encoder(config, device, freeze=freeze)
+        elif encoder_model == 'MAEPS':
+            encoder = init_mae_skeleton_pretrained(config, device ,freeze=freeze)
         else:
             logging.warn(f"Unsupported encoder model option: {encoder_model} for modality {modality}")
         ############
@@ -219,6 +248,50 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
     cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
 
+    
+    """ for ir cross evals
+    checkpoint = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
+
+   
+    ir_classifier_weights = {k: v for k, v in checkpoint['model_state_dict'].items() if 'ir_classifier' in k}
+    classifier_names = [
+    "steering_wheel_classifier",
+    "a_column_driver_classifier",
+    "a_column_co_driver_classifier",
+    "ceiling_classifier",
+    "inner_mirror_classifier"
+]
+
+    for classifier_name in classifier_names:
+        # Construct new state_dict for this classifier
+        new_classifier_weights = {k.replace('ir_classifier', classifier_name): v for k, v in ir_classifier_weights.items()}
+        logging.info(list(new_classifier_weights.keys()))
+        # Load the ir_classifier weights into the current classifier
+        multi_modality_model.load_state_dict(new_classifier_weights, strict=False)
+        new_classifier_weights2 = {k.replace('modalities_encoders.ir.module.heads', f"modalities_encoders.{classifier_name[:-11]}.module.heads"): v for k, v in checkpoint['model_state_dict'].items()}
+        new_classifier_weights2_keys = list(new_classifier_weights2.keys())
+        #logging.info(new_classifier_weights2_keys)
+        #logging.info(list(multi_modality_model.state_dict().keys()))
+        multi_modality_model.load_state_dict(new_classifier_weights2, strict=False)
+
+    def compare_parameters(param1, param2):
+        for p1, p2 in zip(param1, param2):
+            if not torch.equal(p1, p2):
+                return False
+        return True
+
+    # After loading the parameters into a classifier
+    for classifier_name in classifier_names:
+        # Extract parameters from both classifiers for comparison
+        ir_params = [v for k, v in ir_classifier_weights.items() if 'weight' in k or 'bias' in k]
+        current_params = [v for k, v in multi_modality_model.state_dict().items() if classifier_name in k and ('weight' in k or 'bias' in k)]
+        
+        # Compare the parameters
+        are_params_equal = compare_parameters(ir_params, current_params)
+        
+        assert are_params_equal, f"Parameters do not match exactly for {classifier_name}"
+        logging.info(f"Parameters successfully verified for {classifier_name}.")
+    """
 
     """
     cktp_state_dict = cktp['model_state_dict']
@@ -258,7 +331,8 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
             new_state_dict[name] = param
         else:
             # Log or print the mismatch information for debugging
-            logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
+            pass
+            #logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
 
     # Load the updated state_dict
     multi_modality_model.load_state_dict(new_state_dict, strict=False)
@@ -267,8 +341,8 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
         logging.info('Setting grads')
         #print(multi_modality_model) 
         #fix ..................................................... 
-        for param in multi_modality_model.module.modalities_encoders.rgb.parameters():
-            param.requires_grad_(False)
+        for param in multi_modality_model.module.modalities_encoders.parameters():
+            param.requires_grad_(True)
 
     #multi_modality_model = multi_modality_model.cuda(sorted(selected_gpu_ids)[0])
     trainer = MultiModalityClassifierTrainer(multi_modality_model, 
@@ -334,12 +408,35 @@ def eval_text_encoder(train_data,
     
 
     modalities_encoders = {}
-    for modality in config['modalities']:
-        
+    modalities = config['modalities']
+    device = sorted(selected_gpu_ids)[0]
+    for i, modality in enumerate(modalities):
         freeze = True
-        encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
-        # for some reason my encoders have to be a Dataparallel object to otherwise they dodge the wrapping of the parent model
-        encoder = encoder.cuda(sorted(selected_gpu_ids)[0])
+        # Determine the encoder model for the current modality
+        if config['encoder_model'] == 'MIX':
+            assert modality in config['modalities_encoders'], f"Encoder type for modality '{modality}' is not specified in 'modalities_encoders' config."
+            encoder_model = config['modalities_encoders'][modality]
+        else:
+            encoder_model = config['encoder_model']
+        
+        if encoder_model == 'CLIP-VIP':
+            encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
+        elif encoder_model == 'MAE':
+            assert len(modalities) == len(config.get('trained_encoder', [])), f"Length of modalities list ({len(modalities)}) and length of path list for trained mae encoders ({len(config.get('trained_encoder', []))}) do not match"
+            checkpoint_name = config['trained_encoder'][i]  # This gets the checkpoint name for the current modality
+            assert modality in checkpoint_name, f"The checkpoint {checkpoint_name} does not match the modality {modality}."
+            encoder = init_mae_encoder(config, checkpoint_name, device, return_class=False, freeze=freeze)
+        elif encoder_model == 'OMNIVORE':
+            if modality in ['rgb','ir','depth','skeleton','rgb2','rgb3']:
+                encoder = init_omnivore_encoder(config, device, freeze=freeze)
+            else:
+                encoder = init_omnivore_for_ceval(config, device, freeze=freeze)
+        elif encoder_model == 'DINO':
+            encoder = init_dino_encoder(config, device, freeze=freeze)
+        elif encoder_model == 'MAEPS':
+            encoder = init_mae_skeleton_pretrained(config, device ,freeze=freeze)
+        else:
+            logging.warn(f"Unsupported encoder model option: {encoder_model} for modality {modality}")
         modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
 
     
@@ -351,8 +448,18 @@ def eval_text_encoder(train_data,
     text_model = initialize_vip_text_encoder(config, target_device)
     text_model = text_model.to(target_device)
     cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
-    #print(cktp['model_state_dict'].keys())
-    multi_modality_model.load_state_dict(cktp['model_state_dict'])
+    new_state_dict = {}
+
+    for name, param in cktp['model_state_dict'].items():
+        # If the shape of the pretrained parameter doesn't match the model, skip it
+        if name in multi_modality_model.state_dict() and param.size() == multi_modality_model.state_dict()[name].size():
+            new_state_dict[name] = param
+        else:
+            # Log or print the mismatch information for debugging
+            logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
+
+    # Load the updated state_dict
+    multi_modality_model.load_state_dict(new_state_dict, strict=False)
 
     eval_text_encoder_process(visual_model=multi_modality_model,
                               text_model=text_model,
@@ -390,6 +497,71 @@ def train_Mae_Encoder(train_data, val_data, test_data, config):
                  test_data=test_data,
                  device=sorted(selected_gpu_ids)[0],
                 config=config)
+        
+def knn(train_data, test_data, config):
+    logging.info("Evaluing knn...")
+
+    selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
+    logging.info(f"Evaluing on the following GPUs {selected_gpu_ids}")
+    
+    
+    
+
+    modalities_encoders = {}
+    modalities = config['modalities']
+    device = sorted(selected_gpu_ids)[0]
+    for i, modality in enumerate(modalities):
+        freeze = True
+        # Determine the encoder model for the current modality
+        if config['encoder_model'] == 'MIX':
+            assert modality in config['modalities_encoders'], f"Encoder type for modality '{modality}' is not specified in 'modalities_encoders' config."
+            encoder_model = config['modalities_encoders'][modality]
+        else:
+            encoder_model = config['encoder_model']
+        
+        if encoder_model == 'CLIP-VIP':
+            encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
+        elif encoder_model == 'MAE':
+            assert len(modalities) == len(config.get('trained_encoder', [])), f"Length of modalities list ({len(modalities)}) and length of path list for trained mae encoders ({len(config.get('trained_encoder', []))}) do not match"
+            checkpoint_name = config['trained_encoder'][i]  # This gets the checkpoint name for the current modality
+            assert modality in checkpoint_name, f"The checkpoint {checkpoint_name} does not match the modality {modality}."
+            encoder = init_mae_encoder(config, checkpoint_name, device, return_class=False, freeze=freeze)
+        elif encoder_model == 'OMNIVORE':
+            if modality in ['rgb','ir','depth','skeleton','rgb2','rgb3']:
+                encoder = init_omnivore_encoder(config, device, freeze=freeze)
+            else:
+                encoder = init_omnivore_for_ceval(config, device, freeze=freeze)
+        elif encoder_model == 'DINO':
+            encoder = init_dino_encoder(config, device, freeze=freeze)
+        elif encoder_model == 'MAEPS':
+            encoder = init_mae_skeleton_pretrained(config, device ,freeze=freeze)
+        else:
+            logging.warn(f"Unsupported encoder model option: {encoder_model} for modality {modality}")
+        modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
+
+    
+    
+    multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
+    multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
+
+    target_device = f'cuda:{sorted(selected_gpu_ids)[0]}'
+    text_model = initialize_vip_text_encoder(config, target_device)
+    text_model = text_model.to(target_device)
+    cktp = torch.load(os.path.join(config['cktp_dir'],config['aligned_model']), map_location=target_device)
+    new_state_dict = {}
+
+    for name, param in cktp['model_state_dict'].items():
+        # If the shape of the pretrained parameter doesn't match the model, skip it
+        if name in multi_modality_model.state_dict() and param.size() == multi_modality_model.state_dict()[name].size():
+            new_state_dict[name] = param
+        else:
+            # Log or print the mismatch information for debugging
+            logging.warning(f"Skipping loading parameter: {name} due to size mismatch.")
+
+    # Load the updated state_dict
+    multi_modality_model.load_state_dict(new_state_dict, strict=False)
+
+    eval_knn(multi_modality_model, train_data, test_data,device,config)
 
 
 
@@ -458,6 +630,10 @@ def main():
                           val_data, 
                           test_data, 
                           config)
+    elif task == '6':
+        knn(train_data, 
+            test_data, 
+            config)
 
 if __name__ == "__main__":
     
