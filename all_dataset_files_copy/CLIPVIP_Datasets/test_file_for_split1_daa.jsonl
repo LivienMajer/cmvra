@@ -1,0 +1,34 @@
+{"clip_id": "opening_door_outside_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_131_151_1_0", "text": "Opening the car door from outside the vehicle"}
+{"clip_id": "entering_car_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_151_196_2_0", "text": "Entering the vehicle and getting seated"}
+{"clip_id": "closing_door_inside_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_199_230_3_0", "text": "Closing the car door from inside the vehicle"}
+{"clip_id": "fastening_seat_belt_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_235_280_4_0", "text": "Fastening the seat belt before starting the journey"}
+{"clip_id": "sitting_still_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_323_344_5_0", "text": "Sitting still and not engaging in any other activity"}
+{"clip_id": "using_multimedia_display_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_693_702_6_0", "text": "Interacting with the car's multimedia display"}
+{"clip_id": "pressing_automation_button_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_3650_3661_7_0", "text": "Pressing a button for automated vehicle features"}
+{"clip_id": "fetching_an_object_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4044_4081_11_0", "text": "Reaching for and fetching an object inside the car"}
+{"clip_id": "opening_bottle_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4081_4126_12_0", "text": "Opening a bottle, perhaps to drink or serve to others"}
+{"clip_id": "drinking_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4153_4199_13_0", "text": "Consuming a beverage, perhaps from a travel mug or bottle"}
+{"clip_id": "closing_bottle_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4202_4248_14_0", "text": "Sealing a bottle after use"}
+{"clip_id": "placing_an_object_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4701_4747_20_0", "text": "Placing an object down in a designated spot within the car"}
+{"clip_id": "preparing_food_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_4858_4904_23_0", "text": "Preparing or arranging food, possibly for a meal on the go"}
+{"clip_id": "eating_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_5083_5128_26_0", "text": "Consuming food while seated inside the vehicle"}
+{"clip_id": "looking_or_moving_around (e.g. searching)_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_7423_7469_42_0", "text": "Looking around the interior or shifting position"}
+{"clip_id": "reading_newspaper_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_7582_7628_43_0", "text": "Reading a newspaper for news or entertainment"}
+{"clip_id": "writing_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_8149_8195_45_0", "text": "Writing notes or filling out documents"}
+{"clip_id": "reading_magazine_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_8614_8638_51_0", "text": "Reading a magazine for leisure or information"}
+{"clip_id": "putting_on_sunglasses_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_8984_9029_56_0", "text": "Putting on sunglasses for comfort or style"}
+{"clip_id": "taking_off_sunglasses_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_9074_9088_57_0", "text": "Removing sunglasses, possibly as light conditions change"}
+{"clip_id": "taking_laptop_from_backpack_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_12467_12512_97_0", "text": "Retrieving the laptop from a backpack to use"}
+{"clip_id": "opening_laptop_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_12606_12651_98_0", "text": "Opening a laptop to begin work or entertainment"}
+{"clip_id": "working_on_laptop_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_12754_12800_99_0", "text": "Typing and focusing on tasks on the laptop"}
+{"clip_id": "interacting_with_phone_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_13340_13386_101_0", "text": "Using a smartphone for calling, texting, or other apps"}
+{"clip_id": "closing_laptop_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_14400_14424_103_0", "text": "Shutting the laptop after finishing tasks"}
+{"clip_id": "putting_laptop_into_backpack_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_14475_14520_104_0", "text": "Storing the laptop in a backpack after use"}
+{"clip_id": "unfastening_seat_belt_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_14727_14766_106_0", "text": "Unfastening the seat belt, possibly in preparation to exit"}
+{"clip_id": "putting_on_jacket_9_vp9_run1b_2018-05-23-16-19-17.kinect_color_14824_14869_108_0", "text": "Putting on a jacket or coat while seated in the car"}
+{"clip_id": "talking_on_phone_10_vp10_run1_2018-05-24-13-14-41.kinect_color_10292_10337_62_0", "text": "Engaging in a conversation using a mobile phone"}
+{"clip_id": "opening_backpack_10_vp10_run1_2018-05-24-13-14-41.kinect_color_11665_11689_65_0", "text": "Opening a backpack to retrieve or store items"}
+{"clip_id": "taking_off_jacket_10_vp10_run1_2018-05-24-13-14-41.kinect_color_13531_13577_81_0", "text": "Removing a jacket or coat, perhaps due to changing temperatures"}
+{"clip_id": "opening_door_inside_10_vp10_run1_2018-05-24-13-14-41.kinect_color_21043_21089_121_0", "text": "Opening the car door from the inside to exit or for fresh air"}
+{"clip_id": "exiting_car_10_vp10_run1_2018-05-24-13-14-41.kinect_color_21096_21141_122_0", "text": "Exiting the vehicle upon reaching the destination"}
+{"clip_id": "closing_door_outside_10_vp10_run1_2018-05-24-13-14-41.kinect_color_21152_21168_123_0", "text": "Closing the car door from outside the vehicle"}

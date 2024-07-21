@@ -1,0 +1,12 @@
+Daa0
+rgb     checkpoint_rgb_0_20240124_002637.pth
+ir     checkpoint_ir_0_20240126_000105.pth
+depth    checkpoint_depth_0_20240126_000215.pth
+Daa1
+rgb      checkpoint_rgb_1_20240130_232005.pth
+ir        checkpoint_ir_1_20240131_005117.pth
+depth     checkpoint_depth_1_20240203_204801.pth
+Daa2
+rgb      checkpoint_rgb_2_20240208_152524.pth
+ir       checkpoint_ir_2_20240205_000315.pth
+depth     checkpoint_depth_2_20240204_015909.pth

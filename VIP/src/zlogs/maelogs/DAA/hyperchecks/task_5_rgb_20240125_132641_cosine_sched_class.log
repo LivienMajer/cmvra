@@ -1,0 +1,89 @@
+2024-01-25 13:26:41,209 - INFO - Configuration:
+{
+    "task": "5",
+    "topic": "cosine_sched",
+    "train_classifier": true,
+    "number_gpus": "1",
+    "modalities": [
+        "rgb"
+    ],
+    "encoder_model": "MAE",
+    "mask_ratio": 0.8,
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/",
+    "trained_encoder": "checkpoint_rgb_0_20240124_200932.pth",
+    "learning_rate": 0.001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "batch_size": 64,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}
+2024-01-25 13:26:41,259 - INFO - Training MAE for rgb...
+2024-01-25 13:26:41,313 - INFO - Evaluing on the following GPUs [2]
+2024-01-25 13:26:48,666 - INFO - Starting feature extraction...
+2024-01-25 13:39:26,666 - INFO - Applying balance loss
+2024-01-25 13:39:27,360 - INFO - Validation accuracy after epoch 1: 33.56643356643357% and balanced validation accuracy: 36.711172557386504
+2024-01-25 13:39:32,999 - INFO - Validation accuracy after epoch 11: 40.20979020979021% and balanced validation accuracy: 44.50424077249646
+2024-01-25 13:39:38,619 - INFO - Validation accuracy after epoch 21: 42.02797202797203% and balanced validation accuracy: 46.07737322638506
+2024-01-25 13:39:44,213 - INFO - Validation accuracy after epoch 31: 44.19580419580419% and balanced validation accuracy: 45.722755711946455
+2024-01-25 13:39:49,163 - INFO - Validation accuracy after epoch 41: 46.43356643356643% and balanced validation accuracy: 46.37159112176841
+2024-01-25 13:39:50,139 - INFO - Validation accuracy after epoch 51: 47.2027972027972% and balanced validation accuracy: 46.33742629397754
+2024-01-25 13:39:51,105 - INFO - Validation accuracy after epoch 61: 47.97202797202797% and balanced validation accuracy: 46.23087035203913
+2024-01-25 13:39:54,769 - INFO - Validation accuracy after epoch 71: 49.23076923076923% and balanced validation accuracy: 46.17887658010009
+2024-01-25 13:39:58,831 - INFO - Validation accuracy after epoch 81: 50.55944055944056% and balanced validation accuracy: 46.27841896286491
+2024-01-25 13:40:02,515 - INFO - Validation accuracy after epoch 91: 51.18881118881119% and balanced validation accuracy: 46.20075102914848
+2024-01-25 13:40:06,347 - INFO - Validation accuracy after epoch 101: 50.90909090909091% and balanced validation accuracy: 46.059119658433566
+2024-01-25 13:40:10,329 - INFO - Validation accuracy after epoch 111: 51.04895104895105% and balanced validation accuracy: 46.35086451983601
+2024-01-25 13:40:14,198 - INFO - Validation accuracy after epoch 121: 51.32867132867133% and balanced validation accuracy: 47.51584785113022
+2024-01-25 13:40:18,104 - INFO - Validation accuracy after epoch 131: 51.60839160839161% and balanced validation accuracy: 47.3507435231859
+2024-01-25 13:40:19,379 - INFO - Validation accuracy after epoch 141: 51.67832167832168% and balanced validation accuracy: 47.10966458973157
+2024-01-25 13:40:20,429 - INFO - Validation accuracy after epoch 151: 51.04895104895105% and balanced validation accuracy: 45.55367509516371
+2024-01-25 13:40:25,078 - INFO - Validation accuracy after epoch 161: 51.11888111888112% and balanced validation accuracy: 45.62350741331818
+2024-01-25 13:40:30,498 - INFO - Validation accuracy after epoch 171: 50.83916083916084% and balanced validation accuracy: 45.09623580917044
+2024-01-25 13:40:35,743 - INFO - Validation accuracy after epoch 181: 50.55944055944056% and balanced validation accuracy: 44.81208819209013
+2024-01-25 13:40:40,944 - INFO - Validation accuracy after epoch 191: 50.55944055944056% and balanced validation accuracy: 44.75283971274484
+2024-01-25 13:40:46,091 - INFO - Validation accuracy after epoch 201: 50.41958041958042% and balanced validation accuracy: 44.66728415494715
+2024-01-25 13:40:51,400 - INFO - Validation accuracy after epoch 211: 50.48951048951049% and balanced validation accuracy: 44.6615329246422
+2024-01-25 13:40:56,876 - INFO - Validation accuracy after epoch 221: 50.41958041958042% and balanced validation accuracy: 44.47429818812333
+2024-01-25 13:41:02,338 - INFO - Validation accuracy after epoch 231: 50.06993006993007% and balanced validation accuracy: 44.38467793071785
+2024-01-25 13:41:07,945 - INFO - Validation accuracy after epoch 241: 50.06993006993007% and balanced validation accuracy: 44.35496038125158
+2024-01-25 13:41:13,572 - INFO - Validation accuracy after epoch 251: 49.58041958041958% and balanced validation accuracy: 44.07645246525028
+2024-01-25 13:41:19,040 - INFO - Validation accuracy after epoch 261: 49.58041958041958% and balanced validation accuracy: 44.0946180923297
+2024-01-25 13:41:24,618 - INFO - Validation accuracy after epoch 271: 49.37062937062937% and balanced validation accuracy: 43.8064482865862
+2024-01-25 13:41:30,027 - INFO - Validation accuracy after epoch 281: 49.02097902097902% and balanced validation accuracy: 43.60365400484455
+2024-01-25 13:41:35,451 - INFO - Validation accuracy after epoch 291: 48.95104895104895% and balanced validation accuracy: 43.566116771764214
+2024-01-25 13:41:41,009 - INFO - Validation accuracy after epoch 301: 48.74125874125874% and balanced validation accuracy: 43.39748543228373
+2024-01-25 13:41:46,586 - INFO - Validation accuracy after epoch 311: 48.95104895104895% and balanced validation accuracy: 43.413270836418654
+2024-01-25 13:41:52,208 - INFO - Validation accuracy after epoch 321: 48.88111888111888% and balanced validation accuracy: 43.38843228698994
+2024-01-25 13:41:57,797 - INFO - Validation accuracy after epoch 331: 48.88111888111888% and balanced validation accuracy: 43.38843228698994
+2024-01-25 13:42:03,187 - INFO - Validation accuracy after epoch 341: 48.67132867132867% and balanced validation accuracy: 43.249089647647295
+2024-01-25 13:42:08,530 - INFO - Validation accuracy after epoch 351: 48.6013986013986% and balanced validation accuracy: 43.17693957549723
+2024-01-25 13:42:14,095 - INFO - Validation accuracy after epoch 361: 48.6013986013986% and balanced validation accuracy: 43.17693957549723
+2024-01-25 13:42:19,556 - INFO - Validation accuracy after epoch 371: 48.6013986013986% and balanced validation accuracy: 43.18949511399947
+2024-01-25 13:42:24,953 - INFO - Validation accuracy after epoch 381: 48.6013986013986% and balanced validation accuracy: 43.18949511399947
+2024-01-25 13:42:30,512 - INFO - Validation accuracy after epoch 391: 48.67132867132867% and balanced validation accuracy: 43.2098327182297
+2024-01-25 13:42:36,022 - INFO - Validation accuracy after epoch 401: 48.6013986013986% and balanced validation accuracy: 43.183251112700724
+2024-01-25 13:42:41,404 - INFO - Validation accuracy after epoch 411: 48.53146853146853% and balanced validation accuracy: 43.087155932712925
+2024-01-25 13:42:46,541 - INFO - Validation accuracy after epoch 421: 48.53146853146853% and balanced validation accuracy: 43.087155932712925
+2024-01-25 13:42:51,944 - INFO - Validation accuracy after epoch 431: 48.53146853146853% and balanced validation accuracy: 43.073139894106724
+2024-01-25 13:42:57,298 - INFO - Validation accuracy after epoch 441: 48.39160839160839% and balanced validation accuracy: 42.925363659373964
+2024-01-25 13:43:02,664 - INFO - Validation accuracy after epoch 451: 48.32167832167832% and balanced validation accuracy: 42.827611948719024
+2024-01-25 13:43:08,104 - INFO - Validation accuracy after epoch 461: 48.32167832167832% and balanced validation accuracy: 42.83669476225874
+2024-01-25 13:43:13,505 - INFO - Validation accuracy after epoch 471: 48.25174825174825% and balanced validation accuracy: 42.027987340648096
+2024-01-25 13:43:18,826 - INFO - Validation accuracy after epoch 481: 48.25174825174825% and balanced validation accuracy: 42.75614268045392
+2024-01-25 13:43:24,169 - INFO - Validation accuracy after epoch 491: 48.11188811188811% and balanced validation accuracy: 42.0332829606581
+2024-01-25 13:43:29,024 - INFO - Final unblanced test accuracy: 52.88028802880288% and final balanced test accuracy 42.856913104539196

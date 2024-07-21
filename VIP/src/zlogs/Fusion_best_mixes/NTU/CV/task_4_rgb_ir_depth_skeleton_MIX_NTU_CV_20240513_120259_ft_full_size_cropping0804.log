@@ -1,0 +1,69 @@
+2024-05-13 12:02:59,105 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "ft_full_size_cropping0804",
+    "use_words": true,
+    "word_key": "NTUWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir",
+        "depth",
+        "skeleton"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "ir": "OMNIVORE",
+        "depth": "OMNIVORE",
+        "skeleton": "CLIP-VIP"
+    },
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_depth_skeleton_MIX_NTU_CV_20240508_233208.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "augs": true,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/model_step_11850.pt"
+}
+2024-05-13 12:02:59,134 - INFO - Applying Augmentations
+2024-05-13 12:02:59,145 - INFO - Applying Augmentations
+2024-05-13 12:02:59,149 - INFO - Evaluing alginment with VIP text encoder...
+2024-05-13 12:02:59,194 - INFO - Evaluing on the following GPUs [1]
+2024-05-13 12:03:01,137 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-13 12:03:02,629 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-13 12:08:45,744 - INFO - Val Set: Modality: rgb, Accuracy: 0.8564, Balanced Accuracy: 0.8547
+2024-05-13 12:08:45,745 - INFO - Val Set: Modality: ir, Accuracy: 0.7339, Balanced Accuracy: 0.7364
+2024-05-13 12:08:45,745 - INFO - Val Set: Modality: depth, Accuracy: 0.7404, Balanced Accuracy: 0.7384
+2024-05-13 12:08:45,745 - INFO - Val Set: Modality: skeleton, Accuracy: 0.5679, Balanced Accuracy: 0.5672
+2024-05-13 16:18:30,892 - INFO - Train Set: Modality: rgb, Accuracy: 0.8518, Balanced Accuracy: 0.8519
+2024-05-13 16:18:30,892 - INFO - Train Set: Modality: ir, Accuracy: 0.7572, Balanced Accuracy: 0.7572
+2024-05-13 16:18:30,892 - INFO - Train Set: Modality: depth, Accuracy: 0.7395, Balanced Accuracy: 0.7396
+2024-05-13 16:18:30,892 - INFO - Train Set: Modality: skeleton, Accuracy: 0.5978, Balanced Accuracy: 0.5980
+2024-05-13 18:53:23,908 - INFO - Test Set: Modality: rgb, Accuracy: 0.8670, Balanced Accuracy: 0.8670
+2024-05-13 18:53:23,908 - INFO - Test Set: Modality: ir, Accuracy: 0.7487, Balanced Accuracy: 0.7487
+2024-05-13 18:53:23,908 - INFO - Test Set: Modality: depth, Accuracy: 0.7132, Balanced Accuracy: 0.7132
+2024-05-13 18:53:23,908 - INFO - Test Set: Modality: skeleton, Accuracy: 0.6119, Balanced Accuracy: 0.6119

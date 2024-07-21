@@ -1,0 +1,48 @@
+2024-03-28 01:03:10,231 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "ft",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "skeleton"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_CV_20240123_142845.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/model_step_47400 copy.pt"
+}
+2024-03-28 01:03:10,298 - INFO - Evaluing alginment with VIP text encoder...
+2024-03-28 01:03:10,349 - INFO - Evaluing on the following GPUs [3]
+2024-03-28 01:04:12,790 - INFO - Val Set: Modality: rgb, Accuracy: 0.7997, Balanced Accuracy: 0.7914
+2024-03-28 01:04:12,791 - INFO - Val Set: Modality: skeleton, Accuracy: 0.5547, Balanced Accuracy: 0.5406
+2024-03-28 01:26:50,104 - INFO - Train Set: Modality: rgb, Accuracy: 0.8034, Balanced Accuracy: 0.8034
+2024-03-28 01:26:50,155 - INFO - Train Set: Modality: skeleton, Accuracy: 0.6001, Balanced Accuracy: 0.6002
+2024-03-28 01:38:26,689 - INFO - Test Set: Modality: rgb, Accuracy: 0.7170, Balanced Accuracy: 0.7170
+2024-03-28 01:38:26,738 - INFO - Test Set: Modality: skeleton, Accuracy: 0.6216, Balanced Accuracy: 0.6216

@@ -1,0 +1,54 @@
+2024-04-07 11:46:51,079 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "ft",
+    "use_words": false,
+    "word_key": "DAAWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "skeleton"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU120",
+    "split": "CV",
+    "num_classes": 120,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_CV_20240210_133506.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/120CV_B32_model_step_17100.pt"
+}
+2024-04-07 11:46:51,274 - INFO - Evaluing alginment with VIP text encoder...
+2024-04-07 11:46:51,489 - INFO - Evaluing on the following GPUs [2]
+2024-04-07 11:47:07,589 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-04-07 11:47:07,594 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-04-07 11:47:07,597 - WARNING - Skipping loading parameter: module.skeleton_classifier.weight due to size mismatch.
+2024-04-07 11:47:07,601 - WARNING - Skipping loading parameter: module.skeleton_classifier.bias due to size mismatch.
+2024-04-07 11:48:16,826 - INFO - Val Set: Modality: rgb, Accuracy: 0.8749, Balanced Accuracy: 0.8772
+2024-04-07 11:48:16,827 - INFO - Val Set: Modality: skeleton, Accuracy: 0.5242, Balanced Accuracy: 0.5248
+2024-04-07 12:34:36,525 - INFO - Train Set: Modality: rgb, Accuracy: 0.8658, Balanced Accuracy: 0.8662
+2024-04-07 12:34:36,527 - INFO - Train Set: Modality: skeleton, Accuracy: 0.5983, Balanced Accuracy: 0.5984
+2024-04-07 13:26:13,712 - INFO - Test Set: Modality: rgb, Accuracy: 0.6424, Balanced Accuracy: 0.6418
+2024-04-07 13:26:13,713 - INFO - Test Set: Modality: skeleton, Accuracy: 0.5112, Balanced Accuracy: 0.5109

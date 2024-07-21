@@ -1,0 +1,33 @@
+{
+    "task": "5",
+    "topic": "CS",
+    "train_classifier": true,
+    "number_gpus": "1",
+    "modalities": [
+        "ir"
+    ],
+    "encoder_model": "MAE",
+    "mask_ratio": 0.8,
+    "dataset": "NTU",
+    "split": "CS",
+    "num_classes": 60,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints/mae_checkpoints/",
+    "trained_encoder": "checkpoint_ir_CS_20240131_005847.pth",
+    "learning_rate": 0.001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "batch_size": 64,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "random_sample": false,
+    "pin_memory": true,
+    "scheduler_config": {
+        "type": "plateau",
+        "params": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5
+        }
+    }
+}

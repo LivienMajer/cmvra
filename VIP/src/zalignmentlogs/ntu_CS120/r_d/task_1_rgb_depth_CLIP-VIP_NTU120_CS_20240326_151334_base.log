@@ -1,0 +1,83 @@
+2024-03-26 15:13:34,087 - INFO - Configuration:
+{
+    "task": "1",
+    "topic": "base_omni",
+    "number_gpus": "2",
+    "align_pre_training": false,
+    "bind_to_rgb": true,
+    "modalities": [
+        "rgb",
+        "depth"
+    ],
+    "dataset": "NTU120",
+    "encoder_model": "CLIP-VIP",
+    "mixed_frames": false,
+    "split": "CS",
+    "overfit_on_one_batch": false,
+    "num_classes": 34,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "learning_rate": 0.0001,
+    "gradient_accumulation_steps": 2,
+    "scheduler_config": {
+        "type": "step",
+        "params": {
+            "step_size": 4,
+            "gamma": 0.1
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-26 15:13:34,198 - INFO - Aligning modalities......
+2024-03-26 15:13:34,250 - INFO - Training on the following GPUs [1, 2]
+2024-03-26 15:13:38,148 - INFO - Starting training loop
+2024-03-26 15:13:38,151 - INFO - Epoch 1/10 - Training
+2024-03-26 16:33:19,948 - INFO - Epoch [1/10], modality_0_to_modality_1 Avg Loss: 2.6790
+2024-03-26 16:33:19,949 - INFO - Epoch [1/10], Avg Loss: 1.3395
+2024-03-26 16:33:19,952 - INFO - Epoch 1/10 - Validation
+2024-03-26 16:34:36,529 - INFO - Epoch [1/10], Validation Loss: 2.1977
+2024-03-26 16:34:54,010 - INFO - Best val loss 2.1977204382419586
+2024-03-26 16:34:54,011 - INFO - New best model saved at epoch 1
+2024-03-26 16:34:54,018 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_CLIP-VIP_NTU120_CS_20240326_151338
+2024-03-26 16:34:54,020 - INFO - Epoch 2/10 - Training
+2024-03-26 17:54:39,799 - INFO - Epoch [2/10], modality_0_to_modality_1 Avg Loss: 1.7966
+2024-03-26 17:54:39,856 - INFO - Epoch [2/10], Avg Loss: 0.8983
+2024-03-26 17:54:39,859 - INFO - Epoch 2/10 - Validation
+2024-03-26 17:55:45,532 - INFO - Epoch [2/10], Validation Loss: 1.5250
+2024-03-26 17:56:08,297 - INFO - Best val loss 1.525013580918312
+2024-03-26 17:56:08,298 - INFO - New best model saved at epoch 2
+2024-03-26 17:56:08,304 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_CLIP-VIP_NTU120_CS_20240326_151338
+2024-03-26 17:56:08,306 - INFO - Epoch 3/10 - Training
+2024-03-26 19:16:11,683 - INFO - Epoch [3/10], modality_0_to_modality_1 Avg Loss: 1.2643
+2024-03-26 19:16:11,733 - INFO - Epoch [3/10], Avg Loss: 0.6321
+2024-03-26 19:16:11,736 - INFO - Epoch 3/10 - Validation
+2024-03-26 19:17:16,921 - INFO - Epoch [3/10], Validation Loss: 1.1201
+2024-03-26 19:17:44,218 - INFO - Best val loss 1.1200604021549225
+2024-03-26 19:17:44,255 - INFO - New best model saved at epoch 3
+2024-03-26 19:17:44,392 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_CLIP-VIP_NTU120_CS_20240326_151338
+2024-03-26 19:17:44,598 - INFO - Epoch 4/10 - Training
+2024-03-26 20:37:34,798 - INFO - Epoch [4/10], modality_0_to_modality_1 Avg Loss: 0.9787
+2024-03-26 20:37:34,835 - INFO - Epoch [4/10], Avg Loss: 0.4894
+2024-03-26 20:37:34,836 - INFO - Epoch 4/10 - Validation
+2024-03-26 20:38:40,061 - INFO - Epoch [4/10], Validation Loss: 0.9490
+2024-03-26 20:38:46,070 - INFO - Best val loss 0.9490232184529305
+2024-03-26 20:38:46,070 - INFO - New best model saved at epoch 4
+2024-03-26 20:38:46,079 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_depth_CLIP-VIP_NTU120_CS_20240326_151338
+2024-03-26 20:38:46,081 - INFO - Epoch 5/10 - Training

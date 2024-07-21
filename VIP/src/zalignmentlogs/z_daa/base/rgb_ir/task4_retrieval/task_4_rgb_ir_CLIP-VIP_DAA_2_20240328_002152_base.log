@@ -1,0 +1,52 @@
+2024-03-28 00:21:52,826 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "base",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features16559887",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "DAA",
+    "split": "2",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CLIP-VIP_DAA_2_20240307_143246.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-28 00:21:52,862 - INFO - Evaluing alginment with VIP text encoder...
+2024-03-28 00:21:52,913 - INFO - Evaluing on the following GPUs [3]
+2024-03-28 00:22:21,292 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-03-28 00:22:21,296 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-03-28 00:22:21,300 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-03-28 00:22:21,304 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-03-28 00:24:05,885 - INFO - Val Set: Modality: rgb, Accuracy: 0.0538, Balanced Accuracy: 0.0759
+2024-03-28 00:24:05,885 - INFO - Val Set: Modality: ir, Accuracy: 0.0686, Balanced Accuracy: 0.0723
+2024-03-28 00:31:30,669 - INFO - Train Set: Modality: rgb, Accuracy: 0.0722, Balanced Accuracy: 0.0572
+2024-03-28 00:31:30,669 - INFO - Train Set: Modality: ir, Accuracy: 0.1551, Balanced Accuracy: 0.1156
+2024-03-28 00:34:10,883 - INFO - Test Set: Modality: rgb, Accuracy: 0.0526, Balanced Accuracy: 0.0637
+2024-03-28 00:34:10,884 - INFO - Test Set: Modality: ir, Accuracy: 0.0666, Balanced Accuracy: 0.0579

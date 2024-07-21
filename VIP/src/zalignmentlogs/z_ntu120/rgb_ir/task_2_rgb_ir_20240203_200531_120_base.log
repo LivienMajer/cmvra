@@ -1,0 +1,95 @@
+2024-02-03 20:05:31,575 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "120",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU120",
+    "split": "CV",
+    "num_classes": 120,
+    "in_features": 512,
+    "full_train_classifiers": false,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CV_20240202_175805.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-02-03 20:05:31,657 - INFO - Training classifiers...
+2024-02-03 20:05:31,705 - INFO - Training on the following GPUs [1]
+2024-02-03 20:05:38,042 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-02-03 20:05:38,045 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-02-03 20:05:38,048 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-02-03 20:05:38,051 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-02-03 21:17:02,922 - INFO - Epoch [1/5]
+2024-02-03 21:17:02,923 - INFO - Modality: rgb, Loss: 4.4314, Accuracy: 0.1263
+2024-02-03 21:17:02,923 - INFO - Modality: ir, Loss: 3.9080, Accuracy: 0.2040
+2024-02-03 21:18:44,917 - INFO - Validation/Test Epoch [1/5]
+2024-02-03 21:18:44,917 - INFO - Modality: rgb, Loss: 4.1396, Accuracy: 0.2143
+2024-02-03 21:18:44,917 - INFO - Modality: ir, Loss: 3.3393, Accuracy: 0.2812
+2024-02-03 21:18:47,703 - INFO - New best model saved at epoch 1 with val loss: 3.7395
+2024-02-03 22:30:40,145 - INFO - Epoch [2/5]
+2024-02-03 22:30:40,145 - INFO - Modality: rgb, Loss: 3.8799, Accuracy: 0.2559
+2024-02-03 22:30:40,145 - INFO - Modality: ir, Loss: 2.9485, Accuracy: 0.3541
+2024-02-03 22:32:19,686 - INFO - Validation/Test Epoch [2/5]
+2024-02-03 22:32:19,686 - INFO - Modality: rgb, Loss: 3.7225, Accuracy: 0.2482
+2024-02-03 22:32:19,686 - INFO - Modality: ir, Loss: 2.8117, Accuracy: 0.3268
+2024-02-03 22:32:28,593 - INFO - New best model saved at epoch 2 with val loss: 3.2671
+2024-02-03 23:44:14,742 - INFO - Epoch [3/5]
+2024-02-03 23:44:14,742 - INFO - Modality: rgb, Loss: 3.5894, Accuracy: 0.3017
+2024-02-03 23:44:14,742 - INFO - Modality: ir, Loss: 2.6089, Accuracy: 0.3962
+2024-02-03 23:45:54,886 - INFO - Validation/Test Epoch [3/5]
+2024-02-03 23:45:54,886 - INFO - Modality: rgb, Loss: 3.5684, Accuracy: 0.2723
+2024-02-03 23:45:54,886 - INFO - Modality: ir, Loss: 2.6610, Accuracy: 0.3580
+2024-02-03 23:46:01,744 - INFO - New best model saved at epoch 3 with val loss: 3.1147
+2024-02-04 00:57:40,632 - INFO - Epoch [4/5]
+2024-02-04 00:57:40,632 - INFO - Modality: rgb, Loss: 3.4400, Accuracy: 0.3191
+2024-02-04 00:57:40,632 - INFO - Modality: ir, Loss: 2.4663, Accuracy: 0.4148
+2024-02-04 00:59:18,104 - INFO - Validation/Test Epoch [4/5]
+2024-02-04 00:59:18,105 - INFO - Modality: rgb, Loss: 3.4431, Accuracy: 0.2732
+2024-02-04 00:59:18,105 - INFO - Modality: ir, Loss: 2.5480, Accuracy: 0.3652
+2024-02-04 00:59:26,160 - INFO - New best model saved at epoch 4 with val loss: 2.9955
+2024-02-04 02:20:35,200 - INFO - Epoch [5/5]
+2024-02-04 02:20:35,200 - INFO - Modality: rgb, Loss: 3.3401, Accuracy: 0.3333
+2024-02-04 02:20:35,200 - INFO - Modality: ir, Loss: 2.3762, Accuracy: 0.4292
+2024-02-04 02:23:24,283 - INFO - Validation/Test Epoch [5/5]
+2024-02-04 02:23:24,284 - INFO - Modality: rgb, Loss: 3.3840, Accuracy: 0.2866
+2024-02-04 02:23:24,284 - INFO - Modality: ir, Loss: 2.5009, Accuracy: 0.3634
+2024-02-04 02:23:31,280 - INFO - New best model saved at epoch 5 with val loss: 2.9424
+2024-02-04 02:23:31,286 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20240203_200538.json
+2024-02-04 02:23:31,288 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_20240203_200538.pth
+-----------------------
+2024-02-05 12:21:40,076 - INFO - Training classifiers...
+2024-02-05 12:21:40,122 - INFO - Training on the following GPUs [2]
+2024-02-05 12:21:46,532 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-02-05 12:21:46,535 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-02-05 12:21:46,538 - WARNING - Skipping loading parameter: module.ir_classifier.weight due to size mismatch.
+2024-02-05 12:21:46,541 - WARNING - Skipping loading parameter: module.ir_classifier.bias due to size mismatch.
+2024-02-05 12:21:46,554 - INFO - Resuming from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_20240203_200538.pth
+2024-02-05 12:21:47,763 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20240205_122146.json
+2024-02-05 12:21:47,764 - INFO - Loading best model for testing: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_20240203_200538.pth
+2024-02-05 13:39:27,795 - INFO - Validation/Test Epoch [6/5]
+2024-02-05 13:39:27,796 - INFO - Modality: rgb, Loss: 3.3542, Accuracy: 0.3100
+2024-02-05 13:39:27,796 - INFO - Modality: ir, Loss: 2.2836, Accuracy: 0.4161
+2024-02-05 13:39:27,796 - INFO - Test Loss: {'rgb': 3.3542167888974226, 'ir': 2.2835955772971697}, Test Accuracy: {'rgb': 0.3100073608137045, 'ir': 0.4160532655246253}

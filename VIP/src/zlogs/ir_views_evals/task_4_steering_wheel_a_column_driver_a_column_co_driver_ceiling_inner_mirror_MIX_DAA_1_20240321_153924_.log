@@ -1,0 +1,69 @@
+2024-03-21 15:39:24,177 - INFO - Configuration:
+{
+    "task": "4",
+    "topic": "",
+    "number_gpus": "1",
+    "modalities": [
+        "steering_wheel",
+        "a_column_driver",
+        "a_column_co_driver",
+        "ceiling",
+        "inner_mirror"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "steering_wheel": "OMNIVORE",
+        "a_column_driver": "OMNIVORE",
+        "a_column_co_driver": "OMNIVORE",
+        "ceiling": "OMNIVORE",
+        "inner_mirror": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "1",
+    "num_classes": 60,
+    "in_features": 512,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_MIX_DAA_1_20240317_003236.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/daa1_model_step_5667.pt"
+}
+2024-03-21 15:39:24,265 - INFO - Evaluing alginment with VIP text encoder...
+2024-03-21 15:39:24,328 - INFO - Evaluing on the following GPUs [3]
+2024-03-21 15:39:24,331 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 15:39:29,812 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 15:39:34,328 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 15:39:38,704 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 15:39:42,519 - INFO - Using depth mode summed_rgb_d_tokens
+2024-03-21 15:43:59,385 - INFO - Val Set: Modality: steering_wheel, Accuracy: 0.2087, Balanced Accuracy: 0.1849
+2024-03-21 15:43:59,386 - INFO - Val Set: Modality: a_column_driver, Accuracy: 0.1661, Balanced Accuracy: 0.1636
+2024-03-21 15:43:59,388 - INFO - Val Set: Modality: a_column_co_driver, Accuracy: 0.3646, Balanced Accuracy: 0.2742
+2024-03-21 15:43:59,390 - INFO - Val Set: Modality: ceiling, Accuracy: 0.1220, Balanced Accuracy: 0.1201
+2024-03-21 15:43:59,394 - INFO - Val Set: Modality: inner_mirror, Accuracy: 0.1401, Balanced Accuracy: 0.1515
+2024-03-21 16:00:26,523 - INFO - Train Set: Modality: steering_wheel, Accuracy: 0.1762, Balanced Accuracy: 0.1666
+2024-03-21 16:00:26,546 - INFO - Train Set: Modality: a_column_driver, Accuracy: 0.1861, Balanced Accuracy: 0.1809
+2024-03-21 16:00:26,546 - INFO - Train Set: Modality: a_column_co_driver, Accuracy: 0.4879, Balanced Accuracy: 0.3340
+2024-03-21 16:00:26,546 - INFO - Train Set: Modality: ceiling, Accuracy: 0.1532, Balanced Accuracy: 0.1722
+2024-03-21 16:00:26,546 - INFO - Train Set: Modality: inner_mirror, Accuracy: 0.1508, Balanced Accuracy: 0.1719
+2024-03-21 16:04:42,569 - INFO - Test Set: Modality: steering_wheel, Accuracy: 0.1866, Balanced Accuracy: 0.1479
+2024-03-21 16:04:42,621 - INFO - Test Set: Modality: a_column_driver, Accuracy: 0.1455, Balanced Accuracy: 0.1671
+2024-03-21 16:04:42,621 - INFO - Test Set: Modality: a_column_co_driver, Accuracy: 0.3979, Balanced Accuracy: 0.3448
+2024-03-21 16:04:42,621 - INFO - Test Set: Modality: ceiling, Accuracy: 0.2120, Balanced Accuracy: 0.1906
+2024-03-21 16:04:42,621 - INFO - Test Set: Modality: inner_mirror, Accuracy: 0.1673, Balanced Accuracy: 0.1810

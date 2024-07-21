@@ -1,0 +1,139 @@
+2024-03-15 20:58:50,907 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "ft_full_training_sota_comp",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/features1",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "DAA",
+    "split": "0",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": true,
+    "epochs": 20,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_0_20240220_181219.pth",
+    "learning_rate": 1e-06,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 8,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-15 20:58:50,930 - INFO - Training classifiers...
+2024-03-15 20:58:50,979 - INFO - Training on the following GPUs [1]
+2024-03-15 20:58:50,979 - INFO - Encoders are now trainable
+2024-03-15 20:58:53,233 - INFO - Encoders are now trainable
+2024-03-15 20:58:57,108 - INFO - Setting grads
+2024-03-15 20:58:57,110 - INFO - Applying balance loss
+2024-03-15 21:00:51,379 - INFO - Full Training enabled
+2024-03-15 21:23:49,325 - INFO - Epoch 1, Train rgb - Loss: 0.4442, Accuracy: 0.0172, Balanced Accuracy: 0.0396
+2024-03-15 21:23:49,333 - INFO - Epoch 1, Train ir - Loss: 0.4025, Accuracy: 0.3382, Balanced Accuracy: 0.1594
+2024-03-15 21:26:53,857 - INFO - Epoch 1, Val rgb - Loss: 0.4423, Accuracy: 0.0259, Balanced Accuracy: 0.0258
+2024-03-15 21:26:53,860 - INFO - Epoch 1, Val ir - Loss: 0.3663, Accuracy: 0.4161, Balanced Accuracy: 0.1966
+2024-03-15 21:27:21,138 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-15 21:53:43,684 - INFO - Epoch 2, Train rgb - Loss: 0.4429, Accuracy: 0.0224, Balanced Accuracy: 0.0408
+2024-03-15 21:53:43,709 - INFO - Epoch 2, Train ir - Loss: 0.3255, Accuracy: 0.6453, Balanced Accuracy: 0.3365
+2024-03-15 21:56:39,502 - INFO - Epoch 2, Val rgb - Loss: 0.4400, Accuracy: 0.0350, Balanced Accuracy: 0.0290
+2024-03-15 21:56:39,505 - INFO - Epoch 2, Val ir - Loss: 0.3223, Accuracy: 0.4364, Balanced Accuracy: 0.2328
+2024-03-15 21:56:59,170 - INFO - Checkpoint saved at epoch 1 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-15 22:23:27,546 - INFO - Epoch 3, Train rgb - Loss: 0.4408, Accuracy: 0.0298, Balanced Accuracy: 0.0457
+2024-03-15 22:23:27,552 - INFO - Epoch 3, Train ir - Loss: 0.2701, Accuracy: 0.7138, Balanced Accuracy: 0.4248
+2024-03-15 22:26:21,124 - INFO - Epoch 3, Val rgb - Loss: 0.4379, Accuracy: 0.0462, Balanced Accuracy: 0.0337
+2024-03-15 22:26:21,128 - INFO - Epoch 3, Val ir - Loss: 0.3078, Accuracy: 0.4063, Balanced Accuracy: 0.2492
+2024-03-15 22:26:35,016 - INFO - Checkpoint saved at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-15 22:53:21,179 - INFO - Epoch 4, Train rgb - Loss: 0.4395, Accuracy: 0.0373, Balanced Accuracy: 0.0495
+2024-03-15 22:53:21,186 - INFO - Epoch 4, Train ir - Loss: 0.2288, Accuracy: 0.7448, Balanced Accuracy: 0.4960
+2024-03-15 22:56:25,621 - INFO - Epoch 4, Val rgb - Loss: 0.4356, Accuracy: 0.0566, Balanced Accuracy: 0.0420
+2024-03-15 22:56:25,629 - INFO - Epoch 4, Val ir - Loss: 0.3121, Accuracy: 0.3399, Balanced Accuracy: 0.2313
+2024-03-15 23:19:57,462 - INFO - Epoch 5, Train rgb - Loss: 0.4371, Accuracy: 0.0443, Balanced Accuracy: 0.0532
+2024-03-15 23:19:57,469 - INFO - Epoch 5, Train ir - Loss: 0.1984, Accuracy: 0.7699, Balanced Accuracy: 0.5519
+2024-03-15 23:21:36,406 - INFO - Epoch 5, Val rgb - Loss: 0.4335, Accuracy: 0.0657, Balanced Accuracy: 0.0431
+2024-03-15 23:21:36,410 - INFO - Epoch 5, Val ir - Loss: 0.3098, Accuracy: 0.3420, Balanced Accuracy: 0.2388
+2024-03-15 23:21:50,276 - INFO - Checkpoint saved at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-15 23:36:19,439 - INFO - Epoch 6, Train rgb - Loss: 0.4354, Accuracy: 0.0554, Balanced Accuracy: 0.0601
+2024-03-15 23:36:19,446 - INFO - Epoch 6, Train ir - Loss: 0.1739, Accuracy: 0.7986, Balanced Accuracy: 0.6219
+2024-03-15 23:37:58,482 - INFO - Epoch 6, Val rgb - Loss: 0.4313, Accuracy: 0.0797, Balanced Accuracy: 0.0480
+2024-03-15 23:37:58,485 - INFO - Epoch 6, Val ir - Loss: 0.3052, Accuracy: 0.3503, Balanced Accuracy: 0.2299
+2024-03-15 23:38:06,665 - INFO - Checkpoint saved at epoch 5 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-15 23:52:35,855 - INFO - Epoch 7, Train rgb - Loss: 0.4339, Accuracy: 0.0635, Balanced Accuracy: 0.0652
+2024-03-15 23:52:35,862 - INFO - Epoch 7, Train ir - Loss: 0.1501, Accuracy: 0.8237, Balanced Accuracy: 0.7022
+2024-03-15 23:54:14,738 - INFO - Epoch 7, Val rgb - Loss: 0.4293, Accuracy: 0.0888, Balanced Accuracy: 0.0479
+2024-03-15 23:54:14,743 - INFO - Epoch 7, Val ir - Loss: 0.3135, Accuracy: 0.3406, Balanced Accuracy: 0.2461
+2024-03-16 00:08:43,735 - INFO - Epoch 8, Train rgb - Loss: 0.4318, Accuracy: 0.0717, Balanced Accuracy: 0.0672
+2024-03-16 00:08:43,746 - INFO - Epoch 8, Train ir - Loss: 0.1310, Accuracy: 0.8464, Balanced Accuracy: 0.7567
+2024-03-16 00:10:22,195 - INFO - Epoch 8, Val rgb - Loss: 0.4272, Accuracy: 0.0972, Balanced Accuracy: 0.0466
+2024-03-16 00:10:22,202 - INFO - Epoch 8, Val ir - Loss: 0.3115, Accuracy: 0.3552, Balanced Accuracy: 0.2564
+2024-03-16 00:24:51,382 - INFO - Epoch 9, Train rgb - Loss: 0.4305, Accuracy: 0.0786, Balanced Accuracy: 0.0714
+2024-03-16 00:24:51,389 - INFO - Epoch 9, Train ir - Loss: 0.1137, Accuracy: 0.8720, Balanced Accuracy: 0.8164
+2024-03-16 00:26:29,792 - INFO - Epoch 9, Val rgb - Loss: 0.4262, Accuracy: 0.1007, Balanced Accuracy: 0.0477
+2024-03-16 00:26:29,795 - INFO - Epoch 9, Val ir - Loss: 0.3122, Accuracy: 0.3441, Balanced Accuracy: 0.2489
+2024-03-16 00:40:58,793 - INFO - Epoch 10, Train rgb - Loss: 0.4297, Accuracy: 0.0827, Balanced Accuracy: 0.0739
+2024-03-16 00:40:58,799 - INFO - Epoch 10, Train ir - Loss: 0.1040, Accuracy: 0.8821, Balanced Accuracy: 0.8424
+2024-03-16 00:42:37,622 - INFO - Epoch 10, Val rgb - Loss: 0.4252, Accuracy: 0.1070, Balanced Accuracy: 0.0507
+2024-03-16 00:42:37,628 - INFO - Epoch 10, Val ir - Loss: 0.3081, Accuracy: 0.3545, Balanced Accuracy: 0.2301
+2024-03-16 00:42:51,647 - INFO - Checkpoint saved at epoch 9 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-16 00:57:19,875 - INFO - Epoch 11, Train rgb - Loss: 0.4291, Accuracy: 0.0879, Balanced Accuracy: 0.0775
+2024-03-16 00:57:19,888 - INFO - Epoch 11, Train ir - Loss: 0.0943, Accuracy: 0.8921, Balanced Accuracy: 0.8627
+2024-03-16 00:58:58,635 - INFO - Epoch 11, Val rgb - Loss: 0.4242, Accuracy: 0.1112, Balanced Accuracy: 0.0522
+2024-03-16 00:58:58,641 - INFO - Epoch 11, Val ir - Loss: 0.3135, Accuracy: 0.3524, Balanced Accuracy: 0.2365
+2024-03-16 01:13:27,540 - INFO - Epoch 12, Train rgb - Loss: 0.4282, Accuracy: 0.0952, Balanced Accuracy: 0.0819
+2024-03-16 01:13:27,554 - INFO - Epoch 12, Train ir - Loss: 0.0865, Accuracy: 0.9036, Balanced Accuracy: 0.8830
+2024-03-16 01:15:06,318 - INFO - Epoch 12, Val rgb - Loss: 0.4232, Accuracy: 0.1175, Balanced Accuracy: 0.0543
+2024-03-16 01:15:06,323 - INFO - Epoch 12, Val ir - Loss: 0.3127, Accuracy: 0.3490, Balanced Accuracy: 0.2489
+2024-03-16 01:29:35,358 - INFO - Epoch 13, Train rgb - Loss: 0.4273, Accuracy: 0.1042, Balanced Accuracy: 0.0859
+2024-03-16 01:29:35,365 - INFO - Epoch 13, Train ir - Loss: 0.0788, Accuracy: 0.9103, Balanced Accuracy: 0.8915
+2024-03-16 01:31:13,948 - INFO - Epoch 13, Val rgb - Loss: 0.4222, Accuracy: 0.1294, Balanced Accuracy: 0.0589
+2024-03-16 01:31:13,953 - INFO - Epoch 13, Val ir - Loss: 0.3186, Accuracy: 0.3455, Balanced Accuracy: 0.2366
+2024-03-16 01:45:42,537 - INFO - Epoch 14, Train rgb - Loss: 0.4265, Accuracy: 0.1129, Balanced Accuracy: 0.0890
+2024-03-16 01:45:42,544 - INFO - Epoch 14, Train ir - Loss: 0.0708, Accuracy: 0.9229, Balanced Accuracy: 0.9115
+2024-03-16 01:47:21,088 - INFO - Epoch 14, Val rgb - Loss: 0.4212, Accuracy: 0.1406, Balanced Accuracy: 0.0628
+2024-03-16 01:47:21,095 - INFO - Epoch 14, Val ir - Loss: 0.3185, Accuracy: 0.3441, Balanced Accuracy: 0.2271
+2024-03-16 02:01:49,673 - INFO - Epoch 15, Train rgb - Loss: 0.4255, Accuracy: 0.1248, Balanced Accuracy: 0.0955
+2024-03-16 02:01:49,679 - INFO - Epoch 15, Train ir - Loss: 0.0645, Accuracy: 0.9256, Balanced Accuracy: 0.9170
+2024-03-16 02:03:28,319 - INFO - Epoch 15, Val rgb - Loss: 0.4202, Accuracy: 0.1476, Balanced Accuracy: 0.0651
+2024-03-16 02:03:28,327 - INFO - Epoch 15, Val ir - Loss: 0.3199, Accuracy: 0.3462, Balanced Accuracy: 0.2322
+2024-03-16 02:17:57,321 - INFO - Epoch 16, Train rgb - Loss: 0.4251, Accuracy: 0.1388, Balanced Accuracy: 0.1012
+2024-03-16 02:17:57,328 - INFO - Epoch 16, Train ir - Loss: 0.0584, Accuracy: 0.9365, Balanced Accuracy: 0.9283
+2024-03-16 02:19:36,125 - INFO - Epoch 16, Val rgb - Loss: 0.4193, Accuracy: 0.1566, Balanced Accuracy: 0.0685
+2024-03-16 02:19:36,134 - INFO - Epoch 16, Val ir - Loss: 0.3255, Accuracy: 0.3469, Balanced Accuracy: 0.2363
+2024-03-16 02:34:05,016 - INFO - Epoch 17, Train rgb - Loss: 0.4238, Accuracy: 0.1495, Balanced Accuracy: 0.1051
+2024-03-16 02:34:05,022 - INFO - Epoch 17, Train ir - Loss: 0.0519, Accuracy: 0.9447, Balanced Accuracy: 0.9388
+2024-03-16 02:35:43,609 - INFO - Epoch 17, Val rgb - Loss: 0.4188, Accuracy: 0.1608, Balanced Accuracy: 0.0700
+2024-03-16 02:35:43,612 - INFO - Epoch 17, Val ir - Loss: 0.3222, Accuracy: 0.3503, Balanced Accuracy: 0.2298
+2024-03-16 02:50:11,780 - INFO - Epoch 18, Train rgb - Loss: 0.4239, Accuracy: 0.1581, Balanced Accuracy: 0.1087
+2024-03-16 02:50:11,786 - INFO - Epoch 18, Train ir - Loss: 0.0490, Accuracy: 0.9488, Balanced Accuracy: 0.9440
+2024-03-16 02:51:50,170 - INFO - Epoch 18, Val rgb - Loss: 0.4183, Accuracy: 0.1650, Balanced Accuracy: 0.0714
+2024-03-16 02:51:50,174 - INFO - Epoch 18, Val ir - Loss: 0.3279, Accuracy: 0.3469, Balanced Accuracy: 0.2334
+2024-03-16 03:06:19,205 - INFO - Epoch 19, Train rgb - Loss: 0.4234, Accuracy: 0.1662, Balanced Accuracy: 0.1115
+2024-03-16 03:06:19,211 - INFO - Epoch 19, Train ir - Loss: 0.0463, Accuracy: 0.9517, Balanced Accuracy: 0.9442
+2024-03-16 03:07:59,097 - INFO - Epoch 19, Val rgb - Loss: 0.4179, Accuracy: 0.1685, Balanced Accuracy: 0.0726
+2024-03-16 03:07:59,100 - INFO - Epoch 19, Val ir - Loss: 0.3268, Accuracy: 0.3420, Balanced Accuracy: 0.2229
+2024-03-16 03:22:27,816 - INFO - Epoch 20, Train rgb - Loss: 0.4228, Accuracy: 0.1763, Balanced Accuracy: 0.1139
+2024-03-16 03:22:27,826 - INFO - Epoch 20, Train ir - Loss: 0.0433, Accuracy: 0.9559, Balanced Accuracy: 0.9458
+2024-03-16 03:24:06,694 - INFO - Epoch 20, Val rgb - Loss: 0.4174, Accuracy: 0.1762, Balanced Accuracy: 0.0755
+2024-03-16 03:24:06,700 - INFO - Epoch 20, Val ir - Loss: 0.3294, Accuracy: 0.3538, Balanced Accuracy: 0.2347
+2024-03-16 03:24:06,717 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20240315_210051.json
+2024-03-16 03:24:06,722 - INFO - Loading checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-16 03:24:10,179 - INFO - Resumed from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_DAA_0_20240315_210051.pth
+2024-03-16 03:24:10,182 - INFO - Updated file counts from saved features.
+2024-03-16 03:26:41,910 - INFO - Epoch 1, Test rgb - Loss: 0.4240, Accuracy: 0.1004, Balanced Accuracy: 0.0963
+2024-03-16 03:26:41,915 - INFO - Epoch 1, Test ir - Loss: 0.2847, Accuracy: 0.4082, Balanced Accuracy: 0.2572

@@ -1,0 +1,59 @@
+2024-06-27 19:28:14,475 - INFO - Configuration:
+{
+    "task": "4",
+    "analyse_embbedings": false,
+    "topic": "llava_full_size_cropping08-04_words",
+    "use_words": true,
+    "word_key": "NTUWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/20240514-120129",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "rgb2"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "rgb2": "OMNIVORE"
+    },
+    "dataset": "NTU",
+    "split": "CV",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "augs": true,
+    "epochs": 500,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_NTU_CV_20240626_022338.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/ntu_cv_llava_augs_model_step_11850.pt"
+}
+2024-06-27 19:28:14,503 - INFO - Applying Augmentations
+2024-06-27 19:28:14,515 - INFO - Applying Augmentations
+2024-06-27 19:28:14,519 - INFO - Evaluing alginment with VIP text encoder...
+2024-06-27 19:28:14,572 - INFO - Evaluing on the following GPUs [1]
+2024-06-27 19:28:16,697 - INFO - Using depth mode summed_rgb_d_tokens
+2024-06-27 19:34:57,296 - INFO - Val Set: Modality: rgb, Accuracy: 0.0909, Balanced Accuracy: 0.0973
+2024-06-27 19:34:57,297 - INFO - Val Set: Modality: rgb2, Accuracy: 0.2108, Balanced Accuracy: 0.2161
+2024-06-28 00:18:44,691 - INFO - Train Set: Modality: rgb, Accuracy: 0.1106, Balanced Accuracy: 0.1104
+2024-06-28 00:18:44,691 - INFO - Train Set: Modality: rgb2, Accuracy: 0.2140, Balanced Accuracy: 0.2141
+2024-06-28 02:31:17,016 - INFO - Test Set: Modality: rgb, Accuracy: 0.1327, Balanced Accuracy: 0.1327
+2024-06-28 02:31:17,017 - INFO - Test Set: Modality: rgb2, Accuracy: 0.2303, Balanced Accuracy: 0.2303

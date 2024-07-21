@@ -1,0 +1,339 @@
+2024-05-03 23:32:47,352 - INFO - Configuration:
+{
+    "task": "1",
+    "topic": "ft_vila_two_rgb_crazy_second_ce_perpetum_mobile",
+    "number_gpus": "2",
+    "align_pre_training": true,
+    "bind_to_rgb": true,
+    "modalities": [
+        "rgb2",
+        "rgb3"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb2": "OMNIVORE",
+        "rgb3": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "0",
+    "overfit_on_one_batch": false,
+    "num_classes": 34,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_DAA_0_20240503_154822.pth",
+    "learning_rate": 0.0001,
+    "gradient_accumulation_steps": 2,
+    "scheduler_config": {
+        "type": "step",
+        "params": {
+            "step_size": 4,
+            "gamma": 0.1
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/daa0_vila_model_step_2076.pt"
+}
+2024-05-03 23:32:47,387 - INFO - Aligning modalities......
+2024-05-03 23:32:47,438 - INFO - Training on the following GPUs [0, 1]
+2024-05-03 23:32:47,439 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-03 23:32:49,494 - INFO - Using depth mode summed_rgb_d_tokens
+2024-05-03 23:32:52,170 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.added_cls due to size mismatch.
+2024-05-03 23:32:52,174 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.class_embedding due to size mismatch.
+2024-05-03 23:32:52,177 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.temporal_embedding due to size mismatch.
+2024-05-03 23:32:52,325 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.position_ids due to size mismatch.
+2024-05-03 23:32:52,328 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.patch_embedding.weight due to size mismatch.
+2024-05-03 23:32:52,331 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.embeddings.position_embedding.weight due to size mismatch.
+2024-05-03 23:32:52,334 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.pre_layrnorm.weight due to size mismatch.
+2024-05-03 23:32:52,337 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.pre_layrnorm.bias due to size mismatch.
+2024-05-03 23:32:52,339 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,342 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,345 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,347 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,350 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,353 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,355 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,358 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,361 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,363 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,366 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,369 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,371 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,374 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,377 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,380 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.0.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,382 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,385 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,388 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,391 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,393 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,396 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,399 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,401 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,404 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,407 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,409 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,412 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,415 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,418 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,420 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,423 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.1.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,426 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,429 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,431 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,434 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,437 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,439 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,442 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,445 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,447 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,450 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,453 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,456 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,458 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,461 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,464 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,466 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.2.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,469 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,472 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,475 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,477 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,480 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,483 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,486 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,488 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,491 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,494 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,496 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,499 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,502 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,505 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,507 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,510 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.3.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,513 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,515 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,518 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,521 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,523 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,526 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,529 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,531 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,534 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,537 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,540 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,542 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,545 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,548 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,551 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,554 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.4.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,556 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,559 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,562 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,564 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,567 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,570 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,573 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,575 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,578 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,581 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,583 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,586 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,589 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,592 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,594 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,597 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.5.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,600 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,602 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,605 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,608 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,610 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,613 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,616 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,618 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,621 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,624 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,627 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,629 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,632 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,635 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,638 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,640 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.6.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,643 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,646 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,649 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,652 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,654 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,657 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,660 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,662 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,665 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,668 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,670 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,673 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,676 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,679 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,681 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,684 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.7.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,687 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,690 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,692 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,695 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,698 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,700 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,703 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,706 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,709 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,711 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,714 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,717 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,720 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,722 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,725 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,728 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.8.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,730 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,733 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,736 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,739 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,741 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,745 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,747 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,750 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,753 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,755 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,758 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,761 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,764 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,767 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,769 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,772 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.9.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,775 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,778 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,780 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,783 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,786 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,789 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,791 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,794 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,797 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,799 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,802 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,805 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,808 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,810 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,813 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,816 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.10.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,818 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.k_proj.weight due to size mismatch.
+2024-05-03 23:32:52,821 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.k_proj.bias due to size mismatch.
+2024-05-03 23:32:52,824 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.v_proj.weight due to size mismatch.
+2024-05-03 23:32:52,827 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.v_proj.bias due to size mismatch.
+2024-05-03 23:32:52,829 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.q_proj.weight due to size mismatch.
+2024-05-03 23:32:52,832 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.q_proj.bias due to size mismatch.
+2024-05-03 23:32:52,835 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.out_proj.weight due to size mismatch.
+2024-05-03 23:32:52,837 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.self_attn.out_proj.bias due to size mismatch.
+2024-05-03 23:32:52,840 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.layer_norm1.weight due to size mismatch.
+2024-05-03 23:32:52,843 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.layer_norm1.bias due to size mismatch.
+2024-05-03 23:32:52,846 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.mlp.fc1.weight due to size mismatch.
+2024-05-03 23:32:52,848 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.mlp.fc1.bias due to size mismatch.
+2024-05-03 23:32:52,851 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.mlp.fc2.weight due to size mismatch.
+2024-05-03 23:32:52,854 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.mlp.fc2.bias due to size mismatch.
+2024-05-03 23:32:52,856 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.layer_norm2.weight due to size mismatch.
+2024-05-03 23:32:52,859 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.encoder.layers.11.layer_norm2.bias due to size mismatch.
+2024-05-03 23:32:52,862 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.post_layernorm.weight due to size mismatch.
+2024-05-03 23:32:52,864 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.vision_model.post_layernorm.bias due to size mismatch.
+2024-05-03 23:32:52,867 - WARNING - Skipping loading parameter: module.modalities_encoders.rgb.module.visual_projection.weight due to size mismatch.
+2024-05-03 23:32:54,577 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-05-03 23:32:54,580 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-05-03 23:32:54,628 - INFO - Starting training loop
+2024-05-03 23:32:54,630 - INFO - Epoch 1/10 - Training
+2024-05-03 23:40:33,540 - INFO - Epoch [1/10], modality_0_to_modality_1 Avg Loss: 0.7227
+2024-05-03 23:40:33,541 - INFO - Epoch [1/10], Avg Loss: 0.3613
+2024-05-03 23:40:33,543 - INFO - Epoch 1/10 - Validation
+2024-05-03 23:42:08,789 - INFO - Epoch [1/10], Validation Loss: 1.8592
+2024-05-03 23:42:13,398 - INFO - Best val loss 1.859241943889194
+2024-05-03 23:42:13,399 - INFO - New best model saved at epoch 1
+2024-05-03 23:42:13,404 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-03 23:42:13,413 - INFO - Epoch 2/10 - Training
+2024-05-03 23:49:51,231 - INFO - Epoch [2/10], modality_0_to_modality_1 Avg Loss: 0.2053
+2024-05-03 23:49:51,232 - INFO - Epoch [2/10], Avg Loss: 0.1026
+2024-05-03 23:49:51,237 - INFO - Epoch 2/10 - Validation
+2024-05-03 23:51:27,309 - INFO - Epoch [2/10], Validation Loss: 1.6954
+2024-05-03 23:51:32,427 - INFO - Best val loss 1.6954280932744343
+2024-05-03 23:51:32,428 - INFO - New best model saved at epoch 2
+2024-05-03 23:51:32,432 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-03 23:51:32,438 - INFO - Epoch 3/10 - Training
+2024-05-04 00:00:12,727 - INFO - Epoch [3/10], modality_0_to_modality_1 Avg Loss: 0.1576
+2024-05-04 00:00:12,728 - INFO - Epoch [3/10], Avg Loss: 0.0788
+2024-05-04 00:00:12,732 - INFO - Epoch 3/10 - Validation
+2024-05-04 00:02:31,718 - INFO - Epoch [3/10], Validation Loss: 1.6132
+2024-05-04 00:02:41,143 - INFO - Best val loss 1.6131928006807963
+2024-05-04 00:02:41,145 - INFO - New best model saved at epoch 3
+2024-05-04 00:02:41,150 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 00:02:41,161 - INFO - Epoch 4/10 - Training
+2024-05-04 00:12:56,109 - INFO - Epoch [4/10], modality_0_to_modality_1 Avg Loss: 0.1389
+2024-05-04 00:12:56,110 - INFO - Epoch [4/10], Avg Loss: 0.0694
+2024-05-04 00:12:56,113 - INFO - Epoch 4/10 - Validation
+2024-05-04 00:15:20,059 - INFO - Epoch [4/10], Validation Loss: 1.5847
+2024-05-04 00:15:30,863 - INFO - Best val loss 1.584711225827535
+2024-05-04 00:15:30,864 - INFO - New best model saved at epoch 4
+2024-05-04 00:15:30,867 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 00:15:30,874 - INFO - Epoch 5/10 - Training
+2024-05-04 00:25:38,371 - INFO - Epoch [5/10], modality_0_to_modality_1 Avg Loss: 0.1242
+2024-05-04 00:25:38,372 - INFO - Epoch [5/10], Avg Loss: 0.0621
+2024-05-04 00:25:38,375 - INFO - Epoch 5/10 - Validation
+2024-05-04 00:28:09,939 - INFO - Epoch [5/10], Validation Loss: 1.5587
+2024-05-04 00:28:15,469 - INFO - Best val loss 1.5586889955732557
+2024-05-04 00:28:15,470 - INFO - New best model saved at epoch 5
+2024-05-04 00:28:15,475 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 00:28:15,481 - INFO - Epoch 6/10 - Training
+2024-05-04 00:38:34,813 - INFO - Epoch [6/10], modality_0_to_modality_1 Avg Loss: 0.1205
+2024-05-04 00:38:34,814 - INFO - Epoch [6/10], Avg Loss: 0.0602
+2024-05-04 00:38:34,818 - INFO - Epoch 6/10 - Validation
+2024-05-04 00:41:04,949 - INFO - Epoch [6/10], Validation Loss: 1.5580
+2024-05-04 00:41:16,039 - INFO - Best val loss 1.5580059713787502
+2024-05-04 00:41:16,040 - INFO - New best model saved at epoch 6
+2024-05-04 00:41:16,044 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 00:41:16,053 - INFO - Epoch 7/10 - Training
+2024-05-04 00:51:47,657 - INFO - Epoch [7/10], modality_0_to_modality_1 Avg Loss: 0.1159
+2024-05-04 00:51:47,658 - INFO - Epoch [7/10], Avg Loss: 0.0579
+2024-05-04 00:51:47,661 - INFO - Epoch 7/10 - Validation
+2024-05-04 00:53:58,413 - INFO - Epoch [7/10], Validation Loss: 1.5505
+2024-05-04 00:54:02,974 - INFO - Best val loss 1.550518145826128
+2024-05-04 00:54:02,974 - INFO - New best model saved at epoch 7
+2024-05-04 00:54:02,978 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 00:54:02,985 - INFO - Epoch 8/10 - Training
+2024-05-04 01:04:07,331 - INFO - Epoch [8/10], modality_0_to_modality_1 Avg Loss: 0.1138
+2024-05-04 01:04:07,332 - INFO - Epoch [8/10], Avg Loss: 0.0569
+2024-05-04 01:04:07,336 - INFO - Epoch 8/10 - Validation
+2024-05-04 01:06:41,089 - INFO - Epoch [8/10], Validation Loss: 1.5548
+2024-05-04 01:06:41,092 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 01:06:41,097 - INFO - Epoch 9/10 - Training
+2024-05-04 01:17:08,236 - INFO - Epoch [9/10], modality_0_to_modality_1 Avg Loss: 0.1159
+2024-05-04 01:17:08,237 - INFO - Epoch [9/10], Avg Loss: 0.0580
+2024-05-04 01:17:08,239 - INFO - Epoch 9/10 - Validation
+2024-05-04 01:19:33,618 - INFO - Epoch [9/10], Validation Loss: 1.5492
+2024-05-04 01:19:42,024 - INFO - Best val loss 1.549152926603953
+2024-05-04 01:19:42,024 - INFO - New best model saved at epoch 9
+2024-05-04 01:19:42,027 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 01:19:42,031 - INFO - Epoch 10/10 - Training
+2024-05-04 01:29:36,095 - INFO - Epoch [10/10], modality_0_to_modality_1 Avg Loss: 0.1171
+2024-05-04 01:29:36,097 - INFO - Epoch [10/10], Avg Loss: 0.0585
+2024-05-04 01:29:36,105 - INFO - Epoch 10/10 - Validation
+2024-05-04 01:32:09,155 - INFO - Epoch [10/10], Validation Loss: 1.5497
+2024-05-04 01:32:09,158 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb2_rgb3_MIX_DAA_0_20240503_233254
+2024-05-04 01:32:09,158 - INFO - Training complete!

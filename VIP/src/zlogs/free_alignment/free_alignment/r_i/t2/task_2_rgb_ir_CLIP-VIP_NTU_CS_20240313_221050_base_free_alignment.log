@@ -1,0 +1,71 @@
+2024-03-13 22:10:50,159 - INFO - Configuration:
+{
+    "task": "2",
+    "topic": "base_free_alignment",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/res1539999",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "NTU",
+    "split": "CS",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 5,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240310_193634.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 10,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/pretrain_clipvip_base_16.pt"
+}
+2024-03-13 22:10:50,243 - INFO - Training classifiers...
+2024-03-13 22:10:50,336 - INFO - Training on the following GPUs [0]
+2024-03-13 23:40:31,293 - INFO - Epoch 1, Train rgb - Loss: 0.1283, Accuracy: 0.0165, Balanced Accuracy: 0.0165
+2024-03-13 23:40:31,325 - INFO - Epoch 1, Train ir - Loss: 0.1282, Accuracy: 0.0163, Balanced Accuracy: 0.0163
+2024-03-13 23:40:31,423 - INFO - Epoch 1, Val rgb - Loss: 0.1324, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:31,425 - INFO - Epoch 1, Val ir - Loss: 0.1322, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:33,704 - INFO - Checkpoint saved at epoch 0 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240313_221102.pth
+2024-03-13 23:40:37,509 - INFO - Epoch 2, Train rgb - Loss: 0.1283, Accuracy: 0.0160, Balanced Accuracy: 0.0160
+2024-03-13 23:40:37,536 - INFO - Epoch 2, Train ir - Loss: 0.1282, Accuracy: 0.0160, Balanced Accuracy: 0.0160
+2024-03-13 23:40:37,626 - INFO - Epoch 2, Val rgb - Loss: 0.1324, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:37,628 - INFO - Epoch 2, Val ir - Loss: 0.1322, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:41,301 - INFO - Epoch 3, Train rgb - Loss: 0.1281, Accuracy: 0.0157, Balanced Accuracy: 0.0157
+2024-03-13 23:40:41,331 - INFO - Epoch 3, Train ir - Loss: 0.1281, Accuracy: 0.0153, Balanced Accuracy: 0.0153
+2024-03-13 23:40:41,417 - INFO - Epoch 3, Val rgb - Loss: 0.1322, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:41,419 - INFO - Epoch 3, Val ir - Loss: 0.1321, Accuracy: 0.0198, Balanced Accuracy: 0.0190
+2024-03-13 23:40:43,903 - INFO - Checkpoint saved at epoch 2 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240313_221102.pth
+2024-03-13 23:40:47,736 - INFO - Epoch 4, Train rgb - Loss: 0.1281, Accuracy: 0.0154, Balanced Accuracy: 0.0154
+2024-03-13 23:40:47,766 - INFO - Epoch 4, Train ir - Loss: 0.1281, Accuracy: 0.0153, Balanced Accuracy: 0.0153
+2024-03-13 23:40:47,867 - INFO - Epoch 4, Val rgb - Loss: 0.1322, Accuracy: 0.0136, Balanced Accuracy: 0.0167
+2024-03-13 23:40:47,870 - INFO - Epoch 4, Val ir - Loss: 0.1321, Accuracy: 0.0198, Balanced Accuracy: 0.0190
+2024-03-13 23:40:51,924 - INFO - Epoch 5, Train rgb - Loss: 0.1281, Accuracy: 0.0154, Balanced Accuracy: 0.0154
+2024-03-13 23:40:51,964 - INFO - Epoch 5, Train ir - Loss: 0.1280, Accuracy: 0.0157, Balanced Accuracy: 0.0157
+2024-03-13 23:40:52,114 - INFO - Epoch 5, Val rgb - Loss: 0.1321, Accuracy: 0.0149, Balanced Accuracy: 0.0157
+2024-03-13 23:40:52,117 - INFO - Epoch 5, Val ir - Loss: 0.1321, Accuracy: 0.0173, Balanced Accuracy: 0.0227
+2024-03-13 23:40:54,699 - INFO - Checkpoint saved at epoch 4 to /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240313_221102.pth
+2024-03-13 23:40:54,704 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/stats_rgb_ir_20240313_221102.json
+2024-03-13 23:40:54,708 - INFO - Loading checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240313_221102.pth
+2024-03-13 23:40:55,916 - INFO - Resumed from checkpoint: /home/bas06400/Thesis/VIP/src/align_checkpoints/classifier_checkpoints/checkpoint_rgb_ir_CLIP-VIP_NTU_CS_20240313_221102.pth
+2024-03-13 23:40:55,933 - INFO - Updated file counts from saved features.
+2024-03-13 23:40:56,534 - INFO - Epoch 1, Test rgb - Loss: 0.1281, Accuracy: 0.0170, Balanced Accuracy: 0.0170
+2024-03-13 23:40:56,549 - INFO - Epoch 1, Test ir - Loss: 0.1281, Accuracy: 0.0179, Balanced Accuracy: 0.0179

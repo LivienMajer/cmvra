@@ -1,0 +1,11 @@
+Log Analysis Results - 2024-07-17 12:26:44
+Analyzed directory: /home/bas06400/Thesis/VIP/src/zlogs/zs/rgb_ir
+
+RGB:
+  
+  Balanced Accuracy: 0.4524 ± 0.0977
+
+IR:
+  
+  Balanced Accuracy: 0.4125 ± 0.1140
+
