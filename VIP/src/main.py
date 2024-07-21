@@ -1,3 +1,24 @@
+"""
+Main script for multi-modal learning tasks.
+
+This script serves as the entry point for various multi-modal learning tasks including:
+1. Aligning modalities
+2. Training classifiers
+3. Evaluating loss for unchanged VIP encoders
+4. Evaluating alignment with VIP text encoder
+5. Training MAE Encoder
+6. Performing KNN evaluation
+
+The script uses a configuration file to set up the environment and parameters for each task.
+
+Usage:
+    python main.py --config path/to/config.json
+
+The config file should be a JSON file containing all necessary parameters for the selected task.
+"""
+
+
+
 import argparse
 import json
 import logging
@@ -86,6 +107,26 @@ def setup_logging(config):
 # task 1 algin modalities 
 
 def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
+    """
+    Align different modalities using a multi-modality model.
+
+    This function initializes encoders for each modality, creates a multi-modality model,
+    and trains it to align the representations of different modalities.
+
+    Args:
+        modalities (list): List of modalities to be aligned.
+        train_loader (DataLoader): DataLoader for training data.
+        val_loader (DataLoader): DataLoader for validation data.
+        num_epochs (int): Number of training epochs.
+        learning_rate (float): Learning rate for the optimizer.
+        temperature (float): Temperature parameter for the loss function.
+        resume_from_checkpoint (bool): Whether to resume training from a checkpoint.
+        checkpoint_dir (str): Directory to save checkpoints.
+        config (dict): Configuration dictionary containing model and training settings.
+
+    Returns:
+        None
+    """
     logging.info("Aligning modalities......")
     
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
@@ -93,26 +134,7 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
     
     device = sorted(selected_gpu_ids)[0]
     modalities_encoders = {}
-    """pre mix implementation
-    for i, modality in enumerate(modalities):
-        if modality == 'rgb' and config['bind_to_rgb']:
-            freeze = True
-        else:
-            freeze = False
-
-        if config['encoder_model'] == 'CLIP-VIP':
-            encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
-            encoder = encoder.cuda(device)
-        elif config['encoder_model'] == 'MAE':
-            assert len(modalities) == len(config['trained_encoder']), f"Length of modalities list ({len(modalities)}) and length of path list for trained mae encoders ({len(config['trained_encoder'])}) do not match"
-            checkpoint_name = config['trained_encoder'][i]  # This gets the checkpoint name for the current modality
-            assert modality in checkpoint_name, f"The checkpoint {checkpoint_name} does not match the modality {modality}."
-            encoder = init_mae_encoder(config, checkpoint_name, device, return_class=False, freeze=freeze)
-        else:
-            logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
-        # for some reason my encoders have to be a Dataparallel object too otherwise they dodge the wrapping of the parent model
-        modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
-    """
+    
     for i, modality in enumerate(modalities):
         freeze = modality == 'rgb' and config['bind_to_rgb']
         
@@ -181,6 +203,21 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
 
 # task 2 train classefiers for algiened encoders
 def train_classifiers(train_loader, val_loader, test_loader, config):
+    """
+    Train classifiers for aligned encoders.
+
+    This function initializes a multi-modality model with pre-trained encoders,
+    loads aligned weights, and trains classifiers for each modality.
+
+    Args:
+        train_loader (DataLoader): DataLoader for training data.
+        val_loader (DataLoader): DataLoader for validation data.
+        test_loader (DataLoader): DataLoader for test data.
+        config (dict): Configuration dictionary containing model and training settings.
+
+    Returns:
+        None
+    """
     logging.info("Training classifiers...")
 
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
@@ -339,8 +376,6 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
         
     if config['full_train_classifiers']:
         logging.info('Setting grads')
-        #print(multi_modality_model) 
-        #fix ..................................................... 
         for param in multi_modality_model.module.modalities_encoders.parameters():
             param.requires_grad_(True)
 
@@ -362,6 +397,26 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
     """
 # task 3 evaluate loss for unchanged VIP encoders. Expand ir and depth dims
 def eval_loss(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
+    """
+    Evaluate loss for unchanged VIP encoders. This was just a basic test without much utility.
+
+    This function initializes VIP encoders for each modality, creates a multi-modality model,
+    and evaluates the loss without training the encoders.
+
+    Args:
+        modalities (list): List of modalities to be evaluated.
+        train_loader (DataLoader): DataLoader for training data.
+        val_loader (DataLoader): DataLoader for validation data.
+        num_epochs (int): Number of evaluation epochs.
+        learning_rate (float): Learning rate (not used for evaluation, but kept for consistency).
+        temperature (float): Temperature parameter for the loss function.
+        resume_from_checkpoint (bool): Whether to resume from a checkpoint.
+        checkpoint_dir (str): Directory to save checkpoints.
+        config (dict): Configuration dictionary containing model and evaluation settings.
+
+    Returns:
+        None
+    """
     logging.info("Evaluing Loss...")
     
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
@@ -398,6 +453,21 @@ def eval_text_encoder(train_data,
                         val_data, 
                         test_data,
                         config):
+    """
+    Evaluate alignment with VIP text encoder.
+
+    This function initializes encoders for each modality, creates a multi-modality model,
+    loads aligned weights, and evaluates the alignment between visual and text encoders.
+
+    Args:
+        train_data (DataLoader): DataLoader for training data.
+        val_data (DataLoader): DataLoader for validation data.
+        test_data (DataLoader): DataLoader for test data.
+        config (dict): Configuration dictionary containing model and evaluation settings.
+
+    Returns:
+        None
+    """
     
     logging.info("Evaluing alginment with VIP text encoder...")
 
@@ -472,6 +542,21 @@ def eval_text_encoder(train_data,
 
 # task 5 train Mae Encoder
 def train_Mae_Encoder(train_data, val_data, test_data, config):
+    """
+    Train MAE (Masked Autoencoder) Encoder for a single modality.
+
+    This function either trains a MAE model from scratch or evaluatess a pre-trained MAE encoder
+    with a classifier, depending on the configuration.
+
+    Args:
+        train_data (DataLoader): DataLoader for training data.
+        val_data (DataLoader): DataLoader for validation data.
+        test_data (DataLoader): DataLoader for test data.
+        config (dict): Configuration dictionary containing model and training settings.
+
+    Returns:
+        None
+    """
     logging.info(f"Training MAE for {config['modalities'][0]}...")
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))
     logging.info(f"Evaluing on the following GPUs {selected_gpu_ids}")
@@ -499,6 +584,20 @@ def train_Mae_Encoder(train_data, val_data, test_data, config):
                 config=config)
         
 def knn(train_data, test_data, config):
+    """
+    Perform k-Nearest Neighbors (kNN) evaluation on the multi-modality model.
+
+    This function initializes encoders for each modality, creates a multi-modality model,
+    loads aligned weights, and performs kNN evaluation on the test data.
+
+    Args:
+        train_data (DataLoader): DataLoader for training data.
+        test_data (DataLoader): DataLoader for test data.
+        config (dict): Configuration dictionary containing model and evaluation settings.
+
+    Returns:
+        None
+    """
     logging.info("Evaluing knn...")
 
     selected_gpu_ids = select_gpus(num_gpus=int(config['number_gpus']))

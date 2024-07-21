@@ -1,0 +1,51 @@
+2024-07-18 15:10:11,644 - INFO - Configuration:
+{
+    "task": "4",
+    "analyse_embbedings": false,
+    "topic": "ft_words",
+    "use_words": false,
+    "word_key": "DAAWords",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/20240514-120129",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "skeleton"
+    ],
+    "encoder_model": "CLIP-VIP",
+    "dataset": "DAA",
+    "split": "1",
+    "num_classes": 34,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_skeleton_CLIP-VIP_DAA_1_20240417_230640.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "augs": true,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/old/fts/daa1.pt"
+}
+2024-07-18 15:10:11,887 - INFO - Applying Augmentations
+2024-07-18 15:10:11,895 - INFO - Applying Augmentations
+2024-07-18 15:10:11,904 - INFO - Applying Augmentations
+2024-07-18 15:10:11,905 - INFO - Evaluing alginment with VIP text encoder...
+2024-07-18 15:10:11,961 - INFO - Evaluing on the following GPUs [1]
+2024-07-18 15:12:12,453 - INFO - Test Set: Modality: rgb, Accuracy: 0.5145, Balanced Accuracy: 0.3063
+2024-07-18 15:12:12,453 - INFO - Test Set: Modality: skeleton, Accuracy: 0.4903, Balanced Accuracy: 0.3391

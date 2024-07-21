@@ -1,3 +1,10 @@
+# -------------------------------------------------------------------------
+# Copyright (c) 2021 Jie Lei
+# Licensed under the MIT License.
+# --------------------------------------------------------------------------
+# Source: https://github.com/microsoft/xpretrain/tree/main/CLIP-ViP
+# This file is original from the CLIP-ViP project.
+
 import os
 import ujson as json
 import zipfile

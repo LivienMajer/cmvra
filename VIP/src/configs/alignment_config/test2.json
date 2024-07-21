@@ -1,17 +1,22 @@
 {
     "task": "1",
-    "topic": "ft",
-    "number_gpus": "2",
+    "topic": "ft_bs16_16",
+    "number_gpus": "1",
     "align_pre_training": false,
     "bind_to_rgb": true,
     "modalities": [
         "rgb",
-        "rgb2"
+        "ir"
     ],
-    "encoder_model": "CLIP-VIP",
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "ir": "OMNIVORE"
+    },
     "dataset": "DAA",
     "split": "zs0",
     "overfit_on_one_batch": false,
+    "augs":true,
     "num_classes": 34,
     "in_features": 512,
     "epochs": 10,
@@ -28,10 +33,10 @@
         }
     },
     "temperature": 0.1,
-    "num_workers": 20,
+    "num_workers": 5,
     "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
     "data_root": "/net/polaris/storage/deeplearning/ntu",
-    "batch_size": 32,
+    "batch_size": 16,
     "random_sample": false,
     "pin_memory": true,
     "clip_config": "openai/clip-vit-base-patch16",
@@ -43,5 +48,5 @@
         "logit_scale_init_value": 4.6,
         "add_cls_num": 3
     },
-    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/zs0_model_step_6119.pt"
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/zs0_bs16_model_step_12237.pt"
 }

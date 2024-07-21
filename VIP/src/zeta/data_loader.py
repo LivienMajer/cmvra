@@ -4,13 +4,43 @@ import logging
 import os
 from torch.utils.data import DataLoader, random_split
 
-# Assuming MultiModalVideoDataset is defined elsewhere, import it
-from zeta.multimodal_dataset import MultiModalVideoDataset, MultiModalVideoDataset3
+from zeta.multimodal_dataset import MultiModalVideoDataset3
 
 
 
 def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_workers=10, pin_memory=True, split='CS', random_sample= False, config=None):
-    # Set the seed for reproducibility
+    """
+    Load and prepare data loaders for multimodal video datasets.
+
+    This function sets up train, validation, and test data loaders for various multimodal video datasets,
+    including NTU, NTUcropped, NTU120, and DAA. It supports different split modes and encoder models.
+
+    Parameters:
+    - data_root (str): Root directory of the dataset.
+    - modalities (list): List of modalities to use (e.g., ['rgb', 'ir']).
+    - batch_size (int): Number of samples per batch.
+    - num_workers (int): Number of subprocesses to use for data loading.
+    - pin_memory (bool): If True, the data loader will copy Tensors into CUDA pinned memory before returning them.
+    - split (str): Split mode to use. Options vary by dataset:
+        - For NTU, NTUcropped, NTU120: 'CS' (Cross-Subject) or 'CV' (Cross-View)
+        - For DAA: '0', '1', '2' for original splits, or 'zs0' to 'zs9' for zero-shot splits
+    - random_sample (bool): If True, randomly sample frames from videos.
+    - config (dict): Configuration dictionary containing:
+        - 'encoder_model': The encoder model to use (e.g., 'CLIP-VIP', 'MAE', 'MIX', 'OMNIVORE')
+        - 'dataset': The dataset to use ('NTU', 'NTUcropped', 'NTU120', or 'DAA')
+        - 'modalities_encoders': Dictionary mapping modalities to their respective encoders
+        - 'augs': Boolean indicating whether to use data augmentation
+
+    Returns:
+    - train_loader (DataLoader): DataLoader for the training set
+    - val_loader (DataLoader): DataLoader for the validation set
+    - test_loader (DataLoader): DataLoader for the test set
+
+    Note:
+    - The function uses a custom collate function to handle the multimodal data.
+    - For NTU datasets, labels are shifted by -1 to start from 0.
+    - The train/validation split ratio is hardcoded to 0.98/0.02 for NTU since the paper proposes just a train/test split.
+    """
     input_frames_for_model = {
         'CLIP-VIP': 12,
         'MAE': 16,
@@ -28,7 +58,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         mixed_frames = False
     frame_count = input_frames_for_model[config['encoder_model']]
     augs = config.get('augs',False)
-    seed = 42
+    seed = 42 # Set the seed for reproducibility
     random.seed(seed)  # Seed for Python's random module
     torch.manual_seed(seed)  # Seed for PyTorch random number generators
     if config['dataset'] == 'NTU':
@@ -43,9 +73,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
-        # Load the datasets
-        #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
-        #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+        
 
         train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
         test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
@@ -67,12 +95,11 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
-        # Load the datasets
-        #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
-        #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
+        
 
         train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
         test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
         val_len = len(train_data) - train_len
@@ -91,9 +118,6 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
-        # Load the datasets
-        #train_data = MultiModalVideoDataset(train_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
-        #test_data = MultiModalVideoDataset(test_data_list, data_root, modalities, use_advanced_processing=True, random_sample=random_sample)
 
         train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
         test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
@@ -106,14 +130,13 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         
     elif config['dataset'] == 'DAA':
         # Base path for zero-shot splits
-        zero_shot_base_path = '/home/bas06400/daa/zero_shot_splits'
+        zero_shot_base_path = '/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/zero_shot_splits'
         
-        # Define file paths for datasets based on split
         if split in ['0', '1', '2']:
             # Original splits
-            train_data_list = f'/home/bas06400/daa/daa_split_train{split}_full_balanced.txt'
-            val_data_list = f'/home/bas06400/daa/daa_split_val{split}_full.txt'
-            test_data_list = f'/home/bas06400/daa/daa_split_test{split}_full.txt'
+            train_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full_balanced.txt'
+            val_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_val{split}_full.txt'
+            test_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_test{split}_full.txt'
         elif split.startswith('zs'):
             # Zero-shot splits
             zs_index = split[2:]  # Extract the index from 'zs0', 'zs1', etc.

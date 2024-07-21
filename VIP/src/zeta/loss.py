@@ -4,7 +4,13 @@ import torch.nn.functional as F
 
 class NCEContrastiveLoss(nn.Module):
     """
-    Compute contrastive loss
+    Contrastive Loss for multi-modal learning.
+    
+    This loss encourages embeddings of corresponding samples from different modalities
+    to be similar, while pushing non-corresponding samples apart.
+
+    Args:
+        temp (float): Temperature parameter to scale the similarity scores.
     """
 
     def __init__(self, temp):
@@ -25,14 +31,16 @@ def normalize(*xs):
     return [None if x is None else F.normalize(x, dim=-1) for x in xs]
 
 
-class DiagonalMSEContrastiveLoss(nn.Module):
+class MSELoss(nn.Module):
     """
-    Compute Mean Squared Error (MSE) loss between corresponding embeddings in the batch
-    across two modalities (i.e., diagonal pairs only).
+    Mean Squared Error (MSE) Contrastive Loss for multi-modal learning.
+    
+    This loss computes the MSE between corresponding embeddings from two modalities,
+    encouraging direct alignment between paired samples.
     """
 
     def __init__(self):
-        super(DiagonalMSEContrastiveLoss, self).__init__()
+        super(MSELoss, self).__init__()
         self.mse_loss = nn.MSELoss()  # Default reduction is 'mean'
 
     def forward(self, vis_feat, text_feat):
@@ -47,8 +55,14 @@ class DiagonalMSEContrastiveLoss(nn.Module):
 
 class SoftLabelCrossEntropyLoss(nn.Module):
     """
-    Compute cross-entropy loss using label smoothing for soft labeling.
-    This involves setting the label_smoothing parameter of the CrossEntropyLoss.
+    Soft Label Cross Entropy Loss with label smoothing.
+    
+    This loss applies label smoothing to standard cross-entropy, which can help
+    prevent overfitting and improve generalization.
+
+    Args:
+        num_classes (int): Number of classes in the classification task.
+        smoothing (float): Label smoothing factor (0-1).
     """
     def __init__(self, num_classes=34, smoothing=0.1):
         super(SoftLabelCrossEntropyLoss, self).__init__()
@@ -63,9 +77,14 @@ class SoftLabelCrossEntropyLoss(nn.Module):
 
 class DiagonalKLDivLoss(nn.Module):
     """
-    Compute KL divergence loss between logits and soft targets.
-    This uses log_softmax on logits and assumes targets are given as
-    probability distributions.
+    Diagonal Kullback-Leibler Divergence Loss for multi-modal learning.
+    
+    This loss computes the KL divergence between the predicted distribution (logits)
+    and the target distribution, useful for aligning probability distributions
+    across modalities.
+
+    Args:
+        temperature (float): Temperature parameter to scale the logits.
     """
     def __init__(self, temperature=1.0):
         super(DiagonalKLDivLoss, self).__init__()
@@ -87,6 +106,16 @@ class DiagonalKLDivLoss(nn.Module):
         return loss
     
 class InfoNCELoss1(nn.Module):
+    """
+    InfoNCE Loss for multiple modalities.
+    
+    This loss extends the NCE Contrastive Loss to handle multiple modalities,
+    computing pairwise losses between all modality combinations.
+
+    Args:
+        temperature (float): Temperature parameter for the NCE loss.
+    """
+
     def __init__(self, temperature=0.1):
         super(InfoNCELoss1, self).__init__()
         self.temperature = temperature
@@ -116,6 +145,16 @@ class InfoNCELoss1(nn.Module):
     
 
 class SigmoidContrastiveMultiModalLoss(nn.Module):
+    """
+    Sigmoid Contrastive Loss for multiple modalities with learnable temperature and bias.
+    
+    This loss uses a sigmoid function to measure similarity between modalities,
+    with learnable temperature and bias parameters for flexibility.
+
+    Args:
+        temperature_initial (float): Initial value for the temperature parameter.
+        bias_initial (float): Initial value for the bias parameter.
+    """
     def __init__(self, temperature_initial=10, bias_initial=-10):
         super(SigmoidContrastiveMultiModalLoss, self).__init__()
         # Initialize temperature and bias as learnable parameters
@@ -158,6 +197,18 @@ def mse_loss(reconstructed, original):
     return loss
 
 def create_scheduler(optimizer, config):
+    """
+    Create a learning rate scheduler based on the configuration.
+    
+    Supports 'cosine', 'exponential', 'step', and 'plateau' schedulers.
+
+    Args:
+        optimizer: The optimizer to schedule.
+        config (dict): Configuration containing scheduler type and parameters.
+
+    Returns:
+        torch.optim.lr_scheduler: The configured learning rate scheduler.
+    """
     scheduler_config = config.get('scheduler_config', {})
     scheduler_type = scheduler_config.get('type', 'step')
     scheduler_params = scheduler_config.get('params', {})

@@ -17,6 +17,17 @@ from zeta.loss import mse_loss, create_scheduler
 
 
 def generate_random_mask(batch_size, num_patches, mask_ratio):
+    """
+    Generate a random boolean mask for MAE training.
+    
+    Args:
+        batch_size (int): Number of samples in the batch.
+        num_patches (int): Total number of patches in each sample.
+        mask_ratio (float): Ratio of patches to mask.
+    
+    Returns:
+        torch.Tensor: Boolean mask of shape (batch_size, num_patches).
+    """
     num_masked = int(mask_ratio * num_patches)
     mask = torch.zeros((batch_size, num_patches), dtype=torch.bool)
     for i in range(batch_size):
@@ -26,6 +37,7 @@ def generate_random_mask(batch_size, num_patches, mask_ratio):
 
 
 def find_latest_checkpoint(checkpoint_dir, modalities):
+    """Find the most recent checkpoint file for given modalities."""
     list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
     if list_of_files:
         return max(list_of_files, key=os.path.getctime)
@@ -51,6 +63,11 @@ def save_checkpoint(model, optimizer, scheduler, epoch, best_val_loss, training_
 
 
 def train(model, train_loader, optimizer, scheduler, val_loader, test_loader, device, config):
+    """
+    Main training loop for the MAE model. Fixed on 16 input frames with size 224x224
+    
+    Handles training, validation, and checkpointing for each epoch.
+    """
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     model.train()
     num_patches = 1568

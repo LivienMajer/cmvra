@@ -1,3 +1,17 @@
+"""
+contains code from with the followoing sources with some adjustments for our specific use cases
+
+CLIP-ViP: Video-and-Image-Pre-training
+   Authors:  Hongwei Xue*, Yuchong Sun*, Bei Liu, Jianlong Fu, Ruihua Song, Houqiang Li, Jiebo Luo.
+   Repository: https://github.com/microsoft/XPretrain/tree/main/CLIP-ViP
+   
+
+OmniMAE: Omnivore Masked Autoencoder
+   Author: facebookresearch
+   Repository: https://github.com/facebookresearch/omnivore/tree/main/omnimae
+"""
+
+
 import json
 import torch
 import os
@@ -27,7 +41,10 @@ class SimpleNamespace:
         self.__dict__.update(kwargs)
 
 def adjust_state_dict_for_finetuning(state_dict):
-    """ Adjusts the state dictionary by removing 'module.' prefix from keys. """
+    """ 
+    Adjusts the state dictionary by removing 'module.' prefix from keys. Can also be done by setting strict option to false in load state dict
+    but applying this can be used as a sanity check.
+    """
     new_state_dict = {}
     for k, v in state_dict.items():
         if k.startswith("module."):
@@ -37,6 +54,17 @@ def adjust_state_dict_for_finetuning(state_dict):
     return new_state_dict        
 
 def initialize_vip_encoder(config, modality='rgb', freeze=True):
+    """
+    Initializes a VIP encoder based on the given configuration.
+
+    Args:
+        config (dict): Configuration for the VIP encoder.
+        modality (str): Input modality (default: 'rgb').
+        freeze (bool): Whether to freeze model parameters.
+
+    Returns:
+        CLIPVisionModel: Initialized VIP encoder.
+    """
 
     # Create an 'args' object from the configuration
     args = edict({
@@ -84,7 +112,7 @@ def initialize_vip_encoder(config, modality='rgb', freeze=True):
             new_name = name.replace("clipmodel.", "")  # remove the prefix
             state_dict[new_name] = param
 
-    # Load the state_dict into the model
+    
     model.load_state_dict(state_dict)
 
     if freeze:
@@ -101,8 +129,11 @@ def initialize_vip_encoder(config, modality='rgb', freeze=True):
       #  model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
 
     if modality in ['skeleton']:
+        # Modify patch embedding for 1D skeleton input (1 channel, 3 coordinates per joint)
         model.vision_model.embeddings.patch_embedding = nn.Conv2d(1, 768, kernel_size=(1, 3), stride=(1, 3), bias=False)
+        # Overwrite position embedding for 25 body joints + 1 cls token (total 26)
         model.vision_model.embeddings.position_embedding = nn.Embedding(26, 768)
+        # Overwrite position IDs for 25 joints + 1 cls token
         model.vision_model.embeddings.register_buffer("position_ids", torch.arange(26).expand((1, -1)))
 
     return model
@@ -146,7 +177,7 @@ def initialize_vip_text_encoder(config, device):
     #print(state_dict)
     # Initialize your custom CLIP text model
     clip_text_config = CLIPTextConfig.from_pretrained("openai/clip-vit-base-patch16")
-    text_model = CustomCLIPTextModel(clip_text_config)  # Replace with your model initialization if different
+    text_model = CustomCLIPTextModel(clip_text_config)  
 
     try:
         text_model.load_state_dict(state_dict)
@@ -243,19 +274,12 @@ class CLIPVisionModel(CLIPPreTrainedModel):
 
 class MultiModalityModel(nn.Module):
     """
-    A multi-modality model that integrates different modality encoders and classifiers for each modality.
-
-    This model supports processing multiple modalities (e.g., text, image, audio) by utilizing specific
-    encoders for each modality and applies a linear classifier for each to predict the class labels.
+    Multi-modality model integrating different encoders and classifiers.
 
     Attributes:
-        modalities_encoders (nn.ModuleDict): A dictionary of encoder modules for different modalities.
-        num_classes (int): Number of classes for the classification task.
-        in_features (int): Number of input features for the linear classifiers.
-
-    Methods:
-        forward_encoder: Processes the input through the encoder of the specified modality.
-        forward_classifier: Processes the input through both the encoder and classifier of the specified modality.
+        modalities_encoders (nn.ModuleDict): Encoders for different modalities.
+        attention (nn.MultiheadAttention): For feature fusion.
+        final_classifier (nn.Linear): For final classification after fusion.
     """
     def __init__(self, modalities_encoders, num_classes, in_features):
         super(MultiModalityModel, self).__init__()
@@ -403,6 +427,19 @@ class MAEEncoderWithLinear(torch.nn.Module):
 
 
 def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
+    """
+    Initializes a MAE (Masked Autoencoder) encoder based on the given configuration. 
+
+    Args:
+        cfg (dict): Configuration dictionary.
+        checkpoint (str): Path to the checkpoint file.
+        device (torch.device): The device to load the model on.
+        return_class (bool, optional): Whether to return the classifier. Defaults to True.
+        freeze (bool, optional): Whether to freeze the encoder parameters. Defaults to False.
+
+    Returns:
+        Union[nn.Module, Tuple[nn.Module, nn.Module]]: The initialized MAE encoder (and classifier if return_class is True).
+    """
     encoder = VisionTransformer(
         img_size=[3, 16, 224, 224],
         patch_size=[2, 16, 16],
@@ -458,7 +495,7 @@ def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
         # Optionally, check again if the checkpoint exists in the default directory and handle if it still doesn't exist
         if not os.path.isfile(checkpoint_path):
             logging.info(f"Default checkpoint '{checkpoint}' also not found. Please check your paths.")
-            # Here you might want to raise an exception or exit the script if the checkpoint is critical
+            
             raise FileNotFoundError(f"Checkpoint '{checkpoint}' not found in both specified and default directories.")
         else:
             # Proceed with loading the checkpoint since it exists
@@ -485,7 +522,7 @@ def init_mae_encoder(cfg, checkpoint, device, return_class=True, freeze=False):
 def init_omnivore_encoder(cfg, device, freeze=False):
     model = omnivore_swinB_imagenet21k()
     
-    model.heads = nn.Linear(1024, cfg['in_features'], bias=False)
+    model.heads = nn.Linear(1024, cfg['in_features'], bias=False) #overwrite datasetspecfic classification heads with a dimensionality adaption layer.
     if freeze:
         # Freeze all parameters in the model
         for param in model.parameters():
@@ -498,6 +535,24 @@ def init_omnivore_encoder(cfg, device, freeze=False):
     return model.to(f'cuda:{device}')
 
 class DINOVforIR(nn.Module):
+    """
+    Adapts DINO v2 Vision Transformer for processing temporal IR (Infrared) data.
+
+    This class modifies the original DINO v2 model to handle video frames by:
+    1. Processing multiple frames in a single forward pass
+    2. Applying mean pooling across the temporal dimension
+    3. Adding a dimensionality reduction layer for the final embedding
+
+    Attributes:
+        vision_transformer (nn.Module): Pre-trained DINO v2 ViT-B/14 model
+        dim_reduction (nn.Linear): Linear layer for reducing embedding dimension
+        classifier (nn.Linear): Optional classifier layer (not used in forward method)
+
+    Args:
+        num_classes (int): Number of output classes (for classifier layer)
+        embedding_dim (int): Dimension of the output embedding (default: 512)
+        freeze_dino (bool): Whether to freeze the DINO v2 model parameters (default: False)
+    """
     def __init__(self, num_classes, embedding_dim=512, freeze_dino=False):
         super(DINOVforIR, self).__init__()
         # Instantiate the DinoVisionTransformer model
@@ -535,7 +590,7 @@ class DINOVforIR(nn.Module):
         
     
 def init_dino_encoder(cfg, device, freeze=False):
-    return DINOVforIR(cfg['num_classes'], cfg['in_features'], freeze_dino=True).to(f'cuda:{device}') # DINO is prone to catastrophic forgetting therefore we keep it always frozen
+    return DINOVforIR(cfg['num_classes'], cfg['in_features'], freeze_dino=True).to(f'cuda:{device}') 
 
 
 class LinearClassifier(nn.Module):
@@ -565,6 +620,22 @@ def init_mae_skeleton_pretrained(cfg, device ,freeze=False):
 
 
 def init_omnivore_for_ceval(cfg, device, freeze=False):
+    """
+    Initialize Omnivore model specifically for cross-view evaluation (CEVAL) on DAA.
+
+    
+    Loads weights from an alignment checkpoint, adjusting for DataParallel keys and non
+    matching encoder keys.
+    
+
+    Args:
+        cfg (dict): Configuration containing 'in_features', 'cktp_dir', and 'aligned_model'.
+        device (torch.device): The device to load the model on.
+        freeze (bool): Initial freezing strategy (default: False).
+
+    Returns:
+        nn.Module: Initialized and customized Omnivore model for CEVAL.
+    """
     model = omnivore_swinB_imagenet21k()
     
     model.heads = nn.Linear(1024, cfg['in_features'], bias=False)

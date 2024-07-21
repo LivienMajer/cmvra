@@ -1,0 +1,139 @@
+2024-07-17 11:45:26,118 - INFO - Configuration:
+{
+    "task": "1",
+    "topic": "ft_bs16_16",
+    "number_gpus": "1",
+    "align_pre_training": false,
+    "bind_to_rgb": true,
+    "modalities": [
+        "rgb",
+        "ir"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "ir": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "zs0",
+    "overfit_on_one_batch": false,
+    "augs": true,
+    "num_classes": 34,
+    "in_features": 512,
+    "epochs": 10,
+    "res_cktp": false,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "",
+    "learning_rate": 0.0001,
+    "gradient_accumulation_steps": 2,
+    "scheduler_config": {
+        "type": "step",
+        "params": {
+            "step_size": 4,
+            "gamma": 0.1
+        }
+    },
+    "temperature": 0.1,
+    "num_workers": 5,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 16,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/zs0_bs16_model_step_12237.pt"
+}
+2024-07-17 11:45:26,231 - INFO - Applying Augmentations
+2024-07-17 11:45:26,236 - INFO - Applying Augmentations
+2024-07-17 11:45:26,245 - INFO - Applying Augmentations
+2024-07-17 11:45:26,246 - INFO - Aligning modalities......
+2024-07-17 11:45:26,297 - INFO - Training on the following GPUs [3]
+2024-07-17 11:45:28,607 - INFO - Using depth mode summed_rgb_d_tokens
+2024-07-17 11:45:30,313 - INFO - Starting training loop
+2024-07-17 11:45:30,315 - INFO - Epoch 1/10 - Training
+2024-07-17 12:58:39,473 - INFO - Epoch [1/10], modality_0_to_modality_1 Avg Loss: 0.6599
+2024-07-17 12:58:39,473 - INFO - Epoch [1/10], Avg Loss: 0.3300
+2024-07-17 12:58:39,477 - INFO - Epoch 1/10 - Validation
+2024-07-17 13:00:55,949 - INFO - Epoch [1/10], Validation Loss: 1.9805
+2024-07-17 13:00:58,549 - INFO - Best val loss 1.98050970963712
+2024-07-17 13:00:58,549 - INFO - New best model saved at epoch 1
+2024-07-17 13:00:58,553 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 13:00:58,560 - INFO - Epoch 2/10 - Training
+2024-07-17 14:14:02,888 - INFO - Epoch [2/10], modality_0_to_modality_1 Avg Loss: 0.4605
+2024-07-17 14:14:02,889 - INFO - Epoch [2/10], Avg Loss: 0.2302
+2024-07-17 14:14:02,890 - INFO - Epoch 2/10 - Validation
+2024-07-17 14:16:18,220 - INFO - Epoch [2/10], Validation Loss: 1.9200
+2024-07-17 14:16:22,121 - INFO - Best val loss 1.9200115572169143
+2024-07-17 14:16:22,121 - INFO - New best model saved at epoch 2
+2024-07-17 14:16:22,126 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 14:16:22,130 - INFO - Epoch 3/10 - Training
+2024-07-17 15:29:27,467 - INFO - Epoch [3/10], modality_0_to_modality_1 Avg Loss: 0.4230
+2024-07-17 15:29:27,468 - INFO - Epoch [3/10], Avg Loss: 0.2115
+2024-07-17 15:29:27,469 - INFO - Epoch 3/10 - Validation
+2024-07-17 15:31:41,028 - INFO - Epoch [3/10], Validation Loss: 1.9156
+2024-07-17 15:31:44,596 - INFO - Best val loss 1.9155638184187547
+2024-07-17 15:31:44,597 - INFO - New best model saved at epoch 3
+2024-07-17 15:31:44,601 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 15:31:44,608 - INFO - Epoch 4/10 - Training
+2024-07-17 16:44:48,100 - INFO - Epoch [4/10], modality_0_to_modality_1 Avg Loss: 0.4068
+2024-07-17 16:44:48,101 - INFO - Epoch [4/10], Avg Loss: 0.2034
+2024-07-17 16:44:48,104 - INFO - Epoch 4/10 - Validation
+2024-07-17 16:46:59,620 - INFO - Epoch [4/10], Validation Loss: 1.8908
+2024-07-17 16:47:03,344 - INFO - Best val loss 1.8908105152395536
+2024-07-17 16:47:03,345 - INFO - New best model saved at epoch 4
+2024-07-17 16:47:03,349 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 16:47:03,356 - INFO - Epoch 5/10 - Training
+2024-07-17 18:06:58,592 - INFO - Epoch [5/10], modality_0_to_modality_1 Avg Loss: 0.3853
+2024-07-17 18:06:58,593 - INFO - Epoch [5/10], Avg Loss: 0.1926
+2024-07-17 18:06:58,596 - INFO - Epoch 5/10 - Validation
+2024-07-17 18:09:15,625 - INFO - Epoch [5/10], Validation Loss: 1.8728
+2024-07-17 18:09:20,457 - INFO - Best val loss 1.8727516666898187
+2024-07-17 18:09:20,457 - INFO - New best model saved at epoch 5
+2024-07-17 18:09:20,464 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 18:09:20,468 - INFO - Epoch 6/10 - Training
+2024-07-17 19:22:24,663 - INFO - Epoch [6/10], modality_0_to_modality_1 Avg Loss: 0.3794
+2024-07-17 19:22:24,663 - INFO - Epoch [6/10], Avg Loss: 0.1897
+2024-07-17 19:22:24,665 - INFO - Epoch 6/10 - Validation
+2024-07-17 19:24:43,217 - INFO - Epoch [6/10], Validation Loss: 1.8734
+2024-07-17 19:24:43,224 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 19:24:43,227 - INFO - Epoch 7/10 - Training
+2024-07-17 20:37:46,855 - INFO - Epoch [7/10], modality_0_to_modality_1 Avg Loss: 0.3749
+2024-07-17 20:37:46,856 - INFO - Epoch [7/10], Avg Loss: 0.1874
+2024-07-17 20:37:46,858 - INFO - Epoch 7/10 - Validation
+2024-07-17 20:40:03,556 - INFO - Epoch [7/10], Validation Loss: 1.8698
+2024-07-17 20:40:08,815 - INFO - Best val loss 1.8698417578103408
+2024-07-17 20:40:08,816 - INFO - New best model saved at epoch 7
+2024-07-17 20:40:08,824 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 20:40:08,827 - INFO - Epoch 8/10 - Training
+2024-07-17 21:53:14,250 - INFO - Epoch [8/10], modality_0_to_modality_1 Avg Loss: 0.3703
+2024-07-17 21:53:14,250 - INFO - Epoch [8/10], Avg Loss: 0.1852
+2024-07-17 21:53:14,252 - INFO - Epoch 8/10 - Validation
+2024-07-17 21:55:33,637 - INFO - Epoch [8/10], Validation Loss: 1.8686
+2024-07-17 21:55:37,058 - INFO - Best val loss 1.86856513484469
+2024-07-17 21:55:37,059 - INFO - New best model saved at epoch 8
+2024-07-17 21:55:37,064 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 21:55:37,071 - INFO - Epoch 9/10 - Training
+2024-07-17 23:08:43,195 - INFO - Epoch [9/10], modality_0_to_modality_1 Avg Loss: 0.3704
+2024-07-17 23:08:43,196 - INFO - Epoch [9/10], Avg Loss: 0.1852
+2024-07-17 23:08:43,198 - INFO - Epoch 9/10 - Validation
+2024-07-17 23:10:55,648 - INFO - Epoch [9/10], Validation Loss: 1.8670
+2024-07-17 23:10:58,780 - INFO - Best val loss 1.8670031268079326
+2024-07-17 23:10:58,781 - INFO - New best model saved at epoch 9
+2024-07-17 23:10:58,786 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-17 23:10:58,791 - INFO - Epoch 10/10 - Training
+2024-07-18 00:24:04,137 - INFO - Epoch [10/10], modality_0_to_modality_1 Avg Loss: 0.3709
+2024-07-18 00:24:04,138 - INFO - Epoch [10/10], Avg Loss: 0.1855
+2024-07-18 00:24:04,140 - INFO - Epoch 10/10 - Validation
+2024-07-18 00:26:23,801 - INFO - Epoch [10/10], Validation Loss: 1.8666
+2024-07-18 00:26:28,916 - INFO - Best val loss 1.8665500651552993
+2024-07-18 00:26:28,917 - INFO - New best model saved at epoch 10
+2024-07-18 00:26:28,922 - INFO - Training statistics saved to /home/bas06400/Thesis/VIP/src/align_checkpoints/checkpoint_rgb_ir_MIX_DAA_zs0_20240717_114530
+2024-07-18 00:26:28,923 - INFO - Training complete!

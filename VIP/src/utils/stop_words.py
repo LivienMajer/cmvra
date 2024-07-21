@@ -1,3 +1,11 @@
+# -------------------------------------------------------------------------
+# Copyright (c) 2021 Jie Lei
+# Licensed under the MIT License.
+# --------------------------------------------------------------------------
+# Source: https://github.com/microsoft/xpretrain/tree/main/CLIP-ViP
+# This file is original from the CLIP-ViP project.
+
+
 """List of stop words."""
 # This list of English stop words is taken from the "Glasgow Information
 # Retrieval Group". The original list can be found at

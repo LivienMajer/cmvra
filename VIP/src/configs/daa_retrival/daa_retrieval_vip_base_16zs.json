@@ -3,7 +3,7 @@
       {
         "name": "daa_train",
         "vis_format": "video",
-        "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/data_zero_shot_train_0.jsonl",
+        "txt": "/home/bas06400/Thesis/CLIPVIP_Datasets/data_zero_shot_train_1.jsonl",
         "vis": "/home/bas06400/daa/kinect_color/clips/all_clips"
       },
     "val_datasets": [
@@ -45,7 +45,7 @@
         "add_cls_num": 3
     },
   
-    "train_batch_size": 32,
+    "train_batch_size": 16,
     "test_batch_size": 128,
     "max_n_example_per_group": 1,
     "gradient_accumulation_steps": 1,
@@ -74,7 +74,7 @@
     "num_valid": 1,
     "only_valid_steps": 160,
     "save_steps_ratio": 0.9,
-    "output_dir": "vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16",
+    "output_dir": "vidclip_data/output/msrvtt_retrieval/zs1",
     "if_tb_log": 0,
     "if_model_saver": 1,
     "if_log2file": 1,

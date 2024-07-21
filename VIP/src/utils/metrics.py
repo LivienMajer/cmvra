@@ -1,3 +1,12 @@
+# -------------------------------------------------------------------------
+# Copyright (c) 2021 Jie Lei
+# Licensed under the MIT License.
+# --------------------------------------------------------------------------
+# Source: https://github.com/microsoft/xpretrain/tree/main/CLIP-ViP
+# This file is original from the CLIP-ViP project.
+
+
+
 import numpy as np
 
 def cal_cossim(feats1, feats2):

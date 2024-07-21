@@ -1,0 +1,62 @@
+2024-07-12 01:23:01,014 - INFO - Configuration:
+{
+    "task": "4",
+    "analyse_embbedings": false,
+    "topic": "ft_self_alignment_words",
+    "use_words": true,
+    "word_key": "DAA_ZS0",
+    "feature_save_dir": "/home/bas06400/Thesis/VIP/src/features/20240514-120129",
+    "number_gpus": "1",
+    "modalities": [
+        "rgb",
+        "rgb2"
+    ],
+    "encoder_model": "MIX",
+    "modalities_encoders": {
+        "rgb": "CLIP-VIP",
+        "rgb2": "OMNIVORE"
+    },
+    "dataset": "DAA",
+    "split": "zs0",
+    "num_classes": 60,
+    "in_features": 512,
+    "mixed_frames": false,
+    "full_train_classifiers": false,
+    "epochs": 500,
+    "res_cktp": true,
+    "cktp_dir": "/home/bas06400/Thesis/VIP/src/align_checkpoints",
+    "aligned_model": "checkpoint_rgb_rgb2_MIX_DAA_zs0_20240711_114008.pth",
+    "learning_rate": 0.0001,
+    "temperature": 0.1,
+    "num_workers": 5,
+    "augs": true,
+    "data_list": "/home/bas06400/Thesis/rgb_ir_dataset.txt",
+    "data_root": "/net/polaris/storage/deeplearning/ntu",
+    "batch_size": 32,
+    "random_sample": false,
+    "pin_memory": true,
+    "clip_config": "openai/clip-vit-base-patch16",
+    "clip_weights": "openai/clip-vit-base-patch16",
+    "clip_vision_additional_config": {
+        "type": "ViP",
+        "temporal_size": 12,
+        "if_use_temporal_embed": true,
+        "logit_scale_init_value": 4.6,
+        "add_cls_num": 3
+    },
+    "e2e_weights_path": "/home/bas06400/Thesis/VIP/src/vidclip_data/output/msrvtt_retrieval/msrvtt_retrieval_vip_base_16/ckpt/zs0_model_step_6119.pt"
+}
+2024-07-12 01:23:01,133 - INFO - Applying Augmentations
+2024-07-12 01:23:01,138 - INFO - Applying Augmentations
+2024-07-12 01:23:01,146 - INFO - Applying Augmentations
+2024-07-12 01:23:01,147 - INFO - Evaluing alginment with VIP text encoder...
+2024-07-12 01:23:01,208 - INFO - Evaluing on the following GPUs [3]
+2024-07-12 01:23:03,507 - INFO - Using depth mode summed_rgb_d_tokens
+2024-07-12 01:23:10,554 - WARNING - Skipping loading parameter: module.rgb_classifier.weight due to size mismatch.
+2024-07-12 01:23:10,558 - WARNING - Skipping loading parameter: module.rgb_classifier.bias due to size mismatch.
+2024-07-12 01:23:10,561 - WARNING - Skipping loading parameter: module.rgb2_classifier.weight due to size mismatch.
+2024-07-12 01:23:10,565 - WARNING - Skipping loading parameter: module.rgb2_classifier.bias due to size mismatch.
+2024-07-12 01:23:10,583 - WARNING - Skipping loading parameter: module.final_classifier.weight due to size mismatch.
+2024-07-12 01:23:10,587 - WARNING - Skipping loading parameter: module.final_classifier.bias due to size mismatch.
+2024-07-12 01:28:23,592 - INFO - Test Set: Modality: rgb, Accuracy: 0.4297, Balanced Accuracy: 0.2539
+2024-07-12 01:28:23,593 - INFO - Test Set: Modality: rgb2, Accuracy: 0.2982, Balanced Accuracy: 0.3729

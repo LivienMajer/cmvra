@@ -23,15 +23,29 @@ def align_modalities_process(multi_modality_model,
                              device=None,
                              config=None):
     """
-    Train and validate a multi-modality model.
+    Train and validate a multi-modality model for aligning different modalities.
 
-    :param multi_modality_model: The multi-modality model to be trained.
-    :param train_loader: DataLoader for the training data.
-    :param val_loader: DataLoader for the validation data.
-    :param modalities_encoders: Dictionary of modality encoders.
-    :param num_epochs: Number of epochs for training.
-    :param learning_rate: Learning rate for the optimizer.
-    :param temperature: Temperature parameter for InfoNCE loss.
+    This function performs the following steps:
+    1. Sets up the training environment (optimizer, scheduler, loss function)
+    2. Loads a checkpoint if resuming training
+    3. Trains the model for the specified number of epochs
+    4. Validates the model after each epoch
+    5. Saves checkpoints and training statistics
+
+    Args:
+        multi_modality_model (nn.Module): The multi-modality model to be trained
+        train_loader (DataLoader): DataLoader for the training data
+        val_loader (DataLoader): DataLoader for the validation data
+        num_epochs (int): Number of epochs for training
+        learning_rate (float): Learning rate for the optimizer
+        temperature (float): Temperature parameter for InfoNCE loss
+        resume_from_checkpoint (bool): Whether to resume training from a checkpoint
+        checkpoint_dir (str): Directory to save checkpoints
+        device (torch.device): Device to run the training on
+        config (dict): Configuration dictionary containing model and training settings
+
+    Returns:
+        None
     """
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -55,9 +69,8 @@ def align_modalities_process(multi_modality_model,
     # Initialize the optimizer and loss function
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
-    info_nce_loss = InfoNCELoss1(temperature=temperature) #InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
-    #compare_loss1 = InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
-    #compare_loss2 = NCEContrastiveLoss(temperature)
+    info_nce_loss = InfoNCELoss1(temperature=temperature) 
+   
     # Placeholder for best validation loss
     best_val_loss = float('inf')
     start_epoch = 0
@@ -101,19 +114,7 @@ def align_modalities_process(multi_modality_model,
             #if overfit_on_one_batch: # this is inefficent but conveniant
             #    del batch_data
             #    batch_data = single_batch_data
-            """ pre mix implementation
-            embeddings = []
-            for modality in batch_data.keys():
-                if modality in multi_modality_model.module.modalities_encoders:
-                    data = batch_data[modality].cuda(device, non_blocking=True)
-                    if config['encoder_model'] == 'CLIP-VIP':
-                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
-                    elif config['encoder_model'] == 'MAE':
-                        embeddings.append(multi_modality_model.module.forward_encoder(modality, data.permute(0,2,1,3,4)))
-
-                    else:
-                        logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
-            """
+            
             #allowing mixed encoders
             def preprocess_for_clip_vip(data, modality):
                 return data  
@@ -164,11 +165,7 @@ def align_modalities_process(multi_modality_model,
             loss, loss_dict = info_nce_loss(*embeddings)
             loss = loss / gradient_accumulation_steps
 
-            #loss1 = compare_loss1(embeddings[0], embeddings[1])
-            #loss2 = compare_loss2(embeddings[0], embeddings[1])
-            #logging.info(loss)
-            #logging.info(loss1)
-            #logging.info(loss2)
+            
             #if overfit_on_one_batch:
               #  logging.info(f"loss on overfiting batch {loss.item()}")
 
@@ -204,19 +201,6 @@ def align_modalities_process(multi_modality_model,
         with torch.no_grad():
             for batch_data, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
                 
-                
-                """
-                embeddings = []
-                for modality in batch_data.keys():
-                    if modality in multi_modality_model.module.modalities_encoders:
-                        data = batch_data[modality].cuda(device, non_blocking=True)
-                        if config['encoder_model'] == 'CLIP-VIP':
-                            embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
-                        elif config['encoder_model'] == 'MAE':
-                            embeddings.append(multi_modality_model.module.forward_encoder(modality, data.permute(0,2,1,3,4)))
-                        else:
-                            logging.warn("Supported encoder model options are currently CLIP-VIP and MAE")
-                """
                 #allowing mixed encoders
                 def preprocess_for_clip_vip(data, modality):
                     return data  

@@ -1,3 +1,40 @@
+# -------------------------------------------------------------------------
+# Copyright (c) 2021 Jie Lei
+# Licensed under the MIT License.
+# --------------------------------------------------------------------------
+# Source: https://github.com/microsoft/xpretrain/tree/main/CLIP-ViP
+# This file is modified from the CLIP-ViP project.
+
+"""
+Video Retrieval Fine-tuning Script for CLIP-VIP Model
+
+This script is designed to fine-tune the CLIP-VIP (Vision-Language Pre-training for Video) model
+using RGB-text datasets for video retrieval tasks. It's an adaptation of the training script
+from the Microsoft xpretrain project (https://github.com/microsoft/xpretrain/tree/main/CLIP-ViP).
+
+Modifications from original xpretrain implementation:
+- Removed Horovod distributed training support for compatibility with single-machine setup.
+- Removed Apex optimization for broader compatibility.
+- Adapted for single-GPU or DataParallel multi-GPU training.
+
+Note on Evaluation:
+The evaluation metrics provided during training are based on single batch results
+and should not be considered representative of the model's overall performance.
+Comprehensive evaluation should be performed separately on the entire dataset.
+
+Usage:
+    python run_viedo_retrieval.py --config path/to/config.json
+
+Main Components:
+- Data loading and preprocessing
+- Model initialization and loading pre-trained weights
+- Training loop with periodic validation
+- Logging and checkpointing
+
+
+For detailed configuration options, refer to the configuration file /VIP/src/configs/daa_retrival/daa_retrieval_vip_base_16.json.
+"""
+
 import os
 import time
 import random
@@ -235,7 +272,7 @@ def start_training():
     model = setup_model(cfg, device=device)
 
     # Use DataParallel to wrap the model
-    model = torch.nn.DataParallel(model, device_ids=[1,2])
+    model = torch.nn.DataParallel(model, device_ids=[1])
     model.train()
 
     optimizer = setup_e2e_optimizer(model, cfg)

@@ -11,6 +11,21 @@ import numpy as np
 
 
 def eval_text_encoder_process(visual_model, text_model, train_data, val_data, test_data, device, config):
+    """
+    Evaluate the text encoder process for a multi-modal model.
+
+    This function tokenizes text descriptions, generates text embeddings,
+    and either analyzes embeddings or computes accuracy on the dataset.
+
+    Args:
+        visual_model: The visual component of the multi-modal model.
+        text_model: The text component of the multi-modal model.
+        train_data, val_data, test_data: DataLoaders for respective datasets.
+        device: The device to run computations on.
+        config: Configuration dictionary containing settings.
+
+   
+    """
     
     tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-base-patch16")
 
@@ -36,8 +51,8 @@ def eval_text_encoder_process(visual_model, text_model, train_data, val_data, te
         trainer= MultiModalityClassifierTrainer(visual_model, device, train_data, val_data, test_data, config)
         trainer.analyze_embeddings(text_embeddings.cpu().numpy())
     else: 
-        get_accuracy(val_data, text_embeddings, visual_model, device, 'Val', config)
-        get_accuracy(train_data, text_embeddings, visual_model, device, 'Train', config)
+        #get_accuracy(val_data, text_embeddings, visual_model, device, 'Val', config)
+        #get_accuracy(train_data, text_embeddings, visual_model, device, 'Train', config)
         get_accuracy(test_data, text_embeddings, visual_model, device, 'Test', config)
 
     return 

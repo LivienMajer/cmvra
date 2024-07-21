@@ -19,185 +19,23 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 
-def train_classefier_process(multi_modality_model, device, train_loader, val_loader, test_loader, config):
-    # Extracting configuration parameters
-    num_epochs = config['epochs']
-    learning_rate = config['learning_rate']
-    checkpoint_dir = config['cktp_dir']
-    modalities = '_'.join(config['modalities'])
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
-    checkpoint_path = os.path.join(checkpoint_dir, 'classifier_checkpoints/', checkpoint_filename)
-    stats_path = os.path.join(checkpoint_dir, f"stats_{modalities}_{timestamp}.json")
-    resume_from_checkpoint = config['res_cktp']
 
-    # Initialize optimizer and criterion
-    optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
-
-    # to do implement learning rate sceduler
-    criterion = torch.nn.CrossEntropyLoss()
-
-    # Initialize Step LR learning rate scheduler
-    step_size = int(math.floor(num_epochs * 0.4))
-    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
-    best_val_loss = float('inf')
-    epoch = 5
-    
-    def find_latest_checkpoint():
-        list_of_files = glob(os.path.join(checkpoint_dir,'classifier_checkpoints', f'checkpoint_{modalities}_*.pth'))
-        if list_of_files:
-            return max(list_of_files, key=os.path.getctime)
-        return None
-
-    # Dictionary to hold training stats for each modality
-    training_stats = {"epochs": [], "train_loss": {}, "val_loss": {}, "test_loss": {}}
-    start_epoch = 0
-    if resume_from_checkpoint:
-        latest_checkpoint_path = find_latest_checkpoint()
-        if latest_checkpoint_path:
-            logging.info(f"Resuming from checkpoint: {latest_checkpoint_path}")
-            checkpoint = torch.load(latest_checkpoint_path)
-            multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            start_epoch = checkpoint['epoch']
-            best_val_loss = checkpoint['best_val_loss']
-            training_stats = checkpoint.get('training_stats', training_stats)
-        else:
-            logging.info("No checkpoint found, starting training from scratch.")
-
-    # Training loop
-    for epoch in range(start_epoch, num_epochs):
-        # Train and validate for each epoch
-        train_losses, train_accuracies = train_epoch(multi_modality_model, device, train_loader, criterion, optimizer, epoch, num_epochs)
-        val_losses, val_accuracies = evaluate_model(multi_modality_model, device, val_loader, criterion, epoch, num_epochs)
-
-        lr_scheduler.step()
-
-        # Update training stats
-        training_stats["epochs"].append(epoch + 1)
-        training_stats["train_loss"][epoch + 1] = train_losses
-        training_stats["val_loss"][epoch + 1] = val_losses
-
-        # Checkpoint logic based on overall validation loss (modify as needed for modality-specific checkpoints)
-        overall_val_loss = sum(val_losses.values()) / len(val_losses)  # Average validation loss across modalities
-        if overall_val_loss < best_val_loss:
-            best_val_loss = overall_val_loss
-            checkpoint = {
-                'epoch': epoch + 1,
-                'model_state_dict': multi_modality_model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                'best_val_loss': best_val_loss,
-                'training_stats': training_stats
-            }
-            torch.save(checkpoint, checkpoint_path)
-            logging.info(f"New best model saved at epoch {epoch+1} with val loss: {best_val_loss:.4f}")
-
-    # Save final training statistics
-    with open(stats_path, 'w') as f:
-        json.dump(training_stats, f)
-    logging.info(f"Training statistics saved to {stats_path}")
-
-    # Load the best model for testing
-    best_checkpoint_path = find_latest_checkpoint()
-    if best_checkpoint_path:
-        logging.info(f"Loading best model for testing: {best_checkpoint_path}")
-        checkpoint = torch.load(best_checkpoint_path)
-        multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
-
-        # Evaluate on the test set
-        test_losses, test_accuracies = evaluate_model(multi_modality_model, device, test_loader, criterion, epoch, num_epochs)
-        training_stats["test_loss"][epoch + 1] = test_losses
-        logging.info(f"Test Loss: {test_losses}, Test Accuracy: {test_accuracies}")
-    else:
-        logging.error("No best model checkpoint found for testing.")
-
-    print("Training, validation, and testing complete!")
-
-
-def find_best_checkpoint(checkpoint_dir, modalities):
-    list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
-    if list_of_files:
-        return max(list_of_files, key=os.path.getctime)
-    return None
-
-
-def train_epoch(model, device, train_loader, criterion, optimizer, epoch, num_epochs):
-    epoch_losses = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
-    epoch_accuracies = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
-
-    model.train()
-    for batch_data, batch_labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
-        for modality in batch_data:
-            if modality in model.module.modalities_encoders:
-                data = batch_data[modality].cuda(device)
-                labels = batch_labels.cuda(device)
-                #print(modality)
-                optimizer.zero_grad()
-                outputs = model.module.forward_classifier(modality, data)
-                #print(f"Outputs {outputs}")
-                #print(f"Labels {labels}")
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-
-                accuracy = compute_accuracy(outputs, labels)
-                #print(f"accuracy {accuracy}")
-                epoch_losses[modality] += loss.item()
-                epoch_accuracies[modality] += accuracy
-
-                clear_memory()
-
-    # Calculate average loss and accuracy for each modality
-    avg_losses = {modality: epoch_losses[modality] / len(train_loader) for modality in epoch_losses}
-    avg_accuracies = {modality: epoch_accuracies[modality] / len(train_loader) for modality in epoch_accuracies}
-
-    logging.info(f"Epoch [{epoch+1}/{num_epochs}]")
-    for modality in model.module.modalities_encoders:
-        logging.info(f"Modality: {modality}, Loss: {avg_losses[modality]:.4f}, Accuracy: {avg_accuracies[modality]:.4f}")
-
-    return avg_losses, avg_accuracies
-
-def evaluate_model(model, device, loader, criterion, epoch, num_epochs):
-    val_losses = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
-    val_accuracies = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
-
-    model.eval()
-    with torch.no_grad():
-        for batch_data, batch_labels in tqdm(loader, desc=f"Validation/Test Epoch {epoch+1}/{num_epochs}"):
-            for modality in batch_data:
-                if modality in model.module.modalities_encoders:
-                    data = batch_data[modality].cuda(device)
-                    labels = batch_labels.cuda(device)
-
-                    outputs = model.module.forward_classifier(modality, data)
-                    loss = criterion(outputs, labels)
-
-                    val_losses[modality] += loss.item()
-                    val_accuracies[modality] += compute_accuracy(outputs, labels)
-
-                    clear_memory()
-
-    # Calculate average loss and accuracy for each modality
-    avg_val_losses = {modality: val_losses[modality] / len(loader) for modality in val_losses}
-    avg_val_accuracies = {modality: val_accuracies[modality] / len(loader) for modality in val_accuracies}
-
-    logging.info(f"Validation/Test Epoch [{epoch+1}/{num_epochs}]")
-    for modality in model.module.modalities_encoders:
-        logging.info(f"Modality: {modality}, Loss: {avg_val_losses[modality]:.4f}, Accuracy: {avg_val_accuracies[modality]:.4f}")
-
-    return avg_val_losses, avg_val_accuracies
-
-
-def compute_accuracy(predictions, labels):
-    _, predicted = torch.max(predictions, 1)
-    correct = (predicted == labels).sum().item()
-    return correct / len(labels)
-
-def clear_memory():
-    gc.collect()
-    torch.cuda.empty_cache()
 ##############################################
 class MultiModalityClassifierTrainer:
+    """
+    A trainer class for multi-modality classifiers and their evaluation.
+
+    This class handles the training, validation, and testing of multi-modal classifiers.
+    It supports various modalities, different encoder models, and fusion techniques.
+
+    Attributes:
+        model (nn.Module): The multi-modality model to be trained.
+        device (torch.device): The device to run the computations on.
+        train_loader (DataLoader): DataLoader for training data.
+        val_loader (DataLoader): DataLoader for validation data.
+        test_loader (DataLoader): DataLoader for test data.
+        cfg (dict): Configuration dictionary containing various settings.
+    """
     def __init__(self, multi_modality_model, device, train_loader, val_loader, test_loader, config):
         self.model = multi_modality_model
         self.device = device
@@ -210,19 +48,15 @@ class MultiModalityClassifierTrainer:
         self.modalities = '_'.join(self.cfg['modalities'])
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.cfg['learning_rate'])
         self.criterion = torch.nn.CrossEntropyLoss()
-        """
-        if config['dataset'] == 'DAA':
-            logging.info("Applying balance loss")
-            accumulated_labels = []
-            for _, label in tqdm(train_loader, desc="Extracting labels"):
-                accumulated_labels.append(label)
-            # Stack the accumulated label tensors into a single tensor
-            all_labels = torch.cat(accumulated_labels)
-            class_counts = torch.bincount(all_labels)
-            class_weights = 1. / class_counts
-            class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
-            self.criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
-        """
+        
+        # Initialize the loss function based on the configuration
+        if self.cfg.get('balancedCE', False):
+            logging.info("Applying balanced Cross-Entropy loss")
+            class_weights = self.compute_class_weights()
+            self.criterion = nn.CrossEntropyLoss(weight=class_weights)
+        else:
+            self.criterion = nn.CrossEntropyLoss()
+
         self.lr_scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=int(math.floor(self.cfg['epochs'] * 0.4)), gamma=0.5)
         self.best_val_loss = float('inf')
         stats_keys = ['train_loss', 'train_accuracy', 'val_loss', 'val_accuracy', 'train_balanced_accuracy', 'val_balanced_accuracy']
@@ -236,6 +70,24 @@ class MultiModalityClassifierTrainer:
             self.save_dir = f"/home/bas06400/Thesis/VIP/src/features/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         self.initialize_training()
 
+    def compute_class_weights(self):
+        """
+        Compute class weights for balanced Cross-Entropy loss.
+
+        Returns:
+            torch.Tensor: Tensor of class weights.
+        """
+        logging.info("Computing class weights for balanced loss")
+        accumulated_labels = []
+        for _, label in tqdm(self.train_loader, desc="Extracting labels"):
+            accumulated_labels.append(label)
+        
+        all_labels = torch.cat(accumulated_labels)
+        class_counts = torch.bincount(all_labels)
+        class_weights = 1. / class_counts.float()
+        class_weights = class_weights / class_weights.sum()  # Normalize to sum to 1
+        return class_weights.to(self.device)
+
     def initialize_training(self):
         # Setup checkpoint directory, filename, stats path, etc.
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -246,6 +98,19 @@ class MultiModalityClassifierTrainer:
             self.resume_from_checkpoint()
 
     def process_epoch(self, epoch, mode='train'):
+        """
+        Process a single epoch for training, validation, or testing.
+
+        This method handles the forward pass, loss computation, and backpropagation (for training)
+        for each batch in the epoch.
+
+        Args:
+            epoch (int): The current epoch number.
+            mode (str): One of 'train', 'val', or 'test'.
+
+        Returns:
+            dict: Metrics for the epoch, including loss and accuracy for each modality.
+        """
         if mode == 'train':
             self.model.train()
         else:
@@ -313,6 +178,16 @@ class MultiModalityClassifierTrainer:
 
 
     def train(self):
+        """
+        Main training loop for the multi-modality classifier.
+
+        This method handles the entire training process, including:
+        - Extracting features if necessary
+        - Training for the specified number of epochs
+        - Validating the model after each epoch
+        - Saving checkpoints and statistics
+        - Evaluating on the test set after training
+        """
         if self.cfg['res_cktp']:
             self.resume_from_checkpoint()
         else:
@@ -350,6 +225,18 @@ class MultiModalityClassifierTrainer:
         self.delete_saved_features_dir()
 
     def process_epoch_full_training(self, epoch, mode='train'):
+        """
+        Process a single epoch for full training (without pre-extracted features).
+
+        This method is used when training the entire model end-to-end, including feature extraction.
+
+        Args:
+            epoch (int): The current epoch number.
+            mode (str): One of 'train', 'val', or 'test'.
+
+        Returns:
+            dict: Metrics for the epoch, including loss and accuracy for each modality.
+        """
         if mode == 'train':
             self.model.train()
             dataloader = self.train_loader  
@@ -413,6 +300,19 @@ class MultiModalityClassifierTrainer:
         return epoch_metrics
     
     def process_epoch_fusion(self, epoch, mode='train', zeroing_probability=0.1):
+        """
+        Process a single epoch for fusion-based training.
+
+        This method handles the processing for models that use feature fusion across modalities.
+
+        Args:
+            epoch (int): The current epoch number.
+            mode (str): One of 'train', 'val', or 'test'.
+            zeroing_probability (float): Probability of zeroing out a modality during training.
+
+        Returns:
+            dict: Metrics for the epoch, including loss and accuracy for the fused model.
+        """
         
         if mode == 'train':
             self.model.train()
@@ -649,6 +549,11 @@ class MultiModalityClassifierTrainer:
         return inputs  # Default case (e.g., CLIP-VIP and DINO do not need special preprocessing)
     
     def extract_features_and_save(self, dataloader, cfg, file_prefix, batches_per_file, save_dir):
+        """
+        Extract features for all datasets (train, val, test) and save them to disk.
+
+        This method is used to precompute features, which can speed up subsequent training.
+        """
         # Ensure the save directory exists
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
@@ -886,7 +791,7 @@ class MultiModalityClassifierTrainer:
         else:
             self.extract_and_save_all_features()
         # Step 1: Collect embeddings for each modality
-        modality_embeddings_info = self.collect_embeddings(epoch=None)  # Assuming epoch is not needed or is set elsewhere
+        modality_embeddings_info = self.collect_embeddings(epoch=None)  
 
         # Step 2: Compute statistics for each modality
         modality_stats = {}
@@ -945,7 +850,7 @@ class MultiModalityClassifierTrainer:
 
         # Step 5: Create histograms for the ratios of all samples for each modality
         plt.figure(figsize=(10, 6))
-        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Add more colors if needed
+        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  
         for idx, (modality, ratio_values) in enumerate(ratios.items()):
             plt.hist(ratio_values, bins=np.arange(0.5, 1.5, 0.001), alpha=0.5, label=f'{modality}', color=colors[idx % len(colors)])
 
@@ -984,7 +889,7 @@ def train_mae_classifier2(encoder, classifier, train_data, val_data, test_data, 
     val_features, val_labels = extract_features(encoder, val_data, device=device, cfg=cfg)
     test_features, test_labels = extract_features(encoder, test_data, device=device, cfg=cfg)
     # Define and train the linear classifier
-    input_dim = train_features.shape[1] # Adjust based on your feature size
+    input_dim = train_features.shape[1] 
     
     
     # Create the weighted loss function
@@ -1290,3 +1195,183 @@ def evaluate_classifier2(classifier, file_prefix, num_files, batch_size, device,
     elif mode == 'val':
         logging.info(f'Validation Accuracy: {accuracy}%, Balanced Validation Accuracy: {balanced_acc}%')
     return accuracy, balanced_acc
+
+
+
+def train_classefier_process(multi_modality_model, device, train_loader, val_loader, test_loader, config):
+    # Extracting configuration parameters
+    num_epochs = config['epochs']
+    learning_rate = config['learning_rate']
+    checkpoint_dir = config['cktp_dir']
+    modalities = '_'.join(config['modalities'])
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    checkpoint_filename = f"checkpoint_{modalities}_{timestamp}.pth"
+    checkpoint_path = os.path.join(checkpoint_dir, 'classifier_checkpoints/', checkpoint_filename)
+    stats_path = os.path.join(checkpoint_dir, f"stats_{modalities}_{timestamp}.json")
+    resume_from_checkpoint = config['res_cktp']
+
+    # Initialize optimizer and criterion
+    optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
+
+    # to do implement learning rate sceduler
+    criterion = torch.nn.CrossEntropyLoss()
+
+    # Initialize Step LR learning rate scheduler
+    step_size = int(math.floor(num_epochs * 0.4))
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.1)
+    best_val_loss = float('inf')
+    epoch = 5
+    
+    def find_latest_checkpoint():
+        list_of_files = glob(os.path.join(checkpoint_dir,'classifier_checkpoints', f'checkpoint_{modalities}_*.pth'))
+        if list_of_files:
+            return max(list_of_files, key=os.path.getctime)
+        return None
+
+    # Dictionary to hold training stats for each modality
+    training_stats = {"epochs": [], "train_loss": {}, "val_loss": {}, "test_loss": {}}
+    start_epoch = 0
+    if resume_from_checkpoint:
+        latest_checkpoint_path = find_latest_checkpoint()
+        if latest_checkpoint_path:
+            logging.info(f"Resuming from checkpoint: {latest_checkpoint_path}")
+            checkpoint = torch.load(latest_checkpoint_path)
+            multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            start_epoch = checkpoint['epoch']
+            best_val_loss = checkpoint['best_val_loss']
+            training_stats = checkpoint.get('training_stats', training_stats)
+        else:
+            logging.info("No checkpoint found, starting training from scratch.")
+
+    # Training loop
+    for epoch in range(start_epoch, num_epochs):
+        # Train and validate for each epoch
+        train_losses, train_accuracies = train_epoch(multi_modality_model, device, train_loader, criterion, optimizer, epoch, num_epochs)
+        val_losses, val_accuracies = evaluate_model(multi_modality_model, device, val_loader, criterion, epoch, num_epochs)
+
+        lr_scheduler.step()
+
+        # Update training stats
+        training_stats["epochs"].append(epoch + 1)
+        training_stats["train_loss"][epoch + 1] = train_losses
+        training_stats["val_loss"][epoch + 1] = val_losses
+
+        # Checkpoint logic based on overall validation loss (modify as needed for modality-specific checkpoints)
+        overall_val_loss = sum(val_losses.values()) / len(val_losses)  # Average validation loss across modalities
+        if overall_val_loss < best_val_loss:
+            best_val_loss = overall_val_loss
+            checkpoint = {
+                'epoch': epoch + 1,
+                'model_state_dict': multi_modality_model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'best_val_loss': best_val_loss,
+                'training_stats': training_stats
+            }
+            torch.save(checkpoint, checkpoint_path)
+            logging.info(f"New best model saved at epoch {epoch+1} with val loss: {best_val_loss:.4f}")
+
+    # Save final training statistics
+    with open(stats_path, 'w') as f:
+        json.dump(training_stats, f)
+    logging.info(f"Training statistics saved to {stats_path}")
+
+    # Load the best model for testing
+    best_checkpoint_path = find_latest_checkpoint()
+    if best_checkpoint_path:
+        logging.info(f"Loading best model for testing: {best_checkpoint_path}")
+        checkpoint = torch.load(best_checkpoint_path)
+        multi_modality_model.load_state_dict(checkpoint['model_state_dict'])
+
+        # Evaluate on the test set
+        test_losses, test_accuracies = evaluate_model(multi_modality_model, device, test_loader, criterion, epoch, num_epochs)
+        training_stats["test_loss"][epoch + 1] = test_losses
+        logging.info(f"Test Loss: {test_losses}, Test Accuracy: {test_accuracies}")
+    else:
+        logging.error("No best model checkpoint found for testing.")
+
+    print("Training, validation, and testing complete!")
+
+
+def find_best_checkpoint(checkpoint_dir, modalities):
+    list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
+    if list_of_files:
+        return max(list_of_files, key=os.path.getctime)
+    return None
+
+
+def train_epoch(model, device, train_loader, criterion, optimizer, epoch, num_epochs):
+    epoch_losses = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
+    epoch_accuracies = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
+
+    model.train()
+    for batch_data, batch_labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}"):
+        for modality in batch_data:
+            if modality in model.module.modalities_encoders:
+                data = batch_data[modality].cuda(device)
+                labels = batch_labels.cuda(device)
+                #print(modality)
+                optimizer.zero_grad()
+                outputs = model.module.forward_classifier(modality, data)
+                #print(f"Outputs {outputs}")
+                #print(f"Labels {labels}")
+                loss = criterion(outputs, labels)
+                loss.backward()
+                optimizer.step()
+
+                accuracy = compute_accuracy(outputs, labels)
+                #print(f"accuracy {accuracy}")
+                epoch_losses[modality] += loss.item()
+                epoch_accuracies[modality] += accuracy
+
+                clear_memory()
+
+    # Calculate average loss and accuracy for each modality
+    avg_losses = {modality: epoch_losses[modality] / len(train_loader) for modality in epoch_losses}
+    avg_accuracies = {modality: epoch_accuracies[modality] / len(train_loader) for modality in epoch_accuracies}
+
+    logging.info(f"Epoch [{epoch+1}/{num_epochs}]")
+    for modality in model.module.modalities_encoders:
+        logging.info(f"Modality: {modality}, Loss: {avg_losses[modality]:.4f}, Accuracy: {avg_accuracies[modality]:.4f}")
+
+    return avg_losses, avg_accuracies
+
+def evaluate_model(model, device, loader, criterion, epoch, num_epochs):
+    val_losses = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
+    val_accuracies = {modality: 0.0 for modality in model.module.modalities_encoders.keys()}
+
+    model.eval()
+    with torch.no_grad():
+        for batch_data, batch_labels in tqdm(loader, desc=f"Validation/Test Epoch {epoch+1}/{num_epochs}"):
+            for modality in batch_data:
+                if modality in model.module.modalities_encoders:
+                    data = batch_data[modality].cuda(device)
+                    labels = batch_labels.cuda(device)
+
+                    outputs = model.module.forward_classifier(modality, data)
+                    loss = criterion(outputs, labels)
+
+                    val_losses[modality] += loss.item()
+                    val_accuracies[modality] += compute_accuracy(outputs, labels)
+
+                    clear_memory()
+
+    # Calculate average loss and accuracy for each modality
+    avg_val_losses = {modality: val_losses[modality] / len(loader) for modality in val_losses}
+    avg_val_accuracies = {modality: val_accuracies[modality] / len(loader) for modality in val_accuracies}
+
+    logging.info(f"Validation/Test Epoch [{epoch+1}/{num_epochs}]")
+    for modality in model.module.modalities_encoders:
+        logging.info(f"Modality: {modality}, Loss: {avg_val_losses[modality]:.4f}, Accuracy: {avg_val_accuracies[modality]:.4f}")
+
+    return avg_val_losses, avg_val_accuracies
+
+
+def compute_accuracy(predictions, labels):
+    _, predicted = torch.max(predictions, 1)
+    correct = (predicted == labels).sum().item()
+    return correct / len(labels)
+
+def clear_memory():
+    gc.collect()
+    torch.cuda.empty_cache()

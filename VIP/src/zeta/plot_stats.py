@@ -12,6 +12,15 @@ def load_stats(files):
     return combined_stats
 
 def plot_all_in_one(combined_stats, metrics, modalities, save_path):
+    """
+    Create a single plot comparing multiple metrics and modalities across different runs.
+
+    Args:
+        combined_stats (list): List of dictionaries containing statistics for each run.
+        metrics (list): List of metric names to plot.
+        modalities (list): List of modalities to include in the plot.
+        save_path (str): Path to save the resulting plot.
+    """
     plt.figure(figsize=(12, 8))
     markers = ['o', 'v', '^', '<', '>', 's', 'p', '*', '+', 'x']
     lines = ['-', '--', '-.', ':']
@@ -48,6 +57,13 @@ def plot_all_in_one(combined_stats, metrics, modalities, save_path):
     plt.show()
 
 if __name__ == "__main__":
+    """
+    This script plots various metrics for different modalities across multiple runs four our specific experimental setup.
+    It takes command-line arguments for input files, metrics to plot, modalities to include, and where to save the plot.
+    
+    Usage:
+    python script_name.py --files file1.json file2.json --metrics train_loss val_accuracy --modalities rgb skeleton --save_path output.png
+    """
     parser = argparse.ArgumentParser(description="Plot deep learning statistics.")
     parser.add_argument('--files', nargs='+', help='Paths to the files containing training statistics', required=True)
     parser.add_argument('--metrics', nargs='+', help='Metrics to plot', required=True)
