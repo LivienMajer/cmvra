@@ -64,12 +64,12 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     if config['dataset'] == 'NTU':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/CS_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CS_testing_set.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set.txt'
             print('CS')
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/CV_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CV_testing_set.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
@@ -87,11 +87,11 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     elif config['dataset'] == 'NTUcropped':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/CS_training_set_cropped.txt'
-            test_data_list = '/home/bas06400/Thesis/CS_testing_set_cropped.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set_cropped.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set_cropped.txt'
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/CV_training_set_cropped_low_res_cleaned2.txt'
-            test_data_list = '/home/bas06400/Thesis/CV_testing_set_cropped_low_res_cleaned2.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set_cropped_low_res_cleaned2.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set_cropped_low_res_cleaned2.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
@@ -110,11 +110,11 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     elif config['dataset'] == 'NTU120':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/CS120_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CS120_testing_set.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_testing_set.txt'
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/CV120_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/CV120_testing_set.txt'
+            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_training_set.txt'
+            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_testing_set.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
