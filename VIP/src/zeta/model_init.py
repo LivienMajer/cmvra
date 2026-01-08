@@ -288,9 +288,9 @@ class MultiModalityModel(nn.Module):
         # Adding a linear layer for each modality
         for modality in modalities_encoders:
             setattr(self, f"{modality}_classifier", nn.Linear(in_features, num_classes))
-
         self.attention = nn.MultiheadAttention(in_features, num_heads=8, batch_first=True)
         self.final_classifier = nn.Linear(in_features, num_classes)
+        self.layer_norm = nn.LayerNorm(in_features)  # Define once
 
     def forward_encoder(self, modality, x):
         if modality in self.modalities_encoders:
@@ -304,8 +304,11 @@ class MultiModalityModel(nn.Module):
         return classifier(encoder_output)
     
     def forward_classifier_only(self, modality, x):
+        # Replace NaN values with 0
+        # x = torch.nan_to_num(x, nan=0.0)
         classifier = getattr(self, f"{modality}_classifier")
-        return classifier(x)
+        y = classifier(x)
+        return y
     
     def forward_fusion(self, x):
         # concatenated_features should be of shape (batch_size, num_modalities, in_features)
@@ -591,6 +594,12 @@ class DINOVforIR(nn.Module):
     
 def init_dino_encoder(cfg, device, freeze=False):
     return DINOVforIR(cfg['num_classes'], cfg['in_features'], freeze_dino=True).to(f'cuda:{device}') 
+
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        nn.init.normal_(m.weight, mean=0, std=1)  # Large std might be an issue
+        nn.init.constant_(m.bias, 0)
+
 
 
 class LinearClassifier(nn.Module):

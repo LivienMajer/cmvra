@@ -64,41 +64,38 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     if config['dataset'] == 'NTU':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set.txt'
             print('CS')
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
-        
-
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs, llava_labels=config["llava_label"])
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs, llava_labels=config["llava_label"])
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
         val_len = len(train_data) - train_len
-
         # Split the training dataset into training and validation sets
         train_data, val_data = random_split(train_data, [train_len, val_len])
 
     elif config['dataset'] == 'NTUcropped':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set_cropped.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set_cropped.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS_training_set_cropped.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS_testing_set_cropped.txt'
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set_cropped_low_res_cleaned2.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set_cropped_low_res_cleaned2.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV_training_set_cropped_low_res_cleaned2.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV_testing_set_cropped_low_res_cleaned2.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
         
 
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs, llava_labels=config["llava_label"])
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs, llava_labels=config["llava_label"])
         
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
@@ -110,17 +107,17 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
     elif config['dataset'] == 'NTU120':
         # Define file paths for datasets based on mode
         if split == 'CS':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_testing_set.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_training_set.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CS120_testing_set.txt'
         elif split == 'CV':
-            train_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_training_set.txt'
-            test_data_list = '/home/bas06400/Thesis/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_testing_set.txt'
+            train_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_training_set.txt'
+            test_data_list = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/NTU_Multimodaldatasets/CV120_testing_set.txt'
         else:
             raise ValueError("Invalid mode. Choose 'CS' for Cross-Subject or 'CV' for Cross-View.")
         
 
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs, llava_labels=config["llava_label"])
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs, llava_labels=config["llava_label"])
         # Calculate lengths of splits for training and validation
         train_len = int(0.98 * len(train_data))
         val_len = len(train_data) - train_len
@@ -130,13 +127,13 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         
     elif config['dataset'] == 'DAA':
         # Base path for zero-shot splits
-        zero_shot_base_path = '/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/zero_shot_splits'
+        zero_shot_base_path = '/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/zero_shot_splits'
         
         if split in ['0', '1', '2']:
             # Original splits
-            train_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full_balanced.txt'
-            val_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_val{split}_full.txt'
-            test_data_list = f'/home/bas06400/Thesis/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_test{split}_full.txt'
+            train_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full_balanced.txt'
+            val_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_val{split}_full.txt'
+            test_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_test{split}_full.txt'
         elif split.startswith('zs'):
             # Zero-shot splits
             zs_index = split[2:]  # Extract the index from 'zs0', 'zs1', etc.
@@ -145,11 +142,10 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
             test_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_test_{zs_index}.txt')
         else:
             raise ValueError("Invalid split. Choose '0', '1', '2' for original splits or 'zs0', 'zs1', ..., 'zs9' for zero-shot splits.")
-        
-        data_root = '/home/bas06400/daa'
-        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs)
-        val_data = MultiModalVideoDataset3(val_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='val', augs =augs)
-        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs)
+        data_root = '/net/polaris/storage/deeplearning/daa'
+        train_data = MultiModalVideoDataset3(train_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='train', augs =augs, llava_labels=config['llava_label'])
+        val_data = MultiModalVideoDataset3(val_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='val', augs =augs, llava_labels=config['llava_label'])
+        test_data = MultiModalVideoDataset3(test_data_list, data_root, modalities, frame_count=frame_count, random_sample=random_sample, mixed_frames=mixed_frames, mode='test', augs =augs, llava_labels=config['llava_label'])
 
 
     else:
@@ -165,7 +161,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         num_workers=num_workers,
         pin_memory=pin_memory,
         prefetch_factor=2,
-        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
+        collate_fn=lambda batch: custom_collate_fn(batch, config, shift_label=shift_label)
     )
 
     val_loader = DataLoader(
@@ -175,7 +171,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         num_workers=num_workers,
         pin_memory=pin_memory,
         prefetch_factor=2,
-        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
+        collate_fn=lambda batch: custom_collate_fn(batch, config, shift_label=shift_label)
     )
 
     test_loader = DataLoader(
@@ -185,7 +181,7 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         num_workers=num_workers,
         pin_memory=pin_memory,
         prefetch_factor=2,
-        collate_fn=lambda batch: custom_collate_fn(batch, shift_label=shift_label)
+        collate_fn=lambda batch: custom_collate_fn(batch, config, shift_label=shift_label)
     )
     return train_loader, val_loader, test_loader
 
@@ -222,17 +218,33 @@ def custom_collate_fn1(batch, shift_label=False):
     
     return collated_data, collated_labels
 
-def custom_collate_fn(batch, shift_label=False):
+def custom_collate_fn(batch, config, shift_label=False):
     modalities_shapes = {modality: (len(batch),) + frames.shape for modality, frames in batch[0][0].items()}
-    collated_data = {modality: torch.empty(shape) for modality, shape in modalities_shapes.items()}
-    collated_labels = torch.empty(len(batch), dtype=torch.long)
-
+    collated_data = {modality: torch.zeros(shape) for modality, shape in modalities_shapes.items()}
+    if config['llava_label']:
+        collated_labels = torch.zeros((len(batch), len(batch[0][1][0])), dtype=torch.long)
+    elif config['onehot']:
+        collated_labels = torch.zeros((len(batch), config['num_classes']), dtype=torch.float)
+    else:
+        collated_labels = torch.empty(len(batch), dtype=torch.long)
     for i, (data, label) in enumerate(batch):
-        if shift_label:
-            collated_labels[i] = label - 1
+        if config['llava_label']:
+            if len(label[0]) < len(collated_labels[i]):
+                collated_labels[i][:len(label[0])] = label[0]
+            elif len(label[0]) > len(collated_labels[i]):
+                collated_labels[i] = label[0][:len(collated_labels[i])]
+            else:
+                collated_labels[i] = label[0]
+        elif config['onehot']:
+            if shift_label:
+                collated_labels[i][label-1] = 1.
+            else:
+                collated_labels[i][label] = 1.
         else:
-            collated_labels[i] = label
+            if shift_label:
+                collated_labels[i] = label - 1
+            else:
+                collated_labels[i] = label
         for modality in data:
-            collated_data[modality][i] = data[modality]
-
+                collated_data[modality][i] = data[modality]
     return collated_data, collated_labels

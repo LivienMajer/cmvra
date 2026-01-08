@@ -8,13 +8,15 @@ from PIL import Image
 from torchvision import transforms
 import cv2
 import decord
+import random
+import json
 from decord import VideoReader
+from transformers import CLIPTokenizer
 from decord import cpu, gpu
 from torchvision.io import read_video
 from zeta.skeleton_transforms import RandomGaussianNoise, RandomRot, RandomScale, PreNormalize3D, Normalize3D
 import logging
 import re
-
 
 
 class MultiModalVideoDataset3(torch.utils.data.Dataset):
@@ -39,7 +41,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
     """
 
     def __init__(self, list_path: str, data_root: str, modalities: list, frame_count=12, 
-                random_sample=False, mode='train', mixed_frames=None, augs=False):
+                random_sample=False, mode='train', mixed_frames=None, augs=False, llava_labels=False):
         """
         Initialize the MultiModalVideoDataset3.
 
@@ -55,7 +57,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         """
         with open(list_path) as f:
             self.data_list = f.read().splitlines()
-
         self.data_root = data_root
         self.modalities = modalities
         self.frame_count = frame_count
@@ -81,7 +82,13 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         self.random_scale = RandomScale(scale=0.2)
         self.random_noise = RandomGaussianNoise(sigma=0.01)
         self.pre_normalize = PreNormalize3D() 
+        print(list_path, data_root)
+        with open("/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/CLIPVIP_Datasets/generated_descriptions_CS_train.jsonl") as json_data:
+            self.text_descriptions = list(json_data)
+        self.tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-base-patch16")
 
+        self.llava_labels = llava_labels
+    
     def __len__(self):
         return len(self.data_list)
 
@@ -99,14 +106,22 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                 - dict: A dictionary with modalities as keys and processed data as values.
                 - int: The label of the sample.
         """
+
         line = self.data_list[idx]
         # split on space preceded by 'i' since some activities from daa contain spaces
         paths = re.split(r'(?<=[iy]) | (?=n)', line)
-        label = int(paths[-1])
+
+        if self.llava_labels:
+            lbl = json.loads(self.text_descriptions[idx])["text"]
+            label = ""
+            for l in lbl:
+                label += l + " "
+            label = self.tokenizer(label, return_tensors="pt", padding=True, truncation=True)["input_ids"]
+        else:
+            label = int(paths[-1])
 
         modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3 ,"ceiling": 4, "inner_mirror": 5, "a_column_co_driver": 6, "a_column_driver": 7, "steering_wheel": 8,"rgb2":0, "rgb3":0}
        
-
         modality_frames = {}
         full_path = os.path.join(self.data_root, paths[0])
         if self.mixed_frames:
@@ -130,7 +145,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                     
                     try:
                         # Attempt to load and sample the skeleton data
-                        skeleton_data = self._load_skeleton_data(full_path)#[:, sample_indices, :, :]
+                        skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
                     except IndexError:
                         # Handle cases where sample_indices are out of bounds
                         # Creating a default array with shape (1, 12, 25, 3)
@@ -162,7 +177,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
 
                     # Convert to tensor and integrate
                     skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32).permute(1, 0, 2, 3)
-                    required_frame_count = 90
+                    required_frame_count = 12
                     
                     current_frame_count = skeleton_tensor.shape[0]
 
@@ -178,8 +193,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                 else:
                     full_path = os.path.join(self.data_root, path)
                     modality_frames[modality] = self._extract_frames(full_path, sample_indices)
-
-
         return modality_frames, label
     
     def interpolate_clip(self, clip, num_frames=12):
@@ -258,8 +271,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         return tensor_image
     
     def load_video(self, vis_path, sample_idx):
-        
-
         video_tensor, _, _ = read_video(vis_path, start_pts=0, end_pts=None, pts_unit='sec')
         # video_tensor shape: (T, H, W, C)
         if max(sample_idx) >= video_tensor.size(0):
@@ -288,6 +299,8 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
         self.std = std if std else torch.tensor([0.5, 0.5, 0.5])
         self.spatial_size = spatial_size
         self.use_advanced_processing = use_advanced_processing
+        with open("/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/CLIPVIP_Datasets/generated_descriptions_CS_train.jsonl") as json_data:
+            self.text_descriptions = list(json_data)
 
     def __len__(self):
         return len(self.data_list)
@@ -295,7 +308,8 @@ class MultiModalVideoDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         line = self.data_list[idx]
         paths = line.split(' ')
-        label = int(paths[-1])
+        # label = int(paths[-1])
+        label = json.loads(self.text_descriptions[idx])["text"]
 
         modality_indices = {"rgb": 0, "ir": 1, "depth": 2, "skeleton": 3}
         
@@ -468,9 +482,11 @@ class MultiModalVideoDataset2(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         line = self.data_list[idx]
         paths = line.split(' ')
-        label = int(paths[-1])
+        # label = int(paths[-1])
         modality_frames = {}
-        
+        print(idx)
+        label = json.loads(self.text_descriptions[idx])["text"]
+
         # Determine frame indices to sample
         sample_indices = self._determine_sample_indices(os.path.join(self.data_root, paths[0]))
 

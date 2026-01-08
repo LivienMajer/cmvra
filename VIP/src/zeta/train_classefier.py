@@ -67,7 +67,7 @@ class MultiModalityClassifierTrainer:
         self.training_stats['epochs'] = []
         self.save_dir = self.cfg.get('feature_save_dir')
         if not self.save_dir:  # This will be True if self.save_dir is None or an empty string
-            self.save_dir = f"/home/bas06400/Thesis/VIP/src/features/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+            self.save_dir = f"/home/dav86141/develop/visual-modality-alignment/VIP/src/features/{datetime.now().strftime('%Y%m%d-%H%M%S')}"
         self.initialize_training()
 
     def compute_class_weights(self):
@@ -139,10 +139,8 @@ class MultiModalityClassifierTrainer:
 
                     if mode == 'train':
                         self.optimizer.zero_grad()
-
-                    outputs = self.model.module.forward_classifier_only(modality ,batch_features)
+                    outputs = self.model.module.forward_classifier_only(modality, batch_features)
                     loss = self.criterion(outputs, batch_labels)
-
                     if mode == 'train':
                         loss.backward()
                         self.optimizer.step()
@@ -215,6 +213,8 @@ class MultiModalityClassifierTrainer:
             if overall_val_loss < self.best_val_loss:
                 self.best_val_loss = overall_val_loss
                 self.save_checkpoint(epoch)
+            gc.collect()
+            torch.cuda.empty_cache()
         
             self.lr_scheduler.step()
         if self.cfg['epochs'] == 0:
@@ -589,7 +589,6 @@ class MultiModalityClassifierTrainer:
                             continue
 
                         accumulated_features[modality].append(feature.cpu())
-
                 accumulated_labels.append(label)
 
                 batch_count += 1
@@ -768,7 +767,7 @@ class MultiModalityClassifierTrainer:
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"test_metrics_{self.modalities}_{self.cfg['encoder_model']}_{self.cfg['dataset']}_{self.cfg['split']}_{timestamp}.json"
-        filepath = os.path.join('/home/bas06400/Thesis/VIP/src/predictions', filename)
+        filepath = os.path.join('/home/dav86141/develop/visual-modality-alignment/VIP/src/predictions', filename)
         
         with open(filepath, 'w') as f:
             json.dump(serializable_metrics, f, indent=4)
@@ -1026,7 +1025,7 @@ def eval_rgb_classefier_on_ir(model, device, train_loader, val_loader, test_load
 
 ####################################################
 # saving step
-def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg, save_dir='/home/bas06400/Thesis/VIP/src/features/feat1'):
+def train_mae_classifier(encoder, classifier, train_data, val_data, test_data, device, cfg, save_dir='/home/dav86141/develop/visual-modality-alignment/VIP/src/features/feat1'):
     logging.info("Starting feature extraction...")
     num_train_files = extract_features2(encoder, train_data, device, cfg, 'train', 10, save_dir)
     num_val_files = extract_features2(encoder, val_data, device, cfg, 'val', 10, save_dir)

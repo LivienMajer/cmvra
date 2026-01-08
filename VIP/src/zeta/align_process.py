@@ -1,7 +1,11 @@
 import torch
+from torch import autocast
 import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
+import random
+from zeta.model_init import initialize_vip_encoder, initialize_vip_text_encoder
+
 
 import logging
 import os
@@ -47,13 +51,17 @@ def align_modalities_process(multi_modality_model,
     Returns:
         None
     """
+    if config["bind_to_text"]:
+        print("Binding to text.")
+        text_model = initialize_vip_text_encoder(config, f"cuda:{device}")
+
     modalities = '_'.join(config['modalities'])
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     checkpoint_filename = f"checkpoint_{modalities}_{config['encoder_model']}_{config['dataset']}_{config['split']}_{timestamp}.pth"
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
     gradient_accumulation_steps = config.get('gradient_accumulation_steps', 1)
-    #overfit_on_one_batch = config.get('overfit_on_one_batch', False)
+    # overfit_on_one_batch = config.get('overfit_on_one_batch', False)
 
 
     # Function to find the latest checkpoint
@@ -95,7 +103,6 @@ def align_modalities_process(multi_modality_model,
             logging.info("No checkpoint found, starting training from scratch.")
 
     logging.info("Starting training loop")
-
     #if overfit_on_one_batch:
     #    single_batch_data, _ = next(iter(train_loader))
     
@@ -108,9 +115,9 @@ def align_modalities_process(multi_modality_model,
         multi_modality_model.train()
         logging.info(f"Epoch {epoch+1}/{num_epochs} - Training")
 
-        for step, (batch_data, _) in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}")):
-            
-            
+        for step, (batch_data, batch_label) in enumerate(tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs}")):
+
+            # print(batch_label[0])
             #if overfit_on_one_batch: # this is inefficent but conveniant
             #    del batch_data
             #    batch_data = single_batch_data
@@ -141,6 +148,8 @@ def align_modalities_process(multi_modality_model,
                 'MAEPS': preprocess_for_maeps
             }
             embeddings = []
+            if config["bind_to_text"]:
+                embeddings.append(text_model.forward(input_ids=batch_label)[1].to(f'cuda:{device}'))
             for modality, data in batch_data.items():
                 # Determine the encoder to use for this modality
                 if config['encoder_model'] == 'MIX':
@@ -154,20 +163,21 @@ def align_modalities_process(multi_modality_model,
                     if encoder in preprocessing_map:
                         # Apply preprocessing specific to the selected encoder
                         data = preprocessing_map[encoder](data, modality)
-                    
                     # Forward the preprocessed data through the encoder
                     # Assuming forward_encoder can handle different encoder types
                     embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
                 else:
                     logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
-
             # Calculate the loss across all pairs of modalities
             loss, loss_dict = info_nce_loss(*embeddings)
             loss = loss / gradient_accumulation_steps
-
-            
+            del embeddings
+            del encoder
+            del batch_data
+            del batch_label
+            clear_memory()
             #if overfit_on_one_batch:
-              #  logging.info(f"loss on overfiting batch {loss.item()}")
+            #  logging.info(f"loss on overfiting batch {loss.item()}")
 
             # Accumulate individual losses for logging
             for key, value in loss_dict.items():
@@ -179,12 +189,9 @@ def align_modalities_process(multi_modality_model,
             if (step + 1) % gradient_accumulation_steps == 0 or (step + 1) == len(train_loader):
                 optimizer.step()  # Perform an optimization step
                 optimizer.zero_grad()  # Reset gradients
-
-                clear_memory()
             epoch_loss += loss.item()
-            
-            
-
+            del loss
+            clear_memory()
         # Log the average individual losses
         for key, values in individual_losses.items():
             avg_loss = sum(values) / len(values)
@@ -261,19 +268,19 @@ def align_modalities_process(multi_modality_model,
             training_stats["train_loss"].append(epoch_loss / len(train_loader))
             training_stats["val_loss"].append(avg_val_loss)
             
-            if avg_val_loss < best_val_loss:
-                best_val_loss = avg_val_loss
-                checkpoint = {
-                    'epoch': epoch + 1,
-                    'model_state_dict': multi_modality_model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'scheduler_state_dict': scheduler.state_dict(), 
-                    'best_val_loss': best_val_loss,
-                    # Add any other things you need to save
-                }
-                torch.save(checkpoint, checkpoint_path)
-                logging.info(f"Best val loss {best_val_loss}")
-                logging.info(f"New best model saved at epoch {epoch+1}")
+            # if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            checkpoint = {
+                'epoch': epoch + 1,
+                'model_state_dict': multi_modality_model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(), 
+                'best_val_loss': best_val_loss,
+                # Add any other things you need to save
+            }
+            torch.save(checkpoint, checkpoint_path)
+            logging.info(f"Best val loss {best_val_loss}")
+            logging.info(f"New best model saved at epoch {epoch+1}")
         # Save final training statistics
         with open(stats_path, 'w') as f:
             json.dump(training_stats, f)
