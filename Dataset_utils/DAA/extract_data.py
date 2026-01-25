@@ -1,6 +1,7 @@
 import os
 import cv2
 import csv
+import argparse
 
 class FrameExtractor:
     def __init__(self, data_dir, output_dir):
@@ -11,6 +12,8 @@ class FrameExtractor:
         participant_id, file_id, annotation_id, frame_start, frame_end, activity, chunk_id = row
         #participant_id,file_id,annotation_id,frame_start,frame_end,activity,object,location,chunk_id = row
         video_filepath = os.path.join(self.data_dir, file_id + '.mp4')
+        print(video_filepath)
+        assert os.path.isfile(video_filepath)
         new_file_id = file_id.replace("/", "_")
 
         # Create a unique identifier combining all available information
@@ -79,26 +82,42 @@ def process_annotations(annotation_file, data_dir, root_dataset_dir, dataset_sub
         frame_extractor = FrameExtractor(data_dir, output_dir)
         
         for row in reader:
+            print(row)
             frame_extractor.extract_frames(row, max_frames_per_chunk)
 
 def main():
-    data_dir = "/home/bas06400/daa/kinect_color"
-    root_dataset_dir = "/home/bas06400/daa/kinect_color/clips"
-    dataset_sub_dirs = ['train','val','test','train1','val1','test1','train2','val2','test2'] # Add 'train' and 'test' as needed ,'test1','train1','val1','test2','train2','val2'
-    annotation_files = [
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_0.train.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_0.val.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_0.test.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_1.train.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_1.val.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_1.test.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_2.train.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_2.val.csv',
-        '/home/bas06400/daa/activities_3s/kinect_depth/midlevel.chunks_90.split_2.test.csv'
-        
-        # Add other annotation files for 'train' and 'test' here
+    parser = argparse.ArgumentParser(description="Frame extraction with configurable SETTING")
+    parser.add_argument(
+        "--setting",
+        type=str,
+        required=True,
+        help="Dataset setting name (e.g. setting1, setting2)"
+    )
+    args = parser.parse_args()
+
+    settings = args.setting
+
+    data_dir = f"/net/polaris/storage/deeplearning/daa/{settings}"
+    root_dataset_dir = f"/net/polaris/storage/deeplearning/daa/{settings}/clips"
+
+    dataset_sub_dirs = [
+        'train','val','test',
+        'train1','val1','test1',
+        'train2','val2','test2'
     ]
-    
+
+    annotation_files = [
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_0.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_0.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_0.test.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_1.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_1.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_1.test.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_2.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_2.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/{settings}/midlevel.chunks_90.split_2.test.csv"
+    ]
+
     for annotation_file, dataset_sub_dir in zip(annotation_files, dataset_sub_dirs):
         process_annotations(annotation_file, data_dir, root_dataset_dir, dataset_sub_dir)
 

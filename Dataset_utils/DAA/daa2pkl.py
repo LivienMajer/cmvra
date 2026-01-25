@@ -177,15 +177,31 @@ def process_video_clips(clip_file, second_clip_file, openpose_dir, output_dir):
             #break
 
 def main():
-    clip_file = "/home/bas06400/daa/activities_3s/kinect_color/midlevel.chunks_90.split_1.test.csv"
-    clip_file_center_mirror = "/home/bas06400/daa/activities_3s/inner_mirror/midlevel.chunks_90.split_1.test.csv"
-    openpose_dir = "/home/bas06400/daa/openpose_3d"
-    output_dir = "/home/bas06400/daa/openpose_3d/clips"
-
-    # Create a unique subdirectory for this execution
-    output_dir = os.path.join(output_dir, 'test1')
-    os.makedirs(output_dir, exist_ok=True)  
-    process_video_clips(clip_file, clip_file_center_mirror,openpose_dir, output_dir)
+    annotation_files = [
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_0.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_0.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_0.test.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_1.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_1.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_1.test.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_2.train.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_2.val.csv",
+        f"/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_2.test.csv"
+    ]
+    clip_file_center_mirror_dir = "/net/polaris/storage/deeplearning/daa/activities_3s/inner_mirror"
+    for clip_file in annotation_files:
+        print(clip_file)
+        # clip_file = "/net/polaris/storage/deeplearning/daa/activities_3s/kinect_color/midlevel.chunks_90.split_1.test.csv"
+        file_suffix = clip_file.split('/')[-1]
+        clip_file_center_mirror = os.path.join(clip_file_center_mirror_dir, file_suffix)
+        openpose_dir = "/net/polaris/storage/deeplearning/daa/openpose_3d"
+        output_dir = "/net/polaris/storage/deeplearning/daa/openpose_3d/clips"
+        _, _, split, conf, _ = file_suffix.split('.')
+        _, split = split.split('_')
+        # Create a unique subdirectory for this execution
+        output_dir = os.path.join(output_dir, conf + split)
+        os.makedirs(output_dir, exist_ok=True)  
+        process_video_clips(clip_file, clip_file_center_mirror,openpose_dir, output_dir)
 
 
 if __name__ == "__main__":
