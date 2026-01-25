@@ -276,7 +276,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         if max(sample_idx) >= video_tensor.size(0):
         # Select frames based on sample_idx
             img_array = torch.zeros(12, 224, 224, 3)
-            print('empty file')
+            print('empty file', sample_idx, video_tensor.shape)
         else:
             img_array = video_tensor[sample_idx]
         img_array = img_array.permute(0, 3, 1, 2).float() / 255.

@@ -14,7 +14,8 @@ from glob import glob
 import json
 import gc
 
-from zeta.loss import InfoNCELoss1, NCEContrastiveLoss
+from zeta import loss as zeta_loss
+
 
 def align_modalities_process(multi_modality_model, 
                              train_loader, 
@@ -56,17 +57,17 @@ def align_modalities_process(multi_modality_model,
         text_model = initialize_vip_text_encoder(config, f"cuda:{device}")
 
     modalities = '_'.join(config['modalities'])
+    loss = config['loss']
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    checkpoint_filename = f"checkpoint_{modalities}_{config['encoder_model']}_{config['dataset']}_{config['split']}_{timestamp}.pth"
+    checkpoint_filename = f"checkpoint_{modalities}_{loss}_{config['encoder_model']}_{config['dataset']}_{config['split']}_{timestamp}.pth"
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
     gradient_accumulation_steps = config.get('gradient_accumulation_steps', 1)
     # overfit_on_one_batch = config.get('overfit_on_one_batch', False)
-
-
+    
     # Function to find the latest checkpoint
     def find_latest_checkpoint():
-        list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_*.pth'))
+        list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_{loss}_*.pth'))
         if list_of_files:
             return max(list_of_files, key=os.path.getctime)
         return None
@@ -77,8 +78,35 @@ def align_modalities_process(multi_modality_model,
     # Initialize the optimizer and loss function
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
-    info_nce_loss = InfoNCELoss1(temperature=temperature) 
-   
+
+    if config["loss"].lower() == 'ncc':
+        info_nce_loss = zeta_loss.NCEContrastiveLoss(temperature=temperature) 
+    elif config["loss"].lower() == 'xid':
+        use_self_similarity = False
+        if "use_self_similarity" in config:
+            if config["use_self_similarity"]:
+                use_self_similarity = True
+        use_weighting = False
+        if "use_weighting" in config:
+            if config["use_weighting"]:
+                use_weighting = True
+        use_soft_targets = False
+        if "use_soft_targets" in config:
+            if config["use_soft_targets"]:
+                use_soft_targets = True
+        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets) 
+    elif config["loss"].lower() == 'fid':
+        info_nce_loss = zeta_loss.FastApproxRobustXIDLoss(temperature=temperature)         
+    elif config["loss"].lower() =='sig':
+        info_nce_loss = zeta_loss.SigmoidContrastiveMultiModalLoss()
+    elif config["loss"].lower() =='inf':
+        info_nce_loss = zeta_loss.InfoNCELoss1(temperature=temperature)
+    elif config["loss"].lower() == 'dino':
+        info_nce_loss = zeta_loss.DINOStyleLoss(temperature=temperature)
+    else:
+        raise NotImplementedError
+
+
     # Placeholder for best validation loss
     best_val_loss = float('inf')
     start_epoch = 0
@@ -150,6 +178,7 @@ def align_modalities_process(multi_modality_model,
             embeddings = []
             if config["bind_to_text"]:
                 embeddings.append(text_model.forward(input_ids=batch_label)[1].to(f'cuda:{device}'))
+
             for modality, data in batch_data.items():
                 # Determine the encoder to use for this modality
                 if config['encoder_model'] == 'MIX':
@@ -176,14 +205,14 @@ def align_modalities_process(multi_modality_model,
             del batch_data
             del batch_label
             clear_memory()
-            #if overfit_on_one_batch:
+            # if overfit_on_one_batch:
             #  logging.info(f"loss on overfiting batch {loss.item()}")
 
             # Accumulate individual losses for logging
             for key, value in loss_dict.items():
-                if key not in individual_losses:
+               if key not in individual_losses:
                     individual_losses[key] = []
-                individual_losses[key].append(value)
+               individual_losses[key].append(value)
             
             loss.backward()
             if (step + 1) % gradient_accumulation_steps == 0 or (step + 1) == len(train_loader):
@@ -199,7 +228,7 @@ def align_modalities_process(multi_modality_model,
 
 
         logging.info(f"Epoch [{epoch+1}/{num_epochs}], Avg Loss: {epoch_loss / len(train_loader):.4f}")
-
+        """
         # Validation loop
         multi_modality_model.eval()
         val_loss = 0.0
@@ -207,7 +236,6 @@ def align_modalities_process(multi_modality_model,
 
         with torch.no_grad():
             for batch_data, _ in tqdm(val_loader, desc=f"Validation Epoch {epoch+1}/{num_epochs}"):
-                
                 #allowing mixed encoders
                 def preprocess_for_clip_vip(data, modality):
                     return data  
@@ -253,7 +281,7 @@ def align_modalities_process(multi_modality_model,
                         embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
                     else:
                         logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
-                    # Calculate the loss across all pairs of modalities
+                # Calculate the loss across all pairs of modalities
                 loss, loss_dict = info_nce_loss(*embeddings)
                 val_loss += loss.item()
 
@@ -278,15 +306,27 @@ def align_modalities_process(multi_modality_model,
                 'best_val_loss': best_val_loss,
                 # Add any other things you need to save
             }
-            torch.save(checkpoint, checkpoint_path)
-            logging.info(f"Best val loss {best_val_loss}")
-            logging.info(f"New best model saved at epoch {epoch+1}")
-        # Save final training statistics
-        with open(stats_path, 'w') as f:
-            json.dump(training_stats, f)
-        logging.info(f"Training statistics saved to {stats_path}")
+    """
+        best_val_loss = avg_loss
+        checkpoint = {
+                'epoch': epoch + 1,
+                'model_state_dict': multi_modality_model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(), 
+                'best_val_loss': best_val_loss,
+                # Add any other things you need to save
+            }
+        torch.save(checkpoint, checkpoint_path)
+        # logging.info(f"Best val loss {best_val_loss}")
+        logging.info(f"New best model saved at epoch {epoch+1}")
+        training_stats["epochs"].append(epoch + 1)
+        training_stats["train_loss"].append(epoch_loss / len(train_loader))
+        training_stats["val_loss"].append(avg_loss)
+    # Save final training statistics
+    with open(stats_path, 'w') as f:
+        json.dump(training_stats, f)
+    logging.info(f"Training statistics saved to {stats_path}")
     logging.info("Training complete!")
-
 
 
 def create_scheduler(optimizer, config):
@@ -332,14 +372,14 @@ def eval_loss_process(multi_modality_model,
     checkpoint_filename = f"checkpoint_{modalities}_{config['split']}_{timestamp}.pth"
     checkpoint_path = os.path.join(checkpoint_dir, checkpoint_filename)
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
-    
+    individual_losses = {}
 
 
 
     # Initialize the optimizer and loss function
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
-    info_nce_loss = InfoNCELoss1(temperature=temperature) #InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
+    info_nce_loss = loss.InfoNCELoss1(temperature=temperature) #InfoNCE(temperature=temperature, reduction='mean', negative_mode='paired')
 
     # Placeholder for best validation loss
     best_val_loss = float('inf')
@@ -355,7 +395,7 @@ def eval_loss_process(multi_modality_model,
     for epoch in range(0, 1):
         epoch_loss = 0.0
         optimizer.zero_grad()
-        individual_losses = {}
+        # individual_losses = {}
 
         multi_modality_model.train()
         logging.info(f"Epoch {epoch+1}/{num_epochs} - Training")
@@ -391,9 +431,9 @@ def eval_loss_process(multi_modality_model,
             
 
         # Log the average individual losses
-        for key, values in individual_losses.items():
-            avg_loss = sum(values) / len(values)
-            logging.info(f"Epoch [{epoch+1}/{num_epochs}], {key} Avg Loss: {avg_loss:.4f}")
+        # for key, values in individual_losses.items():
+        #     avg_loss = sum(values) / len(values)
+        #    logging.info(f"Epoch [{epoch+1}/{num_epochs}], {key} Avg Loss: {avg_loss:.4f}")
 
 
         logging.info(f"Epoch [{epoch+1}/{num_epochs}], Avg Loss: {epoch_loss / len(train_loader):.4f}")
@@ -415,7 +455,7 @@ def eval_loss_process(multi_modality_model,
                     embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
 
             # Calculate the loss across all pairs of modalities
-            loss, loss_dict = info_nce_loss(*embeddings)
+            loss = info_nce_loss(*embeddings)
             val_loss += loss.item()
 
             

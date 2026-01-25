@@ -131,13 +131,16 @@ def load_dataloaders(data_root, modalities=['rgb','ir'], batch_size=16, num_work
         
         if split in ['0', '1', '2']:
             # Original splits
-            train_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full_balanced.txt'
+            if 'balanced' in config and config['balanced']:
+                train_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full_balanced.txt'
+            else:
+                train_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train{split}_full.txt'
             val_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_val{split}_full.txt'
             test_data_list = f'/home/dav86141/develop/visual-modality-alignment/all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_test{split}_full.txt'
         elif split.startswith('zs'):
             # Zero-shot splits
             zs_index = split[2:]  # Extract the index from 'zs0', 'zs1', etc.
-            train_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_train_{zs_index}_balanced.txt')
+            train_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_train_{zs_index}.txt')
             val_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_val_{zs_index}.txt')
             test_data_list = os.path.join(zero_shot_base_path, f'data_zero_shot_test_{zs_index}.txt')
         else:
