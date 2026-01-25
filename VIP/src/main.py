@@ -43,6 +43,8 @@ from zeta.eval_vip_textencoder import eval_text_encoder_process
 from zeta.mae_encoder_training import mae_training
 from zeta.eval_knn import eval_knn
 
+torch.manual_seed(42)
+
 def setup_ccname():
     user = getpass.getuser()
     # check if k5start is running, exit otherwise
@@ -59,7 +61,7 @@ def setup_ccname():
         sys.stderr.write("Unable to setup KRB5CCNAME!\nmaybe k5start not running?\n")
         sys.exit(1)
 
-
+torch.multiprocessing.set_sharing_strategy('file_system')
 
 
 def worker(num):
@@ -105,7 +107,6 @@ def setup_logging(config):
 
 
 # task 1 algin modalities 
-
 def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_rate, temperature, resume_from_checkpoint, checkpoint_dir, config):
     """
     Align different modalities using a multi-modality model.
@@ -137,12 +138,13 @@ def align_modalities(modalities, train_loader, val_loader, num_epochs, learning_
     
     for i, modality in enumerate(modalities):
         freeze = modality == 'rgb' and config['bind_to_rgb']
-        
+        # freeze = modality == 'text' and config['bind_to_text']
+
         # Determine the encoder model for the current modality
         if config['encoder_model'] == 'MIX':
             assert modality in config['modalities_encoders'], f"Encoder type for modality '{modality}' is not specified in 'modalities_encoders' config."
             encoder_model = config['modalities_encoders'][modality]
-            #print(encoder_model)
+            # print(encoder_model)
         else:
             encoder_model = config['encoder_model']
         
@@ -681,7 +683,6 @@ def main():
     data_root= config['data_root']
     batch_size= config['batch_size']
     pin_memory= config['pin_memory']
-
     
     torch.set_num_threads(num_workers)
 
