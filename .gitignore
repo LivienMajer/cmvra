@@ -235,3 +235,4 @@ VIP/src/vidclip_data/output/msrvtt_retrieval
 VIP/src/model_weights/omnivore.pth
 VIP/src/configs/*
 VIP/src/predictions*
+VIP/src/features/*
