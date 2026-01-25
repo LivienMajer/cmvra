@@ -233,3 +233,5 @@ checkpoint_best_transformer.pth
 swinB_In21k_checkpoint.torch
 VIP/src/vidclip_data/output/msrvtt_retrieval
 VIP/src/model_weights/omnivore.pth
+VIP/src/configs/*
+VIP/src/predictions*
