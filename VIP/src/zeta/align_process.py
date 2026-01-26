@@ -15,6 +15,7 @@ import json
 import gc
 
 from zeta import loss as zeta_loss
+from zeta.loss import get_mm_swnce_config, AlphaScheduler
 
 
 def align_modalities_process(multi_modality_model, 
@@ -79,24 +80,44 @@ def align_modalities_process(multi_modality_model,
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
 
+    alpha_scheduler = None  # Initialize alpha scheduler
+    
+    # Configure warm-up phase for MM_SWNCE
+    warmup_epochs = config.get('warmup_epochs', 0)
+    
     if config["loss"].lower() == 'ncc':
         info_nce_loss = zeta_loss.NCEContrastiveLoss(temperature=temperature) 
     elif config["loss"].lower() == 'xid':
-        use_self_similarity = False
-        if "use_self_similarity" in config:
-            if config["use_self_similarity"]:
-                use_self_similarity = True
-        use_weighting = False
-        if "use_weighting" in config:
-            if config["use_weighting"]:
-                use_weighting = True
-        use_soft_targets = False
-        if "use_soft_targets" in config:
-            if config["use_soft_targets"]:
-                use_soft_targets = True
-        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets) 
+        # MM_SWNCE Loss mit Modi-basierter Konfiguration
+        mm_swnce_mode = config.get('mm_swnce_mode', 'wcc')  # Default: wcc (Weighting + Cycle-Consistency)
+        mm_config = get_mm_swnce_config(mm_swnce_mode)
+        logging.info(f"Using MM_SWNCE mode: '{mm_swnce_mode}' with config: {mm_config}")
+        logging.info(f"Warm-up epochs: {warmup_epochs}")
+        
+        info_nce_loss = zeta_loss.MM_SWNCE(
+            temperature=temperature,
+            use_weighting=mm_config['use_weighting'],
+            use_soft_targets=mm_config['use_soft_targets'],
+            use_self_similarity=mm_config['use_self_similarity']
+        )
+        
+        # Initialize alpha scheduler for MM_SWNCE if using self_similarity
+        if mm_config['use_self_similarity']:
+            alpha_config = config.get('alpha_config', {})
+            initial_alpha = alpha_config.get('initial_alpha', 0.9)
+            final_alpha = alpha_config.get('final_alpha', 0.2)
+            schedule_type = alpha_config.get('schedule_type', 'cosine')
+            
+            alpha_scheduler = AlphaScheduler(
+                loss_function=info_nce_loss,
+                initial_alpha=initial_alpha,
+                final_alpha=final_alpha,
+                total_epochs=num_epochs - warmup_epochs,
+                schedule_type=schedule_type
+            )
+            logging.info(f"Alpha scheduler initialized: {initial_alpha} -> {final_alpha} ({schedule_type})")
     elif config["loss"].lower() == 'fid':
-        info_nce_loss = zeta_loss.FastApproxRobustXIDLoss(temperature=temperature)         
+        info_nce_loss = zeta_loss.FastApproxMM_SWNCE(temperature=temperature)         
     elif config["loss"].lower() =='sig':
         info_nce_loss = zeta_loss.SigmoidContrastiveMultiModalLoss()
     elif config["loss"].lower() =='inf':
@@ -134,8 +155,36 @@ def align_modalities_process(multi_modality_model,
     #if overfit_on_one_batch:
     #    single_batch_data, _ = next(iter(train_loader))
     
+    def alpha_ss_schedule(epoch: int, start=0.9, end=0.2, decay_epochs=10):
+        """Schedule alpha_ss parameter for gradual decay."""
+        if epoch >= decay_epochs:
+            return end
+        frac = epoch / float(decay_epochs)
+        return start + (end - start) * frac
+    
     # Training loop
     for epoch in range(start_epoch, num_epochs):
+        # Warm-up phase: gradually enable MM_SWNCE features
+        if config["loss"].lower() == 'xid' and warmup_epochs > 0:
+            if epoch < warmup_epochs:
+                # Phase 1: Standard InfoNCE (warm-up, NO Self-Similarity)
+                info_nce_loss.use_soft_targets = False
+                info_nce_loss.use_weighting = False
+                info_nce_loss.use_self_similarity = False
+                logging.info(f"Epoch {epoch+1}/{num_epochs} - Warm-up Phase 1 (Standard InfoNCE): soft_targets=False, weighting=False, self_sim=False")
+            else:
+                # Phase 2: Enable MM_SWNCE features
+                info_nce_loss.use_soft_targets = mm_config['use_soft_targets']
+                info_nce_loss.use_weighting = mm_config['use_weighting']
+                info_nce_loss.use_self_similarity = mm_config['use_self_similarity']
+                logging.info(f"Epoch {epoch+1}/{num_epochs} - Main Phase 2: activated MM_SWNCE features")
+        
+        # Update alpha parameter for the current epoch (only if using soft targets)
+        current_alpha = None
+        if alpha_scheduler is not None:
+            current_alpha = alpha_scheduler.step(epoch)
+            logging.info(f"Epoch {epoch+1}/{num_epochs} - Alpha: {current_alpha:.3f}")
+        
         epoch_loss = 0.0
         optimizer.zero_grad()
         individual_losses = {}

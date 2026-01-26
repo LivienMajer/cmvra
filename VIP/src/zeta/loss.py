@@ -6,14 +6,55 @@ import torch.distributed as dist
 from collections import deque
 
 
-class RobustXIDLoss(nn.Module):
+def get_mm_swnce_config(mode: str) -> dict:
     """
-    Drop-in Ersatz für InfoNCELoss1:
-    - Standard InfoNCE (symmetrisch)
-    - Optional: Robuste Gewichtung nach positiver Similarity (Self Similarity)
-    - Optional: gewichtetes xID (RxID) nach Similarity-CDF
-    - Optional: Soft Targets (swapped oder cycle-consistent)
+    Definiert MM_SWNCE (Multi-Modal Soft-Weighted NCE) Varianten basierend auf Modi.
+    
+    Args:
+        mode (str): Einer von 'w', 'ss', 'cc', 'wcc', 'sscc'
+            - 'w':    Weighting only (faulty positives)
+            - 'ss':   Self-Similarity only (intra-modal consistency)
+            - 'cc':   Cycle-Consistency only (faulty negatives)
+            - 'wcc':  Weighting + Cycle-Consistency (both error types)
+            - 'sscc': Self-Similarity + Cycle-Consistency (structure + robustness)
+    
+    Returns:
+        dict: Konfiguration mit (use_weighting, use_soft_targets, use_self_similarity)
+    
+    Raises:
+        ValueError: Wenn mode nicht erkannt wird
+    """
+    CONFIGS = {
+        'w':    {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': False},
+        'ss':   {'use_weighting': False, 'use_soft_targets': False, 'use_self_similarity': True},
+        'cc':   {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': False},
+        'wcc':  {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': False},
+        'sscc': {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': True},
+    }
+    
+    if mode not in CONFIGS:
+        raise ValueError(f"Unknown MM_SWNCE mode '{mode}'. Choose from: {list(CONFIGS.keys())}")
+    
+    return CONFIGS[mode]
 
+
+class MM_SWNCE(nn.Module):
+    """
+    Multi-Modal Soft-Weighted NCE (MM_SWNCE) Loss.
+    
+    Drop-in replacement for InfoNCELoss1 with advanced robustness features:
+    - Standard InfoNCE (symmetrisch)
+    - Optional: Robuste Gewichtung nach positiver Similarity (Weighting for faulty positives)
+    - Optional: Soft Targets (Cycle-Consistent für faulty negatives)
+    - Optional: Self-Similarity (intra-modale Konsistenz)
+    
+    Modi können über get_mm_swnce_config(mode) gesetzt werden:
+    - 'w':    Weighting only
+    - 'ss':   Self-Similarity only
+    - 'cc':   Cycle-Consistency only
+    - 'wcc':  Weighting + Cycle-Consistency
+    - 'sscc': Self-Similarity + Cycle-Consistency
+    
     Aufruf identisch zu InfoNCELoss1:
         total_loss, loss_dict = loss_fn(*feature_sets)
 
@@ -309,9 +350,9 @@ class RobustXIDLoss(nn.Module):
 
 
 
-class FastApproxRobustXIDLoss(nn.Module):
+class FastApproxMM_SWNCE(nn.Module):
     """
-    Drop-in replacement for RobustXIDLoss
+    Drop-in replacement for MM_SWNCE
     ------------------------------------
     * Same call signature: loss, dict = loss_fn(*feature_sets)
     * O(M · B²) softmaxes (InfoNCE only)
