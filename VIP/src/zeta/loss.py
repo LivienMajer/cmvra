@@ -81,7 +81,8 @@ class MM_SWNCE(nn.Module):
 
         use_self_similarity: bool = False,   # Self-Similarity aktivieren
         selfsim_mix: float = 0.5,            # Anteil Self-Similarity (0=nur Cycle, 1=nur SelfSim)
-        tau_self: float = 0.07,              # Temperatur für intra-modale Softmax
+        tau_self_i2j: float = 0.07,          # Temperatur für i->j Self-Similarity (basierend auf z2)
+        tau_self_j2i: float = 0.07,          # Temperatur für j->i Self-Similarity (basierend auf z1)
     ):
         super().__init__()
         self.temp_anchor = temp_anchor_start
@@ -97,7 +98,8 @@ class MM_SWNCE(nn.Module):
         # Soft-Self-Similarity
         self.use_self_similarity = use_self_similarity
         self.selfsim_mix = selfsim_mix
-        self.tau_self = tau_self
+        self.tau_self_i2j = tau_self_i2j
+        self.tau_self_j2i = tau_self_j2i
 
         # Standard-Parameter für die Gewichtung, falls nichts übergeben wurde
         default_wp = dict(delta=0.0, kappa=0.5, w_min=0.25)
@@ -118,12 +120,11 @@ class MM_SWNCE(nn.Module):
     # --------------------------
     # Hilfsfunktionen
     # --------------------------
-    def _intra_targets(self, z, tau=None):
+    def _intra_targets(self, z, tau):
         """
         Erzeuge pure intra-modale Soft-Targets (nur Softmax, keine Identity):
         P_pure = softmax(sim_zz / tau)
         """
-        tau = self.tau_self if tau is None else tau
         B = z.size(0)
         sim_zz = (z @ z.t()) / (tau + 1e-12)   # z erwartet L2-normalisiert
         P_pure = F.softmax(sim_zz, dim=1)
@@ -134,14 +135,14 @@ class MM_SWNCE(nn.Module):
         Berechne Self-Similarity Targets (pure, ohne Identity).
         
         Berücksichtigt beide Richtungen:
-        - P_i2j: Zielraum für i->j basierend auf z2's Self-Similarity
-        - P_j2i: Zielraum für j->i basierend auf z1's Self-Similarity
+        - P_i2j: Zielraum für i->j basierend auf z2's Self-Similarity (tau_self_i2j)
+        - P_j2i: Zielraum für j->i basierend auf z1's Self-Similarity (tau_self_j2i)
         
         Returns:
             Tuple[Tensor, Tensor]: (P_i2j, P_j2i) mit Shape [B, B]
         """
-        P_i2j = self._intra_targets(z2)  # Self-similarity von z2
-        P_j2i = self._intra_targets(z1)  # Self-similarity von z1
+        P_i2j = self._intra_targets(z2, tau=self.tau_self_i2j)  # Self-similarity von z2 für i->j
+        P_j2i = self._intra_targets(z1, tau=self.tau_self_j2i)  # Self-similarity von z1 für j->i
         return P_i2j, P_j2i
 
 
@@ -179,7 +180,7 @@ class MM_SWNCE(nn.Module):
         Cycle-Consistent Targets (vereinfachte CCP-Variante):
         S_v(j|i) ∝ exp( (v_i^T a_i)/τ_t + (a_i^T v_j)/τ_s + (v_j^T a_j)/τ_t )
         S_a(j|i) ∝ exp( (a_i^T v_i)/τ_t + (v_i^T a_j)/τ_s + (a_j^T v_j)/τ_t )
-        """
+         """
         sim_av = sim_va.t()                 # [B,B]
         diag = torch.diag(sim_va)           # [B]  (v_i^T a_i)
         # Terme für T_v (P(a|v))
@@ -269,6 +270,8 @@ class MM_SWNCE(nn.Module):
             f"w_mean_{name_left}_{name_right}": w.mean().detach().cpu().item(),
             "soft_mix": float(self.soft_mix),
             "selfsim_mix": float(self.selfsim_mix) if self.use_self_similarity else 0.0,
+            "tau_self_i2j": float(self.tau_self_i2j) if self.use_self_similarity else 0.0,
+            "tau_self_j2i": float(self.tau_self_j2i) if self.use_self_similarity else 0.0,
         }
         return loss_pair, details
 

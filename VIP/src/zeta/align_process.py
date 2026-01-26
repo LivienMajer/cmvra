@@ -29,7 +29,7 @@ def align_modalities_process(multi_modality_model,
                              device=None,
                              config=None):
     # Überschreibe num_epochs falls in config definiert
-    num_epochs = config.get('num_epochs', num_epochs) if config else num_epochs
+    num_epochs = config.get('epochs', num_epochs) if config else num_epochs
     """
     Train and validate a multi-modality model for aligning different modalities.
 
