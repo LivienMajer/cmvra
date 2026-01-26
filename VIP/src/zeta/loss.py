@@ -11,12 +11,14 @@ def get_mm_swnce_config(mode: str) -> dict:
     Definiert MM_SWNCE (Multi-Modal Soft-Weighted NCE) Varianten basierend auf Modi.
     
     Args:
-        mode (str): Einer von 'w', 'ss', 'cc', 'wcc', 'sscc'
-            - 'w':    Weighting only (faulty positives)
-            - 'ss':   Self-Similarity only (intra-modal consistency)
-            - 'cc':   Cycle-Consistency only (faulty negatives)
-            - 'wcc':  Weighting + Cycle-Consistency (both error types)
-            - 'sscc': Self-Similarity + Cycle-Consistency (structure + robustness)
+        mode (str): Einer von 'w', 'ss', 'cc', 'wcc', 'wss', 'sscc', 'wccss'
+            - 'w':     Weighting only (faulty positives)
+            - 'ss':    Self-Similarity only (intra-modal consistency)
+            - 'cc':    Cycle-Consistency only (faulty negatives)
+            - 'wcc':   Weighting + Cycle-Consistency (both error types)
+            - 'wss':   Weighting + Self-Similarity (robustness + structure)
+            - 'sscc':  Self-Similarity + Cycle-Consistency (structure + robustness)
+            - 'wccss': Weighting + Cycle-Consistency + Self-Similarity (alle Features)
     
     Returns:
         dict: Konfiguration mit (use_weighting, use_soft_targets, use_self_similarity)
@@ -25,11 +27,13 @@ def get_mm_swnce_config(mode: str) -> dict:
         ValueError: Wenn mode nicht erkannt wird
     """
     CONFIGS = {
-        'w':    {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': False},
-        'ss':   {'use_weighting': False, 'use_soft_targets': False, 'use_self_similarity': True},
-        'cc':   {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': False},
-        'wcc':  {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': False},
-        'sscc': {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': True},
+        'w':     {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': False},
+        'ss':    {'use_weighting': False, 'use_soft_targets': False, 'use_self_similarity': True},
+        'cc':    {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': False},
+        'wcc':   {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': False},
+        'wss':   {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': True},
+        'sscc':  {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': True},
+        'wccss': {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': True},
     }
     
     if mode not in CONFIGS:
@@ -70,14 +74,13 @@ class MM_SWNCE(nn.Module):
         weighting_params: dict = None,       # {'delta':0.0,'kappa':0.5,'w_min':0.25}
         use_soft_targets: bool = False,      # Soft Targets aktivieren (faulty negatives)
         soft_target_mode: str = "cycle",     # 'swapped' oder 'cycle'
-        lambda_soft: float = 0.5,            # Mischung: (1-λ)*onehot + λ*SoftTarget
+        soft_mix: float = 0.5,               # Anteil soft targets (0=pure hard, 1=pure soft)
         tau_s: float = 0.02,                 # Temperatur für weiche Teile (source)
         tau_t: float = 0.07,                 # Temperatur für weiche Teile (target)
         eps: float = 1e-6,                   # numerische Stabilisierung
 
-        use_self_similarity: bool = False,   # L_SS berechnen und einmischen
-        alpha_ss: float = 0.5,               # Mischung (0 -> nur xID, 1 -> nur Self-Sim)
-        beta_ss: float = 0.2,                # P_self = beta*softmax(AA/tau_self) + (1-beta)*I
+        use_self_similarity: bool = False,   # Self-Similarity aktivieren
+        selfsim_mix: float = 0.5,            # Anteil Self-Similarity (0=nur Cycle, 1=nur SelfSim)
         tau_self: float = 0.07,              # Temperatur für intra-modale Softmax
     ):
         super().__init__()
@@ -86,15 +89,14 @@ class MM_SWNCE(nn.Module):
         self.use_weighting = use_weighting
         self.use_soft_targets = use_soft_targets
         self.soft_target_mode = soft_target_mode
-        self.lambda_soft = lambda_soft
+        self.soft_mix = soft_mix
         self.tau_s = tau_s
         self.tau_t = tau_t
         self.eps = eps
 
         # Soft-Self-Similarity
         self.use_self_similarity = use_self_similarity
-        self.alpha_ss = alpha_ss
-        self.beta_ss = beta_ss
+        self.selfsim_mix = selfsim_mix
         self.tau_self = tau_self
 
         # Standard-Parameter für die Gewichtung, falls nichts übergeben wurde
@@ -116,42 +118,31 @@ class MM_SWNCE(nn.Module):
     # --------------------------
     # Hilfsfunktionen
     # --------------------------
-    def _intra_targets(self, z, tau=None, beta=None):
+    def _intra_targets(self, z, tau=None):
         """
-        Erzeuge intra-modale Soft-Targets P_self über Cosine(z @ z^T):
-        P_self = beta * softmax(sim_zz / tau) + (1 - beta) * I
+        Erzeuge pure intra-modale Soft-Targets (nur Softmax, keine Identity):
+        P_pure = softmax(sim_zz / tau)
         """
         tau = self.tau_self if tau is None else tau
-        beta = self.beta_ss if beta is None else beta
         B = z.size(0)
         sim_zz = (z @ z.t()) / (tau + 1e-12)   # z erwartet L2-normalisiert
-        P = F.softmax(sim_zz, dim=1)
-        eye = torch.eye(B, device=z.device, dtype=z.dtype)
-        return beta * P + (1.0 - beta) * eye
+        P_pure = F.softmax(sim_zz, dim=1)
+        return P_pure
     
-
-    def _self_similarity_loss(self, z1, z2, logits_i2j, logits_j2i):
+    def _self_similarity_targets(self, z1, z2):
         """
-        Kompletter Self-Similarity-Anteil:
-        L_SS = CE( logits_i2j, P_self(z2) ) + CE( logits_j2i, P_self(z1) )
+        Berechne Self-Similarity Targets (pure, ohne Identity).
+        
+        Berücksichtigt beide Richtungen:
+        - P_i2j: Zielraum für i->j basierend auf z2's Self-Similarity
+        - P_j2i: Zielraum für j->i basierend auf z1's Self-Similarity
+        
+        Returns:
+            Tuple[Tensor, Tensor]: (P_i2j, P_j2i) mit Shape [B, B]
         """
-        # Targets
-        P_self_v = self._intra_targets(z2)  # Zielraum a für P(a|v)
-        P_self_a = self._intra_targets(z1)  # Zielraum v für P(v|a)
-
-        logP_i = F.log_softmax(logits_i2j, dim=1)  # [B,B]
-        logP_j = F.log_softmax(logits_j2i, dim=1)  # [B,B]
-
-        loss_i_vec_ss = -(P_self_v * logP_i).sum(dim=1)
-        loss_j_vec_ss = -(P_self_a * logP_j).sum(dim=1)
-
-        loss_i_ss = loss_i_vec_ss.mean()
-        loss_j_ss = loss_j_vec_ss.mean()
-        return 0.5 * (loss_i_ss + loss_j_ss), {
-            "ss_i2j": loss_i_ss.detach().cpu().item(),
-            "ss_j2i": loss_j_ss.detach().cpu().item(),
-        }
-
+        P_i2j = self._intra_targets(z2)  # Self-similarity von z2
+        P_j2i = self._intra_targets(z1)  # Self-similarity von z1
+        return P_i2j, P_j2i
 
 
     @staticmethod
@@ -210,60 +201,75 @@ class MM_SWNCE(nn.Module):
         logits_i2j = self._pairwise_logits(z1, z2)  # [B,B]
         logits_j2i = logits_i2j.t()
         B = logits_i2j.size(0)
-        labels = torch.arange(B, device=logits_i2j.device)
+        I = torch.eye(B, device=logits_i2j.device, dtype=logits_i2j.dtype)
 
-        # --- xID: hart oder weich ---
+        # --- Schritt 1: Berechne pure soft targets (OHNE Identity) ---
+        T_soft_i2j = None  # i->j (mod_i -> mod_j)
+        T_soft_j2i = None  # j->i (mod_j -> mod_i)
+        
+        # Cycle Consistency (falls aktiv)
         if self.use_soft_targets:
             sim_va = self._pairwise_sim(z1, z2)
             if self.soft_target_mode == "swapped":
-                T_v, T_a = self._soft_targets_swapped(sim_va)
+                T_cycle_j2i, T_cycle_i2j = self._soft_targets_swapped(sim_va)
             elif self.soft_target_mode == "cycle":
-                T_v, T_a = self._soft_targets_cycle(sim_va)
+                T_cycle_j2i, T_cycle_i2j = self._soft_targets_cycle(sim_va)
             else:
                 raise ValueError(f"Unknown soft_target_mode: {self.soft_target_mode}")
-
-            onehot = torch.eye(B, device=sim_va.device, dtype=sim_va.dtype)
-            T_v = (1.0 - self.lambda_soft) * onehot + self.lambda_soft * T_v
-            T_a = (1.0 - self.lambda_soft) * onehot + self.lambda_soft * T_a
-
+            T_soft_i2j = T_cycle_i2j
+            T_soft_j2i = T_cycle_j2i
+        
+        # Self-Similarity (falls aktiv)
+        if self.use_self_similarity:
+            # Berechne vollständige Self-Similarity Targets (beide Richtungen)
+            P_ss_i2j, P_ss_j2i = self._self_similarity_targets(z1, z2)
+            
+            # Schritt 2: Mische Cycle + Self-Similarity (falls beide aktiv)
+            if self.use_soft_targets:
+                # Beide aktiv: mische mit selfsim_mix
+                T_soft_i2j = (1.0 - self.selfsim_mix) * T_soft_i2j + self.selfsim_mix * P_ss_i2j
+                T_soft_j2i = (1.0 - self.selfsim_mix) * T_soft_j2i + self.selfsim_mix * P_ss_j2i
+            else:
+                # Nur Self-Similarity aktiv
+                T_soft_i2j = P_ss_i2j
+                T_soft_j2i = P_ss_j2i
+        
+        # --- Schritt 3: Mische soft targets mit Identity (soft_mix) ---
+        if T_soft_i2j is not None:
+            # Mindestens ein soft target aktiv
+            T_final_i2j = (1.0 - self.soft_mix) * I + self.soft_mix * T_soft_i2j
+            T_final_j2i = (1.0 - self.soft_mix) * I + self.soft_mix * T_soft_j2i
+            
+            # Loss berechnen mit soft targets
             logP_i = F.log_softmax(logits_i2j, dim=1)
             logP_j = F.log_softmax(logits_j2i, dim=1)
-            loss_i_vec = -(T_v * logP_i).sum(dim=1)  # [B]
-            loss_j_vec = -(T_a * logP_j).sum(dim=1)  # [B]
+            loss_i_vec = -(T_final_i2j * logP_i).sum(dim=1)  # [B]
+            loss_j_vec = -(T_final_j2i * logP_j).sum(dim=1)  # [B]
         else:
+            # Keine soft targets: Standard InfoNCE
+            labels = torch.arange(B, device=logits_i2j.device)
             loss_i_vec = F.cross_entropy(logits_i2j, labels, reduction="none")
             loss_j_vec = F.cross_entropy(logits_j2i, labels, reduction="none")
 
-        # --- RxID-Gewichte korrekt anwenden: (w*loss).sum() / w.sum() ---
+        # --- Schritt 4: Weighting anwenden ---
         if self.use_weighting:
             pos_sims = torch.diag(z1 @ z2.t())
             w = self._robust_weights_from_pos_sims(pos_sims)  # [B]
         else:
-            w = torch.ones(B, device=z1.device, dtype=loss_i_vec.dtype)       # <— dtype
+            w = torch.ones(B, device=z1.device, dtype=loss_i_vec.dtype)
 
-        loss_i_xid = (w * loss_i_vec).sum() / (w.sum() + self.eps)
-        loss_j_xid = (w * loss_j_vec).sum() / (w.sum() + self.eps)
-        loss_xid = 0.5 * (loss_i_xid + loss_j_xid)
+        loss_i_final = (w * loss_i_vec).sum() / (w.sum() + self.eps)
+        loss_j_final = (w * loss_j_vec).sum() / (w.sum() + self.eps)
+        loss_pair = 0.5 * (loss_i_final + loss_j_final)
 
-        # --- kompletter Self-Similarity-Anteil über Helper ---
-        alpha_eff = self.alpha_ss if self.use_self_similarity else 0.0
-        if alpha_eff > 0.0:
-            loss_ss, ss_details = self._self_similarity_loss(z1, z2, logits_i2j, logits_j2i)
-        else:
-            loss_ss, ss_details = torch.tensor(0.0, device=logits_i2j.device, dtype=logits_i2j.dtype), {}
-
-        # --- Mischung ---
-        loss_pair = (1.0 - alpha_eff) * loss_xid + alpha_eff * loss_ss
-
-        # --- Logging (kompakt) ---
+        # --- Logging ---
         details = {
             f"{name_left}_to_{name_right}": loss_i_vec.mean().detach().cpu().item(),
             f"{name_right}_to_{name_left}": loss_j_vec.mean().detach().cpu().item(),
             f"w_mean_{name_left}_{name_right}": w.mean().detach().cpu().item(),
-            "alpha_ss": float(alpha_eff),
-            "beta_ss": float(self.beta_ss),
+            "soft_mix": float(self.soft_mix),
+            "selfsim_mix": float(self.selfsim_mix) if self.use_self_similarity else 0.0,
         }
-        details.update(ss_details)
         return loss_pair, details
 
     def _gather_pos_sims(self, pos_sims: torch.Tensor) -> torch.Tensor:
