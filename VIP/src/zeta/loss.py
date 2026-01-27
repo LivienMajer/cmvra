@@ -42,6 +42,147 @@ def get_mm_swnce_config(mode: str) -> dict:
     return CONFIGS[mode]
 
 
+def get_mm_swnce_hyperparameters(config: dict) -> dict:
+    """
+    Zentrale Funktion zum Auslesen aller MM_SWNCE Hyperparameter aus der Config.
+    
+    Diese Funktion sammelt alle Hyperparameter mit Default-Werten und überschreibt sie
+    mit Werten aus der Config, falls vorhanden. Dies ermöglicht vollständige Kontrolle
+    über alle Parameter via Config-File.
+    
+    Args:
+        config (dict): Konfigurationsdictionary
+    
+    Returns:
+        dict: Dictionary mit allen Hyperparametern für MM_SWNCE
+        
+    Hyperparameter-Übersicht:
+    -------------------------
+    
+    KERN-PARAMETER:
+    - temperature (float): Haupttemperatur für InfoNCE Softmax [0.04-0.1]
+    
+    FEATURE-AKTIVIERUNG (aus mm_swnce_mode):
+    - use_weighting (bool): Robuste Gewichtung gegen faulty positives
+    - use_soft_targets (bool): Cycle-Consistency gegen faulty negatives
+    - use_self_similarity (bool): Intra-modale Konsistenz
+    
+    SOFT TARGETS (Cycle-Consistency):
+    - soft_target_mode (str): 'cycle' oder 'swapped'
+    - soft_mix (float): Anteil Soft-Targets vs Identity [0-1]
+    - tau_s (float): Temperatur für Source-Modalität [0.01-0.05]
+    - tau_t (float): Temperatur für Target-Modalität [0.05-0.1]
+    
+    SELF-SIMILARITY:
+    - selfsim_mix (float): Anteil Self-Sim vs Cycle [0-1]
+    - tau_self_i2j (float): Temperatur für i->j Self-Similarity [0.05-0.1]
+    - tau_self_j2i (float): Temperatur für j->i Self-Similarity [0.05-0.1]
+    
+    WEIGHTING:
+    - weighting_params (dict):
+        - delta (float): Shift für Robust-CDF [0.0-0.5]
+        - kappa (float): Spread-Faktor [0.3-0.7]
+        - w_min (float): Minimales Gewicht [0.1-0.5]
+    
+    TRAINING-DYNAMIK:
+    - warmup_epochs (int): Epochen mit Standard-InfoNCE vor Feature-Aktivierung
+    - soft_mix_config (dict): Curriculum Learning für soft_mix
+        - schedule (bool): Scheduling aktivieren
+        - initial (float): Start-Wert für soft_mix [0.0-0.3]
+        - final (float): End-Wert für soft_mix [0.7-1.0]
+        - schedule_type (str): 'linear', 'cosine', 'exponential'
+    
+    TECHNISCHE PARAMETER:
+    - eps (float): Numerische Stabilisierung [1e-6 - 1e-8]
+    """
+    
+    # Default-Werte für alle Hyperparameter
+    defaults = {
+        # === KERN-PARAMETER ===
+        'temperature': 0.1,
+        
+        # === FEATURE-AKTIVIERUNG ===
+        'mm_swnce_mode': 'wcc',  # Default: Weighting + Cycle-Consistency
+        'use_weighting': None,   # Wird aus mm_swnce_mode gesetzt, kann aber überschrieben werden
+        'use_soft_targets': None,
+        'use_self_similarity': None,
+        
+        # === SOFT TARGETS ===
+        'soft_target_mode': 'cycle',  # 'cycle' oder 'swapped'
+        'soft_mix': 0.5,
+        'tau_s': 0.02,  # Source temperature
+        'tau_t': 0.07,  # Target temperature
+        
+        # === SELF-SIMILARITY ===
+        'selfsim_mix': 0.5,
+        'tau_self_i2j': 0.07,
+        'tau_self_j2i': 0.07,
+        
+        # === WEIGHTING ===
+        'weighting_delta': 0.0,
+        'weighting_kappa': 0.5,
+        'weighting_w_min': 0.25,
+        
+        # === TRAINING-DYNAMIK ===
+        'warmup_epochs': 0,
+        'soft_mix_schedule': False,
+        'soft_mix_initial': 0.1,
+        'soft_mix_final': 0.9,
+        'soft_mix_schedule_type': 'cosine',
+        
+        # === TECHNISCH ===
+        'eps': 1e-6,
+    }
+    
+    # Extrahiere Werte aus Config mit Fallback auf Defaults
+    params = {}
+    
+    # Kern-Parameter
+    params['temperature'] = config.get('temperature', defaults['temperature'])
+    
+    # Feature-Aktivierung über mm_swnce_mode
+    mm_swnce_mode = config.get('mm_swnce_mode', defaults['mm_swnce_mode'])
+    mode_config = get_mm_swnce_config(mm_swnce_mode)
+    
+    # Erlaube manuelle Überschreibung der Feature-Flags
+    params['use_weighting'] = config.get('use_weighting', mode_config['use_weighting'])
+    params['use_soft_targets'] = config.get('use_soft_targets', mode_config['use_soft_targets'])
+    params['use_self_similarity'] = config.get('use_self_similarity', mode_config['use_self_similarity'])
+    
+    # Soft Targets
+    params['soft_target_mode'] = config.get('soft_target_mode', defaults['soft_target_mode'])
+    params['soft_mix'] = config.get('soft_mix', defaults['soft_mix'])
+    params['tau_s'] = config.get('tau_s', defaults['tau_s'])
+    params['tau_t'] = config.get('tau_t', defaults['tau_t'])
+    
+    # Self-Similarity
+    params['selfsim_mix'] = config.get('selfsim_mix', defaults['selfsim_mix'])
+    params['tau_self_i2j'] = config.get('tau_self_i2j', defaults['tau_self_i2j'])
+    params['tau_self_j2i'] = config.get('tau_self_j2i', defaults['tau_self_j2i'])
+    
+    # Weighting Parameters
+    params['weighting_params'] = {
+        'delta': config.get('weighting_delta', defaults['weighting_delta']),
+        'kappa': config.get('weighting_kappa', defaults['weighting_kappa']),
+        'w_min': config.get('weighting_w_min', defaults['weighting_w_min']),
+    }
+    
+    # Training-Dynamik
+    params['warmup_epochs'] = config.get('warmup_epochs', defaults['warmup_epochs'])
+    
+    # Soft-Mix Scheduler (aus soft_mix_config)
+    soft_mix_config = config.get('soft_mix_config', {})
+    params['soft_mix_schedule'] = soft_mix_config.get('schedule', defaults['soft_mix_schedule'])
+    params['soft_mix_initial'] = soft_mix_config.get('initial', defaults['soft_mix_initial'])
+    params['soft_mix_final'] = soft_mix_config.get('final', defaults['soft_mix_final'])
+    params['soft_mix_schedule_type'] = soft_mix_config.get('schedule_type', defaults['soft_mix_schedule_type'])
+    
+    # Technisch
+    params['eps'] = config.get('eps', defaults['eps'])
+    
+    return params
+
+
 class MM_SWNCE(nn.Module):
     """
     Multi-Modal Soft-Weighted NCE (MM_SWNCE) Loss.
@@ -67,8 +208,6 @@ class MM_SWNCE(nn.Module):
 
     def __init__(
         self,
-        temp_anchor_start: float = 0.04,
-        temp_anchor_end: float = 0.07,
         temperature: float = 0.1,           # τ für die Softmax über Paar-Ähnlichkeiten
         use_weighting: bool = True,          # gewichtetes xID aktivieren (faulty positives)
         weighting_params: dict = None,       # {'delta':0.0,'kappa':0.5,'w_min':0.25}
@@ -85,7 +224,6 @@ class MM_SWNCE(nn.Module):
         tau_self_j2i: float = 0.07,          # Temperatur für j->i Self-Similarity (basierend auf z1)
     ):
         super().__init__()
-        self.temp_anchor = temp_anchor_start
         self.temperature = temperature
         self.use_weighting = use_weighting
         self.use_soft_targets = use_soft_targets
