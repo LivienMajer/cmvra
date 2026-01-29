@@ -15,6 +15,7 @@ import json
 import gc
 
 from zeta import loss as zeta_loss
+from zeta.loss import get_mm_swnce_config, get_mm_swnce_hyperparameters
 
 
 def align_modalities_process(multi_modality_model, 
@@ -27,6 +28,8 @@ def align_modalities_process(multi_modality_model,
                              checkpoint_dir='/home/bas06400/Thesis/VIP/src/align_checkpoints',
                              device=None,
                              config=None):
+    # Überschreibe num_epochs falls in config definiert
+    num_epochs = config.get('epochs', num_epochs) if config else num_epochs
     """
     Train and validate a multi-modality model for aligning different modalities.
 
@@ -96,23 +99,9 @@ def align_modalities_process(multi_modality_model,
         if "use_soft_targets" in config:
             if config["use_soft_targets"]:
                 use_soft_targets = True
-        # Initialize soft_mix scheduler (Curriculum Learning)
-        if config['soft_mix']:
-            from zeta.loss import create_alpha_scheduler
-            soft_mix_schedule = create_alpha_scheduler(
-                initial_alpha=0.0,
-                final_alpha=config['soft_mix'],
-                total_epochs=num_epochs - config['warmup_epochs'],
-                schedule_type='linear'
-            )
-            alpha_scheduler = soft_mix_schedule
-            logging.info(f"Soft_mix scheduler active: Curriculum Learning enabled")
-        else:
-            logging.info(f"Soft_mix constant: {config['soft_mix']}, Selfsim_mix constant: {config['selfsim_mix']}")
-
-        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, selfsim_mix=config['selfsim_mix'], soft_mix=config['soft_mix']) 
+        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets) 
     elif config["loss"].lower() == 'fid':
-        info_nce_loss = zeta_loss.FastApproxRobustXIDLoss(temperature=temperature)         
+        info_nce_loss = zeta_loss.FastApproxMM_SWNCE(temperature=temperature)         
     elif config["loss"].lower() =='sig':
         info_nce_loss = zeta_loss.SigmoidContrastiveMultiModalLoss()
     elif config["loss"].lower() =='inf':
@@ -149,11 +138,36 @@ def align_modalities_process(multi_modality_model,
     logging.info("Starting training loop")
     #if overfit_on_one_batch:
     #    single_batch_data, _ = next(iter(train_loader))
-    ince_epoch = 0
-    if "warmup_epochs" in config:
-        ince_epoch = config["warmup_epochs"]
+    
     # Training loop
     for epoch in range(start_epoch, num_epochs):
+        # Warm-up phase: gradually enable MM_SWNCE features
+        if config["loss"].lower() == 'xid':
+            params = get_mm_swnce_hyperparameters(config)
+            warmup_epochs = params['warmup_epochs']
+            
+            if warmup_epochs > 0 and epoch < warmup_epochs:
+                # Phase 1: Standard InfoNCE (warm-up, NO Self-Similarity)
+                info_nce_loss.use_soft_targets = False
+                info_nce_loss.use_weighting = False
+                info_nce_loss.use_self_similarity = False
+                logging.info(f"Epoch {epoch+1}/{num_epochs} - Warm-up Phase 1 (Standard InfoNCE): soft_targets=False, weighting=False, self_sim=False")
+            elif warmup_epochs > 0 and epoch >= warmup_epochs:
+                # Phase 2: Enable MM_SWNCE features
+                info_nce_loss.use_soft_targets = params['use_soft_targets']
+                info_nce_loss.use_weighting = params['use_weighting']
+                info_nce_loss.use_self_similarity = params['use_self_similarity']
+                logging.info(f"Epoch {epoch+1}/{num_epochs} - Main Phase 2: activated MM_SWNCE features")
+        
+        # Update soft_mix parameter for the current epoch
+        if alpha_scheduler is not None and config["loss"].lower() == 'xid':
+            params = get_mm_swnce_hyperparameters(config)
+            warmup_epochs = params['warmup_epochs']
+            if epoch >= warmup_epochs:
+                current_soft_mix = alpha_scheduler(epoch - warmup_epochs)  # Schedule-Funktion aufrufen
+                info_nce_loss.soft_mix = current_soft_mix  # Direkt zuweisen
+                logging.info(f"Epoch {epoch+1}/{num_epochs} - Soft_mix: {current_soft_mix:.3f} ({(1-current_soft_mix)*100:.0f}% Identity, {current_soft_mix*100:.0f}% soft)")
+        
         epoch_loss = 0.0
         optimizer.zero_grad()
         individual_losses = {}

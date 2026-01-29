@@ -6,14 +6,200 @@ import torch.distributed as dist
 from collections import deque
 
 
-class RobustXIDLoss(nn.Module):
+def get_mm_swnce_config(mode: str) -> dict:
     """
-    Drop-in Ersatz für InfoNCELoss1:
-    - Standard InfoNCE (symmetrisch)
-    - Optional: Robuste Gewichtung nach positiver Similarity (Self Similarity)
-    - Optional: gewichtetes xID (RxID) nach Similarity-CDF
-    - Optional: Soft Targets (swapped oder cycle-consistent)
+    Definiert MM_SWNCE (Multi-Modal Soft-Weighted NCE) Varianten basierend auf Modi.
+    
+    Args:
+        mode (str): Einer von 'w', 'ss', 'cc', 'wcc', 'wss', 'sscc', 'wccss'
+            - 'w':     Weighting only (faulty positives)
+            - 'ss':    Self-Similarity only (intra-modal consistency)
+            - 'cc':    Cycle-Consistency only (faulty negatives)
+            - 'wcc':   Weighting + Cycle-Consistency (both error types)
+            - 'wss':   Weighting + Self-Similarity (robustness + structure)
+            - 'sscc':  Self-Similarity + Cycle-Consistency (structure + robustness)
+            - 'wccss': Weighting + Cycle-Consistency + Self-Similarity (alle Features)
+    
+    Returns:
+        dict: Konfiguration mit (use_weighting, use_soft_targets, use_self_similarity)
+    
+    Raises:
+        ValueError: Wenn mode nicht erkannt wird
+    """
+    CONFIGS = {
+        'w':     {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': False},
+        'ss':    {'use_weighting': False, 'use_soft_targets': False, 'use_self_similarity': True},
+        'cc':    {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': False},
+        'wcc':   {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': False},
+        'wss':   {'use_weighting': True,  'use_soft_targets': False, 'use_self_similarity': True},
+        'sscc':  {'use_weighting': False, 'use_soft_targets': True,  'use_self_similarity': True},
+        'wccss': {'use_weighting': True,  'use_soft_targets': True,  'use_self_similarity': True},
+    }
+    
+    if mode not in CONFIGS:
+        raise ValueError(f"Unknown MM_SWNCE mode '{mode}'. Choose from: {list(CONFIGS.keys())}")
+    
+    return CONFIGS[mode]
 
+
+def get_mm_swnce_hyperparameters(config: dict) -> dict:
+    """
+    Zentrale Funktion zum Auslesen aller MM_SWNCE Hyperparameter aus der Config.
+    
+    Diese Funktion sammelt alle Hyperparameter mit Default-Werten und überschreibt sie
+    mit Werten aus der Config, falls vorhanden. Dies ermöglicht vollständige Kontrolle
+    über alle Parameter via Config-File.
+    
+    Args:
+        config (dict): Konfigurationsdictionary
+    
+    Returns:
+        dict: Dictionary mit allen Hyperparametern für MM_SWNCE
+        
+    Hyperparameter-Übersicht:
+    -------------------------
+    
+    KERN-PARAMETER:
+    - temperature (float): Haupttemperatur für InfoNCE Softmax [0.04-0.1]
+    
+    FEATURE-AKTIVIERUNG (aus mm_swnce_mode):
+    - use_weighting (bool): Robuste Gewichtung gegen faulty positives
+    - use_soft_targets (bool): Cycle-Consistency gegen faulty negatives
+    - use_self_similarity (bool): Intra-modale Konsistenz
+    
+    SOFT TARGETS (Cycle-Consistency):
+    - soft_target_mode (str): 'cycle' oder 'swapped'
+    - soft_mix (float): Anteil Soft-Targets vs Identity [0-1]
+    - tau_s (float): Temperatur für Source-Modalität [0.01-0.05]
+    - tau_t (float): Temperatur für Target-Modalität [0.05-0.1]
+    
+    SELF-SIMILARITY:
+    - selfsim_mix (float): Anteil Self-Sim vs Cycle [0-1]
+    - tau_self_i2j (float): Temperatur für i->j Self-Similarity [0.05-0.1]
+    - tau_self_j2i (float): Temperatur für j->i Self-Similarity [0.05-0.1]
+    
+    WEIGHTING:
+    - weighting_params (dict):
+        - delta (float): Shift für Robust-CDF [0.0-0.5]
+        - kappa (float): Spread-Faktor [0.3-0.7]
+        - w_min (float): Minimales Gewicht [0.1-0.5]
+    
+    TRAINING-DYNAMIK:
+    - warmup_epochs (int): Epochen mit Standard-InfoNCE vor Feature-Aktivierung
+    - soft_mix_config (dict): Curriculum Learning für soft_mix
+        - schedule (bool): Scheduling aktivieren
+        - initial (float): Start-Wert für soft_mix [0.0-0.3]
+        - final (float): End-Wert für soft_mix [0.7-1.0]
+        - schedule_type (str): 'linear', 'cosine', 'exponential'
+    
+    TECHNISCHE PARAMETER:
+    - eps (float): Numerische Stabilisierung [1e-6 - 1e-8]
+    """
+    
+    # Default-Werte für alle Hyperparameter
+    defaults = {
+        # === KERN-PARAMETER ===
+        'temperature': 0.1,
+        
+        # === FEATURE-AKTIVIERUNG ===
+        'mm_swnce_mode': 'wcc',  # Default: Weighting + Cycle-Consistency
+        'use_weighting': None,   # Wird aus mm_swnce_mode gesetzt, kann aber überschrieben werden
+        'use_soft_targets': None,
+        'use_self_similarity': None,
+        
+        # === SOFT TARGETS ===
+        'soft_target_mode': 'cycle',  # 'cycle' oder 'swapped'
+        'soft_mix': 0.5,
+        'tau_s': 0.02,  # Source temperature
+        'tau_t': 0.07,  # Target temperature
+        
+        # === SELF-SIMILARITY ===
+        'selfsim_mix': 0.5,
+        'tau_self_i2j': 0.07,
+        'tau_self_j2i': 0.07,
+        
+        # === WEIGHTING ===
+        'weighting_delta': 0.0,
+        'weighting_kappa': 0.5,
+        'weighting_w_min': 0.25,
+        
+        # === TRAINING-DYNAMIK ===
+        'warmup_epochs': 0,
+        'soft_mix_schedule': False,
+        'soft_mix_initial': 0.1,
+        'soft_mix_final': 0.9,
+        'soft_mix_schedule_type': 'cosine',
+        
+        # === TECHNISCH ===
+        'eps': 1e-6,
+    }
+    
+    # Extrahiere Werte aus Config mit Fallback auf Defaults
+    params = {}
+    
+    # Kern-Parameter
+    params['temperature'] = config.get('temperature', defaults['temperature'])
+    
+    # Feature-Aktivierung über mm_swnce_mode
+    mm_swnce_mode = config.get('mm_swnce_mode', defaults['mm_swnce_mode'])
+    mode_config = get_mm_swnce_config(mm_swnce_mode)
+    
+    # Erlaube manuelle Überschreibung der Feature-Flags
+    params['use_weighting'] = config.get('use_weighting', mode_config['use_weighting'])
+    params['use_soft_targets'] = config.get('use_soft_targets', mode_config['use_soft_targets'])
+    params['use_self_similarity'] = config.get('use_self_similarity', mode_config['use_self_similarity'])
+    
+    # Soft Targets
+    params['soft_target_mode'] = config.get('soft_target_mode', defaults['soft_target_mode'])
+    params['soft_mix'] = config.get('soft_mix', defaults['soft_mix'])
+    params['tau_s'] = config.get('tau_s', defaults['tau_s'])
+    params['tau_t'] = config.get('tau_t', defaults['tau_t'])
+    
+    # Self-Similarity
+    params['selfsim_mix'] = config.get('selfsim_mix', defaults['selfsim_mix'])
+    params['tau_self_i2j'] = config.get('tau_self_i2j', defaults['tau_self_i2j'])
+    params['tau_self_j2i'] = config.get('tau_self_j2i', defaults['tau_self_j2i'])
+    
+    # Weighting Parameters
+    params['weighting_params'] = {
+        'delta': config.get('weighting_delta', defaults['weighting_delta']),
+        'kappa': config.get('weighting_kappa', defaults['weighting_kappa']),
+        'w_min': config.get('weighting_w_min', defaults['weighting_w_min']),
+    }
+    
+    # Training-Dynamik
+    params['warmup_epochs'] = config.get('warmup_epochs', defaults['warmup_epochs'])
+    
+    # Soft-Mix Scheduler (aus soft_mix_config)
+    soft_mix_config = config.get('soft_mix_config', {})
+    params['soft_mix_schedule'] = soft_mix_config.get('schedule', defaults['soft_mix_schedule'])
+    params['soft_mix_initial'] = soft_mix_config.get('initial', defaults['soft_mix_initial'])
+    params['soft_mix_final'] = soft_mix_config.get('final', defaults['soft_mix_final'])
+    params['soft_mix_schedule_type'] = soft_mix_config.get('schedule_type', defaults['soft_mix_schedule_type'])
+    
+    # Technisch
+    params['eps'] = config.get('eps', defaults['eps'])
+    
+    return params
+
+
+class MM_SWNCE(nn.Module):
+    """
+    Multi-Modal Soft-Weighted NCE (MM_SWNCE) Loss.
+    
+    Drop-in replacement for InfoNCELoss1 with advanced robustness features:
+    - Standard InfoNCE (symmetrisch)
+    - Optional: Robuste Gewichtung nach positiver Similarity (Weighting for faulty positives)
+    - Optional: Soft Targets (Cycle-Consistent für faulty negatives)
+    - Optional: Self-Similarity (intra-modale Konsistenz)
+    
+    Modi können über get_mm_swnce_config(mode) gesetzt werden:
+    - 'w':    Weighting only
+    - 'ss':   Self-Similarity only
+    - 'cc':   Cycle-Consistency only
+    - 'wcc':  Weighting + Cycle-Consistency
+    - 'sscc': Self-Similarity + Cycle-Consistency
+    
     Aufruf identisch zu InfoNCELoss1:
         total_loss, loss_dict = loss_fn(*feature_sets)
 
@@ -22,18 +208,15 @@ class RobustXIDLoss(nn.Module):
 
     def __init__(
         self,
-        temp_anchor_start: float = 0.04,
-        temp_anchor_end: float = 0.07,
         temperature: float = 0.1,           # τ für die Softmax über Paar-Ähnlichkeiten
         use_weighting: bool = True,          # gewichtetes xID aktivieren (faulty positives)
         weighting_params: dict = None,       # {'delta':0.0,'kappa':0.5,'w_min':0.25}
         use_soft_targets: bool = False,      # Soft Targets aktivieren (faulty negatives)
         soft_target_mode: str = "cycle",     # 'swapped' oder 'cycle'
-        lambda_soft: float = 0.5,            # Mischung: (1-λ)*onehot + λ*SoftTarget
+        soft_mix: float = 0.5,               # Anteil soft targets (0=pure hard, 1=pure soft)
         tau_s: float = 0.02,                 # Temperatur für weiche Teile (source)
         tau_t: float = 0.07,                 # Temperatur für weiche Teile (target)
         eps: float = 1e-6,                   # numerische Stabilisierung
-        soft_mix: float = 0.5,
         selfsim_mix: float = 0.5,
         use_self_similarity: bool = False,   # L_SS berechnen und einmischen
         alpha_ss: float = 0.5,               # Mischung (0 -> nur xID, 1 -> nur Self-Sim)
@@ -41,15 +224,13 @@ class RobustXIDLoss(nn.Module):
         tau_self: float = 0.07,              # Temperatur für intra-modale Softmax
         tau_self_i2j: float = 0.07,          # Temperatur für i->j Self-Similarity (basierend auf z2)
         tau_self_j2i: float = 0.07,          # Temperatur für j->i Self-Similarity (basierend auf z1)
-
     ):
         super().__init__()
-        self.temp_anchor = temp_anchor_start
         self.temperature = temperature
         self.use_weighting = use_weighting
         self.use_soft_targets = use_soft_targets
         self.soft_target_mode = soft_target_mode
-        self.lambda_soft = lambda_soft
+        self.soft_mix = soft_mix
         self.tau_s = tau_s
         self.tau_t = tau_t
         self.eps = eps
@@ -60,6 +241,7 @@ class RobustXIDLoss(nn.Module):
         self.beta_ss = beta_ss
         self.tau_self = tau_self
         self.soft_mix = soft_mix
+
         self.selfsim_mix = selfsim_mix
         self.tau_self_i2j = tau_self_i2j
         self.tau_self_j2i = tau_self_j2i
@@ -321,9 +503,9 @@ class RobustXIDLoss(nn.Module):
         return total_loss, loss_dict
 
 
-class FastApproxRobustXIDLoss(nn.Module):
+class FastApproxMM_SWNCE(nn.Module):
     """
-    Drop-in replacement for RobustXIDLoss
+    Drop-in replacement for MM_SWNCE
     ------------------------------------
     * Same call signature: loss, dict = loss_fn(*feature_sets)
     * O(M · B²) softmaxes (InfoNCE only)
