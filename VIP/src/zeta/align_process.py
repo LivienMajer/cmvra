@@ -79,6 +79,8 @@ def align_modalities_process(multi_modality_model,
     optimizer = optim.Adam(multi_modality_model.parameters(), lr=learning_rate)
     scheduler = create_scheduler(optimizer, config)
 
+    ince = zeta_loss.InfoNCELoss1(temperature=temperature)
+
     if config["loss"].lower() == 'ncc':
         info_nce_loss = zeta_loss.NCEContrastiveLoss(temperature=temperature) 
     elif config["loss"].lower() == 'xid':
@@ -94,7 +96,21 @@ def align_modalities_process(multi_modality_model,
         if "use_soft_targets" in config:
             if config["use_soft_targets"]:
                 use_soft_targets = True
-        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets) 
+        # Initialize soft_mix scheduler (Curriculum Learning)
+        if config['soft_mix']:
+            from zeta.loss import create_alpha_scheduler
+            soft_mix_schedule = create_alpha_scheduler(
+                initial_alpha=0.0,
+                final_alpha=config['soft_mix'],
+                total_epochs=num_epochs - config['warmup_epochs'],
+                schedule_type='linear'
+            )
+            alpha_scheduler = soft_mix_schedule
+            logging.info(f"Soft_mix scheduler active: Curriculum Learning enabled")
+        else:
+            logging.info(f"Soft_mix constant: {config['soft_mix']}, Selfsim_mix constant: {config['selfsim_mix']}")
+
+        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, selfsim_mix=config['selfsim_mix'], soft_mix=config['soft_mix']) 
     elif config["loss"].lower() == 'fid':
         info_nce_loss = zeta_loss.FastApproxRobustXIDLoss(temperature=temperature)         
     elif config["loss"].lower() =='sig':
@@ -133,7 +149,9 @@ def align_modalities_process(multi_modality_model,
     logging.info("Starting training loop")
     #if overfit_on_one_batch:
     #    single_batch_data, _ = next(iter(train_loader))
-    
+    ince_epoch = 0
+    if "warmup_epochs" in config:
+        ince_epoch = config["warmup_epochs"]
     # Training loop
     for epoch in range(start_epoch, num_epochs):
         epoch_loss = 0.0
@@ -166,6 +184,12 @@ def align_modalities_process(multi_modality_model,
                     return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
                 else:
                     return data.permute(0, 2, 1, 3, 4)
+                
+            def alpha_ss_schedule(epoch: int, epoch_max: int, start=0.9, end=0.2, decay_epochs=10):
+                    if epoch >= decay_epochs:
+                        return end
+                    frac = epoch / epoch_max
+                    return frac * end + (1 - frac) * start
 
             # Mapping encoders to their preprocessing functions
             preprocessing_map = {
@@ -198,7 +222,14 @@ def align_modalities_process(multi_modality_model,
                 else:
                     logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
             # Calculate the loss across all pairs of modalities
-            loss, loss_dict = info_nce_loss(*embeddings)
+            if epoch < ince_epoch:
+                loss, loss_dict = ince(*embeddings)
+            else:
+                from zeta.loss import RobustXIDLoss
+                if isinstance(info_nce_loss, RobustXIDLoss):
+                    info_nce_loss.alpha_ss = alpha_scheduler(epoch - ince_epoch) # alpha_ss_schedule(epoch - ince_epoch, num_epochs, start=0.01, end=0.2, decay_epochs=2)
+                    info_nce_loss.soft_mix = alpha_scheduler(epoch - ince_epoch)
+                loss, loss_dict = info_nce_loss(*embeddings)
             loss = loss / gradient_accumulation_steps
             del embeddings
             del encoder
