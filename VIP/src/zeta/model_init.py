@@ -628,7 +628,7 @@ def init_mae_skeleton_pretrained(cfg, device ,freeze=False):
     return model
 
 
-def init_omnivore_for_ceval(cfg, device, freeze=False):
+def init_omnivore_for_ceval(cfg, device, freeze=False, modality='ir'):
     """
     Initialize Omnivore model specifically for cross-view evaluation (CEVAL) on DAA.
 
@@ -658,7 +658,7 @@ def init_omnivore_for_ceval(cfg, device, freeze=False):
             param.requires_grad = True
     cktp = torch.load(os.path.join(cfg['cktp_dir'],cfg['aligned_model']), map_location=f"cuda:{device}")
     # Adjust for DataParallel state_dict keys
-    new_state_dict = {k.replace('module.modalities_encoders.ir.module.', ''): v for k, v in cktp['model_state_dict'].items()}
+    new_state_dict = {k.replace(f'module.modalities_encoders.{modality}.module.', ''): v for k, v in cktp['model_state_dict'].items()}
     model.load_state_dict(new_state_dict, strict=False)  
     # Freeze all parameters in the model
     for param in model.parameters():

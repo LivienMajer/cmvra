@@ -76,7 +76,7 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
         else:
             self.transform = init_transform_dict_simple(video_res=[540, 960],
                                              input_res=[224, 224])[mode]
-         
+
         # Initialize skeleton augmentations
         self.random_rot = RandomRot(theta=0.3)
         self.random_scale = RandomScale(scale=0.2)
@@ -142,7 +142,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
             if path != 'None':  # Checking if the modality is available
                 if modality == 'skeleton':
                     full_path = os.path.join(self.data_root, path)
-                    
                     try:
                         # Attempt to load and sample the skeleton data
                         skeleton_data = self._load_skeleton_data(full_path)[:, sample_indices, :, :]
@@ -155,8 +154,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                         # Add a new axis to ensure skeleton_data has 4 dimensions
                         #skeleton_data = skeleton_data[np.newaxis, :, :, :]
                     #skeleton_data = self.interpolate_clip(skeleton_data)
-
-                    
 
                     # skeleton_data = Normalize3D()({'keypoint': skeleton_data})['keypoint']
                     if 'ntu' in full_path:
@@ -173,7 +170,6 @@ class MultiModalVideoDataset3(torch.utils.data.Dataset):
                             skeleton_data = self.random_rot({'keypoint': skeleton_data})['keypoint']
                             skeleton_data = self.random_scale({'keypoint': skeleton_data})['keypoint']
                             skeleton_data = self.random_noise({'keypoint': skeleton_data})['keypoint']
-                    
 
                     # Convert to tensor and integrate
                     skeleton_tensor = torch.tensor(skeleton_data, dtype=torch.float32).permute(1, 0, 2, 3)

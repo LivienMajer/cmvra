@@ -5,7 +5,7 @@ import torch.optim as optim
 from tqdm import tqdm
 import random
 from zeta.model_init import initialize_vip_encoder, initialize_vip_text_encoder
-
+import math
 
 import logging
 import os
@@ -67,10 +67,10 @@ def align_modalities_process(multi_modality_model,
     stats_path = os.path.join(checkpoint_dir, checkpoint_filename[:-4])
     gradient_accumulation_steps = config.get('gradient_accumulation_steps', 1)
     # overfit_on_one_batch = config.get('overfit_on_one_batch', False)
-    
+
     # Function to find the latest checkpoint
     def find_latest_checkpoint():
-        list_of_files = glob(os.path.join(checkpoint_dir, f'checkpoint_{modalities}_{loss}_*.pth'))
+        list_of_files = glob(os.path.join(checkpoint_dir, f"checkpoint_{modalities}_{loss}_{config['encoder_model']}_{config['dataset']}_{config['split']}*.pth"))
         if list_of_files:
             return max(list_of_files, key=os.path.getctime)
         return None
@@ -83,28 +83,67 @@ def align_modalities_process(multi_modality_model,
     scheduler = create_scheduler(optimizer, config)
 
     ince = zeta_loss.InfoNCELoss1(temperature=temperature)
-
+    use_entropy = False
+    if "use_entropy" in config:
+        use_entropy = config["use_entropy"]
     if config["loss"].lower() == 'ncc':
         info_nce_loss = zeta_loss.NCEContrastiveLoss(temperature=temperature) 
     elif config["loss"].lower() == 'xid':
         use_self_similarity = False
         if "use_self_similarity" in config:
             if config["use_self_similarity"]:
-                use_self_similarity = True
+                use_self_similarity = config["use_self_similarity"]
         use_weighting = False
         if "use_weighting" in config:
             if config["use_weighting"]:
-                use_weighting = True
+                use_weighting = config["use_weighting"]
         use_soft_targets = False
         if "use_soft_targets" in config:
             if config["use_soft_targets"]:
-                use_soft_targets = True
-        info_nce_loss = zeta_loss.RobustXIDLoss(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets) 
+                use_soft_targets = config["use_soft_targets"]
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
     elif config["loss"].lower() == 'fid':
         info_nce_loss = zeta_loss.FastApproxMM_SWNCE(temperature=temperature)         
     elif config["loss"].lower() =='sig':
         info_nce_loss = zeta_loss.SigmoidContrastiveMultiModalLoss()
+    elif config["loss"].lower() =='xidw':
+            use_self_similarity = False
+            use_soft_targets = use_weighting = True
+            info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='xidss':
+        use_self_similarity = True
+        use_soft_targets = use_weighting = False
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='xidw':
+            use_soft_targets = use_self_similarity = False
+            use_weighting = True
+            info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy)
+    elif config["loss"].lower() =='infe':
+            use_soft_targets = use_self_similarity = False
+            use_weighting = False
+            use_entropy = True
+            info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='xidwcc':
+        use_soft_targets = use_weighting = True
+        use_self_similarity = False
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='xidwcce':
+        use_soft_targets = use_weighting = True
+        use_self_similarity = False
+        use_entropy = True
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='xidcc':
+        use_soft_targets = True
+        use_self_similarity = use_weighting = False
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy)
+    elif config["loss"].lower() =='cross':
+        use_self_similarity = use_soft_targets = True
+        use_weighting = False
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, soft_target_mode='cross', use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy)
     elif config["loss"].lower() =='inf':
+        use_self_similarity = use_soft_targets = use_weighting = False
+        info_nce_loss = zeta_loss.MM_SWNCE(temperature=temperature, use_self_similarity=use_self_similarity, use_weighting=use_weighting, use_soft_targets=use_soft_targets, use_entropy=use_entropy) 
+    elif config["loss"].lower() =='ince':
         info_nce_loss = zeta_loss.InfoNCELoss1(temperature=temperature)
     elif config["loss"].lower() == 'dino':
         info_nce_loss = zeta_loss.DINOStyleLoss(temperature=temperature)
@@ -138,35 +177,50 @@ def align_modalities_process(multi_modality_model,
     logging.info("Starting training loop")
     #if overfit_on_one_batch:
     #    single_batch_data, _ = next(iter(train_loader))
-    
+
+    def alpha_schedule(epoch: int, epoch_max: int, start=0.9, end=0.2, decay_epochs=10):
+                    if epoch >= epoch_max:
+                        return end
+                    frac = (epoch - decay_epochs) / (epoch_max - decay_epochs)
+                    return frac * end + (1 - frac) * start
+
+    def cosine_schedule(epoch, max_epoch):
+        alpha_start = 0.9
+        alpha_end = 0.1
+
+        cos_val = 0.5 * (1 + math.cos(math.pi * epoch / max_epoch))
+        return alpha_end + (alpha_start - alpha_end) * cos_val
+
     # Training loop
     for epoch in range(start_epoch, num_epochs):
         # Warm-up phase: gradually enable MM_SWNCE features
-        if config["loss"].lower() == 'xid':
+        if 'xid' in config["loss"].lower():
             params = get_mm_swnce_hyperparameters(config)
-            warmup_epochs = params['warmup_epochs']
+            if 'warmup_epochs' in params:
+                warmup_epochs = params['warmup_epochs']
+            else:
+                warmup_epochs = 0
             
             if warmup_epochs > 0 and epoch < warmup_epochs:
                 # Phase 1: Standard InfoNCE (warm-up, NO Self-Similarity)
                 info_nce_loss.use_soft_targets = False
                 info_nce_loss.use_weighting = False
                 info_nce_loss.use_self_similarity = False
+                info_nce_loss.soft_mix = info_nce_loss.selfsim_mix = 0.
                 logging.info(f"Epoch {epoch+1}/{num_epochs} - Warm-up Phase 1 (Standard InfoNCE): soft_targets=False, weighting=False, self_sim=False")
             elif warmup_epochs > 0 and epoch >= warmup_epochs:
                 # Phase 2: Enable MM_SWNCE features
+                if info_nce_loss.use_soft_targets:
+                    info_nce_loss.soft_mix = alpha_schedule(epoch, num_epochs - warmup_epochs, 0.0, 
+                                                                params["soft_mix"], warmup_epochs)
+                if info_nce_loss.use_self_similarity:
+                    info_nce_loss.selfsim_mix = alpha_schedule(epoch, num_epochs - warmup_epochs, 0.0, 
+                                                                params['selfsim_mix'], warmup_epochs)
+                    info_nce_loss.alpha_ss = cosine_schedule(epoch - warmup_epochs, num_epochs - warmup_epochs)
                 info_nce_loss.use_soft_targets = params['use_soft_targets']
                 info_nce_loss.use_weighting = params['use_weighting']
                 info_nce_loss.use_self_similarity = params['use_self_similarity']
                 logging.info(f"Epoch {epoch+1}/{num_epochs} - Main Phase 2: activated MM_SWNCE features")
-        
-        # Update soft_mix parameter for the current epoch
-        if alpha_scheduler is not None and config["loss"].lower() == 'xid':
-            params = get_mm_swnce_hyperparameters(config)
-            warmup_epochs = params['warmup_epochs']
-            if epoch >= warmup_epochs:
-                current_soft_mix = alpha_scheduler(epoch - warmup_epochs)  # Schedule-Funktion aufrufen
-                info_nce_loss.soft_mix = current_soft_mix  # Direkt zuweisen
-                logging.info(f"Epoch {epoch+1}/{num_epochs} - Soft_mix: {current_soft_mix:.3f} ({(1-current_soft_mix)*100:.0f}% Identity, {current_soft_mix*100:.0f}% soft)")
         
         epoch_loss = 0.0
         optimizer.zero_grad()
@@ -198,12 +252,6 @@ def align_modalities_process(multi_modality_model,
                     return torch.cat((data, data[:, :, 0:1, :, :]), 2).permute(0, 2, 1, 3, 4)
                 else:
                     return data.permute(0, 2, 1, 3, 4)
-                
-            def alpha_ss_schedule(epoch: int, epoch_max: int, start=0.9, end=0.2, decay_epochs=10):
-                    if epoch >= decay_epochs:
-                        return end
-                    frac = epoch / epoch_max
-                    return frac * end + (1 - frac) * start
 
             # Mapping encoders to their preprocessing functions
             preprocessing_map = {
@@ -235,15 +283,7 @@ def align_modalities_process(multi_modality_model,
                     embeddings.append(multi_modality_model.module.forward_encoder(modality, data))
                 else:
                     logging.warn(f"Unsupported modality or encoder: {modality}, Encoder: {encoder}")
-            # Calculate the loss across all pairs of modalities
-            if epoch < ince_epoch:
-                loss, loss_dict = ince(*embeddings)
-            else:
-                from zeta.loss import RobustXIDLoss
-                if isinstance(info_nce_loss, RobustXIDLoss):
-                    info_nce_loss.alpha_ss = alpha_scheduler(epoch - ince_epoch) # alpha_ss_schedule(epoch - ince_epoch, num_epochs, start=0.01, end=0.2, decay_epochs=2)
-                    info_nce_loss.soft_mix = alpha_scheduler(epoch - ince_epoch)
-                loss, loss_dict = info_nce_loss(*embeddings)
+            loss, loss_dict = info_nce_loss(*embeddings)
             loss = loss / gradient_accumulation_steps
             del embeddings
             del encoder

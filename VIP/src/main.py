@@ -254,7 +254,7 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
             encoder_model = config['modalities_encoders'][modality]
         else:
             encoder_model = config['encoder_model']
-        
+
         if encoder_model == 'CLIP-VIP':
             encoder = initialize_vip_encoder(config, modality=modality, freeze=freeze)
         elif encoder_model == 'MAE':
@@ -263,10 +263,14 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
             assert modality in checkpoint_name, f"The checkpoint {checkpoint_name} does not match the modality {modality}."
             encoder = init_mae_encoder(config, checkpoint_name, device, return_class=False, freeze=freeze)
         elif encoder_model == 'OMNIVORE':
-            if modality in ['rgb','ir','depth','skeleton']:
+            if 'ir' in config['aligned_model'].split('_'):
+                modality_eval = 'ir'
+            else:
+                modality_eval = 'inner_mirror'
+            if modality in ['rgb', modality_eval,'depth','skeleton']:
                 encoder = init_omnivore_encoder(config, device, freeze=freeze)
             else:
-                encoder = init_omnivore_for_ceval(config, device, freeze=freeze)
+                encoder = init_omnivore_for_ceval(config, device, freeze=freeze, modality=modality_eval)
         elif encoder_model == 'DINO':
             encoder = init_dino_encoder(config, device, freeze=freeze)
         elif encoder_model == 'MAEPS':
@@ -276,11 +280,7 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
         ############
         modalities_encoders[modality] = torch.nn.DataParallel(encoder, device_ids=sorted(selected_gpu_ids))
 
-    
-    
     multi_modality_model = MultiModalityModel(modalities_encoders, config['num_classes'], config['in_features']).cuda(sorted(selected_gpu_ids)[0])
-
-    
     
     multi_modality_model = torch.nn.DataParallel(multi_modality_model, device_ids=sorted(selected_gpu_ids))
 
@@ -375,7 +375,7 @@ def train_classifiers(train_loader, val_loader, test_loader, config):
 
     # Load the updated state_dict
     multi_modality_model.load_state_dict(new_state_dict, strict=False)
-        
+  
     if config['full_train_classifiers']:
         logging.info('Setting grads')
         for param in multi_modality_model.module.modalities_encoders.parameters():

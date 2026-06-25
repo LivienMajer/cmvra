@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from itertools import combinations
 import torch.distributed as dist
 from collections import deque
+import math
 
 
 def get_mm_swnce_config(mode: str) -> dict:
@@ -208,29 +209,30 @@ class MM_SWNCE(nn.Module):
 
     def __init__(
         self,
-        temperature: float = 0.1,           # τ für die Softmax über Paar-Ähnlichkeiten
+        temperature: float = 0.07,           # τ für die Softmax über Paar-Ähnlichkeiten
         use_weighting: bool = True,          # gewichtetes xID aktivieren (faulty positives)
         weighting_params: dict = None,       # {'delta':0.0,'kappa':0.5,'w_min':0.25}
         use_soft_targets: bool = False,      # Soft Targets aktivieren (faulty negatives)
         soft_target_mode: str = "cycle",     # 'swapped' oder 'cycle'
         soft_mix: float = 0.5,               # Anteil soft targets (0=pure hard, 1=pure soft)
-        tau_s: float = 0.02,                 # Temperatur für weiche Teile (source)
+        tau_s: float = 0.07,                 # Temperatur für weiche Teile (source)
         tau_t: float = 0.07,                 # Temperatur für weiche Teile (target)
         eps: float = 1e-6,                   # numerische Stabilisierung
-        selfsim_mix: float = 0.5,
+        selfsim_mix: float = 0.2,
         use_self_similarity: bool = False,   # L_SS berechnen und einmischen
         alpha_ss: float = 0.5,               # Mischung (0 -> nur xID, 1 -> nur Self-Sim)
         beta_ss: float = 0.2,                # P_self = beta*softmax(AA/tau_self) + (1-beta)*I
         tau_self: float = 0.07,              # Temperatur für intra-modale Softmax
         tau_self_i2j: float = 0.07,          # Temperatur für i->j Self-Similarity (basierend auf z2)
         tau_self_j2i: float = 0.07,          # Temperatur für j->i Self-Similarity (basierend auf z1)
+        use_focal: bool = False,
+        use_entropy: bool = False
     ):
         super().__init__()
         self.temperature = temperature
         self.use_weighting = use_weighting
         self.use_soft_targets = use_soft_targets
         self.soft_target_mode = soft_target_mode
-        self.soft_mix = soft_mix
         self.tau_s = tau_s
         self.tau_t = tau_t
         self.eps = eps
@@ -241,6 +243,8 @@ class MM_SWNCE(nn.Module):
         self.beta_ss = beta_ss
         self.tau_self = tau_self
         self.soft_mix = soft_mix
+        self.use_focal = use_focal
+        self.use_entropy = use_entropy
 
         self.selfsim_mix = selfsim_mix
         self.tau_self_i2j = tau_self_i2j
@@ -341,6 +345,93 @@ class MM_SWNCE(nn.Module):
         S_a = torch.softmax(term1_a + term2_a + term3_a, dim=1)
         return S_v, S_a
 
+    def _intra_modal_targets(self, X, beta=0.2):
+        """
+        X: [B, d]
+        Returns: P_intra [B, B]
+        """
+        B = X.size(0)
+        I = torch.eye(B, device=X.device, dtype=X.dtype)
+
+        sim = X @ X.t()                      # XX^T
+        P = F.softmax(sim, dim=1)            # ρ(XX^T)
+
+        return beta * P + (1.0 - beta) * I
+    
+    def _cross_consistency_targets(self, A, B):
+        """
+        A: [B, d]  (e.g. skeleton)
+        B: [B, d]  (e.g. vision)
+
+        Returns:
+            Q_A2B, Q_B2A  each [B,B]
+        """
+        Bsize = A.size(0)
+        I = torch.eye(Bsize, device=A.device, dtype=A.dtype)
+        J = torch.ones(Bsize, Bsize, device=A.device, dtype=A.dtype)
+
+        AB = A @ B.t()
+        BA = B @ A.t()
+
+        # First term: cross-opposite aggregation
+        term1_A2B = BA.t()     # S V^T aggregated
+        term1_B2A = AB.t()
+
+        # Boosting terms (negative repair)
+        term2_A2B = I @ AB @ J
+        term3_A2B = J @ BA @ I
+
+        term2_B2A = I @ BA @ J
+        term3_B2A = J @ AB @ I
+
+        Q_A2B = F.softmax(term1_A2B + term2_A2B + term3_A2B, dim=1)
+        Q_B2A = F.softmax(term1_B2A + term2_B2A + term3_B2A, dim=1)
+
+        return Q_A2B, Q_B2A
+
+    def entropy_based_weighting(self, similarities, temperature=0.07, entropy_clip=5.0):
+        """
+        Computes entropy-based adaptive weights for bidirectional contrastive loss.
+        
+        Args:
+            similarities: (N, N) tensor of cosine similarities between N images and N texts.
+            temperature: scalar temperature τ for softmax.
+            entropy_clip: max entropy value before clipping to avoid early overweighting.
+        
+        Returns:
+            tuple (w_I, w_T): weights for image-to-text and text-to-image losses, summing to 1.
+        """
+        N = similarities.shape[0]
+        
+        # Image-to-text logits: rows are images
+        logits_I2T = similarities / temperature  # (N, N)
+
+        probs_I2T = F.softmax(logits_I2T, dim=1)  # (N, N)
+        
+        # Text-to-image logits: columns are texts (transpose for softmax over texts)
+        logits_T2I = similarities.T / temperature  # (N, N)
+        probs_T2I = F.softmax(logits_T2I, dim=1)  # (N, N)
+        
+        # Entropy for each image's distribution over texts
+        entropies_I2T = -torch.sum(probs_I2T * torch.log(probs_I2T + 1e-8), dim=1)  # (N,)
+        
+        # Entropy for each text's distribution over images
+        entropies_T2I = -torch.sum(probs_T2I * torch.log(probs_T2I + 1e-8), dim=1)  # (N,)
+        
+        # Batch-average entropies
+        H_I = entropies_I2T.mean()  # image-to-text entropy
+        H_T = entropies_T2I.mean()  # text-to-image entropy
+        
+        # Clip high entropies
+        H_I = torch.clamp(H_I, max=entropy_clip)
+        H_T = torch.clamp(H_T, max=entropy_clip)
+        
+        # Normalize weights proportional to entropy (higher entropy -> more weight)
+        w_I = H_I / (H_I + H_T + 1e-8)
+        w_T = H_T / (H_I + H_T + 1e-8)
+        
+        return w_I.item(), w_T.item()
+
     def _pair_loss(self, z1, z2, name_left="mod_i", name_right="mod_j"):
         z1, z2 = self._normalize(z1, z2)
 
@@ -355,15 +446,48 @@ class MM_SWNCE(nn.Module):
         
         # Cycle Consistency (falls aktiv)
         if self.use_soft_targets:
-            sim_va = self._pairwise_sim(z1, z2)
-            if self.soft_target_mode == "swapped":
-                T_cycle_j2i, T_cycle_i2j = self._soft_targets_swapped(sim_va)
-            elif self.soft_target_mode == "cycle":
-                T_cycle_j2i, T_cycle_i2j = self._soft_targets_cycle(sim_va)
-            else:
-                raise ValueError(f"Unknown soft_target_mode: {self.soft_target_mode}")
-            T_soft_i2j = T_cycle_i2j
-            T_soft_j2i = T_cycle_j2i
+            # --------------------------------------------------------
+            # STEP 1: Progressive split
+            # --------------------------------------------------------
+            B = z1.size(0)
+            B_intra = int(self.alpha_ss * B)
+            B_inter = B - B_intra
+
+            z1_intra, z1_inter = z1[:B_intra], z1[B_intra:]
+            z2_intra, z2_inter = z2[:B_intra], z2[B_intra:]
+
+            T_soft_i2j = torch.zeros(B, B, device=z1.device, dtype=z1.dtype)
+            T_soft_j2i = torch.zeros(B, B, device=z1.device, dtype=z1.dtype)
+
+            # --------------------------------------------------------
+            # Intra-modal targets (first subset)
+            # --------------------------------------------------------
+            if B_intra > 0:
+                P1 = self._intra_modal_targets(z1_intra)
+                P2 = self._intra_modal_targets(z2_intra)
+
+                T_soft_i2j[:B_intra, :B_intra] = P1
+                T_soft_j2i[:B_intra, :B_intra] = P2
+
+            # --------------------------------------------------------
+            # Inter-modal targets (second subset)
+            # --------------------------------------------------------
+            if B_inter > 0:
+
+                if self.soft_target_mode == "cycle":
+                    Q_j2i, Q_i2j = self._soft_targets_cycle(
+                        z1_inter @ z2_inter.t()
+                    )
+
+                elif self.soft_target_mode == "cross":
+                    Q_i2j, Q_j2i = self._cross_consistency_targets(
+                        z1_inter, z2_inter
+                    )
+                else:
+                    raise ValueError(f"Unknown soft_target_mode {self.soft_target_mode}")
+
+                T_soft_i2j[B_intra:, B_intra:] = Q_i2j
+                T_soft_j2i[B_intra:, B_intra:] = Q_j2i
         
         # Self-Similarity (falls aktiv)
         if self.use_self_similarity:
@@ -379,34 +503,49 @@ class MM_SWNCE(nn.Module):
                 # Nur Self-Similarity aktiv
                 T_soft_i2j = P_ss_i2j
                 T_soft_j2i = P_ss_j2i
-        
+        # Loss berechnen mit soft targets
+        logP_i = F.log_softmax(logits_i2j, dim=1)  # [B, B]
+        logP_j = F.log_softmax(logits_j2i, dim=1)  # [B, B]
+        P_i = logP_i.exp()
+        P_j = logP_j.exp()
         # --- Schritt 3: Mische soft targets mit Identity (soft_mix) ---
         if T_soft_i2j is not None:
             # Mindestens ein soft target aktiv
             T_final_i2j = (1.0 - self.soft_mix) * I + self.soft_mix * T_soft_i2j
             T_final_j2i = (1.0 - self.soft_mix) * I + self.soft_mix * T_soft_j2i
-            
-            # Loss berechnen mit soft targets
-            logP_i = F.log_softmax(logits_i2j, dim=1)
-            logP_j = F.log_softmax(logits_j2i, dim=1)
-            loss_i_vec = -(T_final_i2j * logP_i).sum(dim=1)  # [B]
-            loss_j_vec = -(T_final_j2i * logP_j).sum(dim=1)  # [B]
+            # Cross-Entropy mit Soft-Targets: CE = -∑_c T[c] * log P[c]
+            ce_i = -(T_final_i2j * logP_i).sum(dim=1)  # [B]
+            ce_j = -(T_final_j2i * logP_j).sum(dim=1)  # [B]
+            pt_i = (T_final_i2j * P_i).sum(dim=1)  # [B]
+            pt_j = (T_final_j2i * P_j).sum(dim=1)  # [B]
         else:
             # Keine soft targets: Standard InfoNCE
             labels = torch.arange(B, device=logits_i2j.device)
-            loss_i_vec = F.cross_entropy(logits_i2j, labels, reduction="none")
-            loss_j_vec = F.cross_entropy(logits_j2i, labels, reduction="none")
+            # Wahrscheinlichkeiten für p_t (nicht log!)
+            ce_i = F.nll_loss(logP_i, labels, reduction='none')
+            ce_j = F.nll_loss(logP_j, labels, reduction='none')
+            pt_i = P_i[torch.arange(logits_i2j.size(0)), labels]
+            pt_j = P_j[torch.arange(logits_j2i.size(0)), labels]
 
+        loss_i_vec = ce_i
+        loss_j_vec = ce_j
+
+        pos_sims = torch.diag(z1 @ z2.t())
+        similarities = z1 @ z2.t()
         # --- Schritt 4: Weighting anwenden ---
         if self.use_weighting:
-            pos_sims = torch.diag(z1 @ z2.t())
             w = self._robust_weights_from_pos_sims(pos_sims)  # [B]
         else:
             w = torch.ones(B, device=z1.device, dtype=loss_i_vec.dtype)
+        
+        if self.use_entropy:
+            wi, wj = self.entropy_based_weighting(similarities)
+        else:
+            wi = wj = 0.5
 
         loss_i_final = (w * loss_i_vec).sum() / (w.sum() + self.eps)
         loss_j_final = (w * loss_j_vec).sum() / (w.sum() + self.eps)
-        loss_pair = 0.5 * (loss_i_final + loss_j_final)
+        loss_pair = wi * loss_i_final + wj * loss_j_final
 
         # --- Logging ---
         details = {
@@ -459,8 +598,8 @@ class MM_SWNCE(nn.Module):
             self.ema_mu.mul_(self.ema_momentum).add_((1 - self.ema_momentum) * mu_b)
             self.ema_sig.mul_(self.ema_momentum).add_((1 - self.ema_momentum) * sig_b)
 
-        mu = self.ema_mu
-        sigma = self.ema_sig.clamp_min(self.eps)
+        mu = mu_b # self.ema_mu
+        sigma = sig_b # self.ema_sig.clamp_min(self.eps)
 
         # 4) z-Score mit Shift/Spread
         z = (pos_sims - (mu + delta * sigma)) / (sigma * (kappa ** 0.5) + self.eps)
