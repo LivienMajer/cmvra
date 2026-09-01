@@ -45,8 +45,9 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")  # Required when running as root
 
 # Set Chrome to download files automatically to a specified directory without asking for a location each time
+DEFAULT_DOWNLOAD_DIR = os.getenv("NTU_DOWNLOAD_DIR", "/net/polaris/storage/deeplearning/ntu")
 chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": "/net/polaris/storage/deeplearning/ntu",  # Change this to a desired path
+    "download.default_directory": DEFAULT_DOWNLOAD_DIR,
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
     "safebrowsing_for_trusted_sources_enabled": False,
@@ -63,8 +64,16 @@ with webdriver.Chrome(options=chrome_options) as driver:
     username_field = driver.find_element(By.NAME, "username")
     password_field = driver.find_element(By.NAME, "password")
     
-    username_field.send_keys("Cappl")
-    password_field.send_keys("@iBh5b4ET8nkcnM")
+    username = os.getenv("NTU_USERNAME", "your_username")
+    password = os.getenv("NTU_PASSWORD", "your_password")
+    
+    if username == "your_username" or password == "your_password":
+        sys.stderr.write("ERROR: Please set NTU_USERNAME and NTU_PASSWORD environment variables.\n")
+        sys.stderr.write("Example: export NTU_USERNAME=your_username && export NTU_PASSWORD=your_password\n")
+        sys.exit(1)
+    
+    username_field.send_keys(username)
+    password_field.send_keys(password)
     
     password_field.submit()
     
