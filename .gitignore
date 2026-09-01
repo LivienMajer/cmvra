@@ -243,6 +243,12 @@ nohup.out
 # Jupyter notebooks
 *.ipynb
 
+# Test coverage reports
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+
 # IDE and editor files
 .idea/
 .vscode/
