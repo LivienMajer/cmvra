@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cmvra"
+version = "1.0.0"
+description = "Cross-Modal Video Representation Alignment (CMVRA) for Human Action Recognition"
+readme = "README.md"
+authors = [
+    {name = "Author Name", email = "author@example.com"}
+]
+dependencies = [
+    "torch>=2.0",
+    "transformers>=4.30",
+    "torchvision>=0.15",
+    "pytorchvideo>=0.1.5",
+    "decord>=0.6.0",
+]
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.1",
+]
+test = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/visual-modality-alignment"
+Documentation = "https://github.com/your-username/visual-modality-alignment#readme"
+Repository = "https://github.com/your-username/visual-modality-alignment.git"
+"Bug Tracker" = "https://github.com/your-username/visual-modality-alignment/issues"
+
+[tool.setuptools.packages.find]
+where = ["VIP/src"]

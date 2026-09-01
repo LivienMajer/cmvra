@@ -239,3 +239,16 @@ VIP/src/features/*
 nohup.out
 *.log
 *.out
+
+# Jupyter notebooks
+*.ipynb
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Generated data
+*.jsonl

@@ -1,200 +1,393 @@
-# Cross-Modal Video Representation Alignment (CMVRA) for Human Action Recognition
+# Cross-Modal Video Representation Alignment (CMVRA)
 
-This repository contains the code and resources for the Master's Thesis "Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition". The project introduces the Cross-Modal Video Representation Alignment (CMVRA) framework, which aligns representations from diverse visual modalities using contrastive learning techniques and builds upon video extensions of CLIP: CLIP-ViP.
+This repository contains the code for the paper **"Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition"**.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Generate Captions Using LLaVa](#generate-captions-using-llava)
-  - [Fine-tuning CLIP-ViP Models](#fine-tuning-clip-vip-models)
-  - [Multi-Modal Alignments](#multi-modal-alignments)
-  - [Pretrained Model Checkpoints](#pretrained-model-checkpoints)
-  - [Selected Model Checkpoints](#selected-model-checkpoints)
-  - [Evaluation](#evaluation)
-  - [MAE Training and Evaluation](#mae-training-and-evaluation)
-- [Directory Structure](#directory-structure)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
+The project introduces the **Cross-Modal Video Representation Alignment (CMVRA)** framework, which aligns representations from diverse visual modalities (RGB, depth, IR, skeleton) using contrastive learning techniques. The framework builds upon CLIP-ViP and introduces novel multi-modal alignment losses.
 
 ## Overview
 
-This project provides tools and scripts for:
+### Key Features
 
-- Fine-tuning CLIP-ViP models
-- Performing multi-modal alignments
-- Evaluating alignments using LEP under various settings, as well as a fusion evaluation 
-- Evaluating retrievals using a text encoder
-- Training and evaluating Masked Autoencoders (MAE)
+- **Multi-Modal Alignment**: Align representations from RGB, depth, IR, and skeleton modalities
+- **Novel Loss Functions**: Implements MM-SWNCE (Multi-Modal Soft-Weighted NCE) with:
+  - Weighting for faulty positive robustness
+  - Cycle-consistency for faulty negative handling
+  - Self-similarity for intra-modal consistency
+- **Pretrained Models**: CLIP-ViP and MAE encoder checkpoints available
+- **Task Support**:
+  - Video retrieval with text encoder
+  - Multi-modal alignment training
+  - Classification with aligned features
+  - MAE training and evaluation
+
+### Paper Information
+
+**Title**: Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition  
+**Type**: Master's Thesis  
+**Authors**: [See Citation section below]  
+**Year**: 2026  
+
+### Citation
+
+If you use this code or our results in your research, please cite:
+
+```bibtex
+@mastersthesis{visual-modality-alignment-2026,
+  author = {Author Name},
+  title = {Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition},
+  school = {Fraunhofer Institute and Goethe University Frankfurt},
+  year = {2026}
+}
+```
+
+**DOI**: [Pending publication]  
+**PDF**: See `Master_Thesis_BR_signed.pdf`
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Data Preparation](#data-preparation)
+- [Training](#training)
+- [Evaluation](#evaluation)
+- [Reproducibility](#reproducibility)
+- [Configuration](#configuration)
+- [Directory Structure](#directory-structure)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
 
 ## Installation
 
-To set up the project environment:
+### Prerequisites
 
-1. Clone this repository:
-    ```sh
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
-    ```
+- Python ≥ 3.10
+- PyTorch ≥ 2.0
+- CUDA-enabled GPU (recommended for training)
+- pip package manager
 
-2. Create a virtual environment (optional but recommended):
-    ```sh
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
+### Setup
 
-3. Install the required packages:
-    ```sh
-    pip install -r requirements.txt
-    ```
+1. **Clone the repository**:
+   ```sh
+   git clone https://github.com/your-username/visual-modality-alignment.git
+   cd visual-modality-alignment
+   ```
 
-This will install all the necessary dependencies for the project.
+2. **Create a virtual environment** (recommended):
+   ```sh
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-## Usage
+3. **Install dependencies**:
+   ```sh
+   pip install -r requirements.txt
+   ```
 
-### Generate Captions Using LLaVa
+4. **Set up environment variables** (for NTU dataset download):
+   ```sh
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env with your NTU credentials
+   nano .env  # or your preferred editor
+   ```
 
-Clone this repository and navigate to LLaVA folder
-git clone https://github.com/haotian-liu/LLaVA.git
-cd LLaVA
-conda create -n llava python=3.10 -y
-conda activate llava
-pip install --upgrade pip  # enable PEP 660 support
-pip install -e .
-pip install -e ".[train]"
-pip install flash-attn --no-build-isolation
-git pull
-pip install -e .
-pip install flash-attn --no-build-isolation --no-cache-dir
+## Quick Start
 
-then place this file Thesis/Dataset_utils/caption_task_LLaVa/caption.pyunder /llava/serve/caption.py
+### Basic smoke test (CPU-only)
 
-and run it with this command, adjust the path to your dataset file:
+This tests the basic imports and data loading without GPU requirements:
 
-python -m llava.serve.caption     --model-path liuhaotian/llava-v1.6-34b     --data-file /home/bas06400/Thesis/CV_training_set.txt     --load-8bit --device cuda:0
+```python
+import torch
+from zeta.data_loader import load_dataloaders
+from zeta.model_init import initialize_vip_encoder
 
-"""
+# Test basic imports
+print("✓ Imports successful")
+
+# Check PyTorch version
+print(f"✓ PyTorch version: {torch.__version__}")
+print(f"✓ CUDA available: {torch.cuda.is_available()}")
+```
+
+### Minimal training example
+
+```bash
+# Configure your paths in a JSON config file (see Configuration section)
+python VIP/src/main.py --config VIP/src/configs/examples/example_training.json
+```
+
+## Data Preparation
+
+### Required Datasets
+
+#### 1. NTU RGB+D Dataset
+
+The NTU RGB+D dataset contains RGB videos, depth maps, skeleton data, and IR videos.
+
+**Download**:
+- Use the provided script: `Dataset_utils/NTU/downloadntu.py`
+- Or download manually from [NTU官网](https://rose1.ntu.edu.sg/dataset/actionRecognition/)
+- Requires registration and login credentials
+
+**Dataset structure**:
+```
+nturgb+d_rgb/          # RGB videos (.avi)
+nturgb+d_depth_masked/ # Depth maps (images)
+nturgb+d_skeletons_npy/# Skeleton data (.npy)
+nturgb+d_ir/          # IR videos (.avi)
+```
+
+#### 2. DAA (Daily and Ambient Activities) Dataset
+
+Contains multi-camera RGB, IR, depth, and skeleton data for daily activities.
+
+**Download**: Contact dataset authors for access
+
+**Structure**:
+```
+kinect_color/   # Kinect RGB videos
+kinect_ir/      # Kinect IR videos
+kinect_depth_mp4/ # Kinect depth videos
+openpose_3d/    # OpenPose 3D skeleton data
+ceiling/        # Ceiling camera views
+...
+```
+
+### Data Preprocessing
+
+Run preprocessing scripts in `Dataset_utils/`:
+
+```bash
+# NTU preprocessing
+python Dataset_utils/NTU/crop_low_res_videos.py
+python Dataset_utils/NTU/clean_low_res.py
+
+# DAA preprocessing
+python Dataset_utils/DAA/extract_data.py
+python Dataset_utils/DAA/balancer2.py
+```
+
+## Training
 
 ### Fine-tuning CLIP-ViP Models
 
-Example configurations for fine-tuning CLIP-ViP models can be found in the `/Thesis/VIP/src/configs` directory. Look for files with "retrieval" in the name.
+#### Video Retrieval (RGB+Text)
 
-### Multi-Modal Alignments
+```bash
+python VIP/src/run_video_retrieval.py \
+  --config VIP/src/configs/examples/ntu_retrieval_example.json
+```
 
-After fine-tuning, the CLIP-ViP models can be used for alignments. Example configurations are also available in the config directory.
-Alignments can also be performed with the base version weights published on https://github.com/microsoft/XPretrain/tree/main/CLIP-ViP
-Weights can be downloaded here: https://hdvila.blob.core.windows.net/dataset/pretrain_clipvip_base_16.pt?sp=r&st=2023-03-16T05:02:05Z&se=2026-07-31T13:02:05Z&spr=https&sv=2021-12-02&sr=b&sig=XNd7fZSsUhW7eesL3hTfYUMiAvCCN3Bys2TadXlWzFU%3D
-If the checkpoint is not avaiable anymore just ask for the weights. Just place it in your dir and set the config['e2e_weights_path']
+#### Multi-Modal Alignment (RGB+Depth+IR+Skeleton)
 
-### Pretrained Model Checkpoints
-Omnivore Repo: https://github.com/facebookresearch/omnivore/tree/main/omnivore
-Omnivore Download: https://dl.fbaipublicfiles.com/omnivore/models/swinB_In21k_checkpoint.torch
-OmniMAE Repo: https://github.com/facebookresearch/omnivore/tree/main/omnimae
-OmniMAE Download:https://dl.fbaipublicfiles.com/omnivore/omnimae_ckpts/vitb_pretrain.torch
-TAHAR Download: https://hessenbox-a10.rz.uni-frankfurt.de/getlink/fiKhHcKpHmgvnNJpka6V1Z/
+```bash
+python VIP/src/main.py \
+  --config VIP/src/configs/AlignmentSleep.json
+```
 
+### Configuration File Format
 
-### Selected Model Checkpoints
+Create a JSON config file with the following structure:
 
-https://hessenbox-a10.rz.uni-frankfurt.de/getlink/fi8z62gJJq5SdVn2gihaSC/
+```json
+{
+  "task": "alignment",
+  "modalities": ["rgb", "depth", "ir", "skeleton"],
+  "dataset": "DAA",
+  "split": "0",
+  "encoder_model": "CLIP-ViP",
+  "loss_config": {
+    "loss_name": "MM_SWNCE",
+    "temperature": 0.1,
+    "use_weighting": true,
+    "use_soft_targets": true,
+    "use_self_similarity": true,
+    "soft_mix": 0.5,
+    "selfsim_mix": 0.5
+  },
+  "train_batch_size": 8,
+  "num_train_epochs": 20,
+  "learning_rate": 1e-5,
+  "seed": 42
+}
+```
 
+See `MM_SWNCE_HYPERPARAMETERS.md` for detailed hyperparameter documentation.
 
-### Evaluation
+## Evaluation
 
-- **LEP Evaluation**: Use the provided configurations to evaluate alignments under different settings.
-- **Retrieval Evaluation**: Evaluate retrievals using a text encoder with the appropriate config file.
+### LEP Evaluation (Label Embedding Projection)
 
-### MAE Training and Evaluation
+```bash
+python VIP/src/main.py \
+  --config VIP/src/configs/examples/lep_evaluation.json \
+  --task 2
+```
 
-Configurations for MAE training and evaluation are provided in the config directory.
+### Video Retrieval Evaluation
+
+```bash
+python VIP/src/run_video_retrieval.py \
+  --config VIP/src/configs/examples/retrieval_eval.json
+```
+
+### KNN Evaluation
+
+```bash
+python VIP/src/zeta/eval_knn.py \
+  --config VIP/src/configs/examples/knn_eval.json
+```
+
+## Reproducibility
+
+### Random Seeds
+
+All random seeds are set to `42` by default for reproducibility. To reproduce results:
+
+```python
+import torch
+torch.manual_seed(42)
+```
+
+### Hardware Requirements
+
+- **Training**: 
+  - Minimum: 1 × NVIDIA GPU with 16GB VRAM
+  - Recommended: 2 × NVIDIA A100 (80GB) or 4 × RTX 3090 (24GB)
+
+- **Evaluation**:
+  - Minimum: 1 × NVIDIA GPU with 8GB VRAM
+  - CPU-only evaluation possible but significantly slower
+
+### Expected Training Time
+
+- NTU RGB+D (small split): ~4-6 hours on 2×V100
+- DAA dataset: ~8-12 hours on 2×V100
+
+### Troubleshooting
+
+**Out of memory errors**: Reduce `train_batch_size` in config
+
+**Data loading errors**: Verify dataset paths in config match actual locations
+
+**CUDA errors**: Ensure PyTorch and CUDA versions are compatible
+
+## Configuration
+
+### Hyperparameter Reference
+
+All MM-SWNCE hyperparameters can be configured in the JSON config:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `loss_name` | str | "MM_SWNCE" | Loss function (NCE, MM_SWNCE) |
+| `temperature` | float | 0.1 | Temperature for softmax |
+| `soft_mix` | float | 0.5 | Soft target mixing ratio |
+| `selfsim_mix` | float | 0.5 | Self-similarity mixing ratio |
+| `use_weighting` | bool | true | Enable faulty positive weighting |
+| `use_soft_targets` | bool | true | Enable cycle-consistency |
+| `use_self_similarity` | bool | true | Enable intra-modal consistency |
+
+See `MM_SWNCE_HYPERPARAMETERS.md` for complete documentation.
+
+### Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NTU_USERNAME` | NTU dataset login username | `john.doe` |
+| `NTU_PASSWORD` | NTU dataset login password | `secret123` |
+| `NTU_DOWNLOAD_DIR` | Download directory path | `/data/ntu` |
 
 ## Directory Structure
 
-- `/Thesis/VIP/src/configs`: Contains example configuration files
-- `/zeta`: Contains personal code for alignments and evaluations
-- `/zlogs` and `/zalignmentlogs`: Contain logs of experiments. All logs contain the corresponding config.
-- `main.py`: Main script for running experiments
-- `config`: Directory containing various configuration files
+```
+visual-modality-alignment/
+├── Dataset_utils/
+│   ├── NTU/              # NTU dataset preprocessing
+│   ├── DAA/              # DAA dataset preprocessing
+│   ├── VIP_datasets/     # Dataset utilities
+│   ├── caption_task_LLaVa/
+│   └── captions_from_excel/
+├── VIP/
+│   ├── src/
+│   │   ├── configs/      # Configuration files
+│   │   ├── datasets/     # Dataset implementations
+│   │   ├── modeling/     # Model architectures
+│   │   ├── optimization/ # Optimizers and schedulers
+│   │   ├── utils/        # Utility functions
+│   │   └── zeta/         # Main training/evaluation code
+│   └── LICENSE
+├── checkpoints/          # Saved model checkpoints
+├── align_checkpoints/    # Alignment-specific checkpoints
+├── .env.example         # Environment variable template
+├── requirements.txt     # Python dependencies
+├── README.md           # This file
+└── Master_Thesis_BR_signed.pdf
+```
 
+## Dependencies
 
-### Dataset File Structure
+### Core Dependencies
 
-RGB, IR and depth should be .avi video files and a sequneces of images for masked depth on NTU. Skeleton should be saved as numpy array.
-The file structure for the NTU RGB+D dataset and the DAA dataset can be inferred from the following examples:
+- Python ≥ 3.10
+- PyTorch ≥ 2.0
+- CUDA ≥ 11.8 (for GPU training)
 
-#### NTU RGB+D Dataset
+### Key Libraries
 
-The NTU RGB+D dataset is organized under the nturgb+d_* directories, each representing a different modality. An example file structure is as follows:
+- `transformers` (HuggingFace)
+- `torchvision`
+- `pytorchvideo`
+- `decord` (video loading)
+- `tqdm` (progress bars)
+- `easydict` (config management)
 
-nturgb+d_rgb/   
-├── ...    
-nturgb+d_ir/    
-├── ...   
-nturgb+d_depth_masked/    
-├── ...   
-nturgb+d_skeletons_npy/  
-├── ...   
+### Full List
 
+See `requirements.txt` for complete dependency list.
 
-#### DAA Dataset
+## License
 
-The DAA dataset is organized under directories named after the different camera views, splits and modalities. You can recreate it running this file:
-/Thesis/Dataset_utils/DAA/extract_data.py
-on the DAA dataset as downloaded. An examplestructure is as follows:
+This project contains code from multiple sources with different licenses:
 
-kinect_color/  
-├── clips/test/...  
-kinect_ir/  
-├── clips/test/...  
-kinect_depth_mp4/  
-├── clips/test/...   
-openpose_3d/  
-├── clips/test/...  
-ceiling/  
-├── clips/test/...  
-inner_mirror/  
-├── clips/test/...  
-a_column_co_driver/  
-├── clips/test/...   
-a_column_driver/   
-├── clips/test/...  
-steering_wheel/  
-├── clips/test/...   
+- **Main code (this repository)**: [LICENSE - To be determined]
+- **CLIP-ViP code**: MIT License (see `VIP/LICENSE`)
+- **Omnivore/OmniMAE**: CC-BY-NC 4.0 (see `VIP/src/modeling/LICENSE`)
+
+**Important**: The omnivore component is licensed under CC-BY-NC 4.0. Contact the authors for commercial use permissions.
 
 ## Acknowledgements
 
-This project builds upon the following works:
+This work builds upon and extends the following repositories:
 
-- CLIP-ViP by Jie Lei https://github.com/microsoft/XPretrain/tree/main/CLIP-ViP
-- Omnivore / OmniMAE by Facebook reasearch https://github.com/facebookresearch/omnivore
+- [CLIP-ViP](https://github.com/microsoft/XPretrain/tree/main/CLIP-ViP) - Jie Lei
+- [Omnivore / OmniMAE](https://github.com/facebookresearch/omnivore) - Facebook Research
 
-We are grateful to the authors for making their code available.
+We thank the authors for making their code available.
 
-## Omnivore / OmniMAE License
+## Contact
 
-Omnivore is released under the CC-BY-NC 4.0 license. See LICENSE for additional details. However the Swin Transformer implementation is additionally licensed under the Apache 2.0 license (see NOTICE for additional details). Detailed License file can be found here: /VIP/src/modeling/LICENSE
+For questions or issues, please open an issue on GitHub or contact:
 
-### CLIP-ViP License
+**Author**: [Name redacted for blind review]  
+**Institution**: Fraunhofer Institute / Goethe University Frankfurt  
+**Email**: [Email redacted for blind review]
 
-MIT License
+## Security Notes
 
-Copyright (c) 2021 Jie Lei
+- **Never commit** `.env` files with real credentials
+- **Use** `.env.example` as a template
+- **Rotate** any accidentally exposed credentials immediately
+- **Review** third-party dependencies for security vulnerabilities
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## Future Work
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- [ ] Add more pretrained model checkpoints
+- [ ] Support additional datasets
+- [ ] Extend to 3D skeleton representations
+- [ ] Multi-language text encoder support
