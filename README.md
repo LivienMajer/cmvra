@@ -27,6 +27,23 @@ The project introduces the **Cross-Modal Video Representation Alignment (CMVRA)*
 **Authors**: [See Citation section below]  
 **Year**: 2026  
 
+### Important Notes for Users
+
+⚠️ **Before running this code, you MUST**:
+
+1. **Install requirements**: `pip install -r requirements.txt`
+2. **Set up environment variables**: Copy `.env.example` to `.env` and fill in your NTU credentials
+3. **Update hardcoded paths**: Many preprocessing scripts contain hardcoded paths like `/home/bas06400/` and `/net/polaris/` that must be replaced with your actual data locations
+4. **Download datasets**: Ensure you have access to NTU RGB+D and DAA datasets
+5. **Hardware requirements**: Minimum 16GB VRAM for training
+
+**To find hardcoded paths in your codebase**:
+```bash
+grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
+```
+
+**To update paths**: Edit the relevant lines in preprocessing scripts with your actual paths.
+
 ### Citation
 
 If you use this code or our results in your research, please cite:
@@ -61,6 +78,31 @@ If you use this code or our results in your research, please cite:
 ## Installation
 
 ### Prerequisites
+
+- Python ≥ 3.10
+- PyTorch ≥ 2.0
+- CUDA-enabled GPU (recommended for training)
+- pip package manager
+
+### Environment Variables
+
+Set up the `.env` file for sensitive data:
+
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env with your actual values
+nano .env  # or your preferred editor
+```
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NTU_USERNAME` | NTU dataset login username | Yes (for NTU download) |
+| `NTU_PASSWORD` | NTU dataset login password | Yes (for NTU download) |
+| `NTU_DOWNLOAD_DIR` | Directory for downloaded data | No (default: `/net/polaris/storage/deeplearning/ntu`) |
+
+⚠️ **Never commit** `.env` to version control!
 
 - Python ≥ 3.10
 - PyTorch ≥ 2.0
@@ -148,6 +190,17 @@ Contains multi-camera RGB, IR, depth, and skeleton data for daily activities.
 
 **Download**: Contact dataset authors for access
 
+**⚠️ IMPORTANT**: The DAA dataset preprocessing scripts contain hardcoded paths. After downloading, you must:
+
+1. Update file paths in `Dataset_utils/DAA/combined_data.py`
+2. Update input/output paths in `Dataset_utils/DAA/*.py` scripts
+3. Set your data directory paths in `Dataset_utils/DAA/extract_data.py`
+
+**To find all hardcoded paths in the codebase**:
+```bash
+grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
+```
+
 **Structure**:
 ```
 kinect_color/   # Kinect RGB videos
@@ -160,16 +213,21 @@ ceiling/        # Ceiling camera views
 
 ### Data Preprocessing
 
-Run preprocessing scripts in `Dataset_utils/`:
+⚠️ **IMPORTANT**: Run preprocessing scripts in `Dataset_utils/` **after** updating all hardcoded paths:
 
 ```bash
 # NTU preprocessing
 python Dataset_utils/NTU/crop_low_res_videos.py
 python Dataset_utils/NTU/clean_low_res.py
 
-# DAA preprocessing
+# DAA preprocessing (update paths first!)
 python Dataset_utils/DAA/extract_data.py
 python Dataset_utils/DAA/balancer2.py
+```
+
+**Quick search for hardcoded paths in your codebase**:
+```bash
+grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
 ```
 
 ## Training
@@ -279,6 +337,41 @@ torch.manual_seed(42)
 
 ## Configuration
 
+### Path Configuration
+
+⚠️ **IMPORTANT**: Many preprocessing scripts and configuration files contain hardcoded paths that must be replaced with your actual data locations.
+
+**Internal paths found in codebase** (must be updated):
+- `/home/bas06400/` - User-specific path
+- `/net/polaris/storage/` - Internal network path
+- `/Thesis/` - Internal project path
+
+**How to update paths**:
+
+1. **For preprocessing scripts** (`Dataset_utils/`):
+   ```python
+   # Example: Dataset_utils/DAA/balancer2.py
+   input_file = '/path/to/your/daa/daa_split_train2_full.txt'
+   output_file = '/path/to/your/daa/daa_split_train2_full_balanced.txt'
+   ```
+
+2. **For config files** (create your own config):
+   ```json
+   {
+     "rgb_path": "/path/to/your/rgb/data",
+     "depth_path": "/path/to/your/depth/data",
+     "skeleton_path": "/path/to/your/skeleton/data"
+   }
+   ```
+
+3. **For evaluation data**:
+   ```python
+   # Update paths in evaluation scripts
+   data_file = "/path/to/your/evaluation/set.txt"
+   ```
+
+**Recommended approach**: Create a config file with all paths at the top and reference them throughout your scripts.
+
 ### Hyperparameter Reference
 
 All MM-SWNCE hyperparameters can be configured in the JSON config:
@@ -384,6 +477,40 @@ For questions or issues, please open an issue on GitHub or contact:
 - **Use** `.env.example` as a template
 - **Rotate** any accidentally exposed credentials immediately
 - **Review** third-party dependencies for security vulnerabilities
+
+## Hardcoded Paths
+
+This codebase contains hardcoded paths from the original development environment. Before running the code, **you must update these paths** to match your local setup:
+
+### How to Find Hardcoded Paths
+
+```bash
+# Search for common hardcoded paths
+grep -r "/home/bas06400\|/net/polaris\|/Thesis" Dataset_utils/ VIP/src/
+
+# Look for file paths in config files
+grep -r "path" VIP/src/configs/*.json 2>/dev/null | head -20
+```
+
+### Common Files with Hardcoded Paths
+
+| File | Type of Paths | Action |
+|------|--------------|--------|
+| `Dataset_utils/DAA/*.py` | Input/output data paths | Replace with your data locations |
+| `Dataset_utils/NTU/*.py` | NTU download/output paths | Update download directory |
+| Config files in `VIP/src/configs/` | Data directories | Create your own config |
+
+### Best Practice
+
+Instead of editing files in-place, **create your own configuration**:
+
+```bash
+# Copy an example config
+cp VIP/src/configs/examples/example.json VIP/src/configs/my_config.json
+
+# Edit your copy with your paths
+nano VIP/src/configs/my_config.json
+```
 
 ## Future Work
 
