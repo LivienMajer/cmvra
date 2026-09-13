@@ -424,6 +424,15 @@ cmvra/
 └── README.md           # This file
 ```
 
+## Pretrained Checkpoints
+
+Pretrained model checkpoints (e.g., the IR encoder used for alignment) are **not included** in this repository due to GitHub's file size limits. They can be obtained by:
+
+- Training the encoder with the provided pipeline (see [Training](#training)), or
+- Contacting the authors for the pretrained weights.
+
+<!-- TODO: add a direct download link (e.g. HuggingFace / Zenodo) once available -->
+
 ## Dependencies
 
 ### Core Dependencies

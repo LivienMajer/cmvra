@@ -227,6 +227,9 @@ __marimo__/
 *.pth
 *.torch
 
+# Large dataset split files (excluded due to size; regenerate or host externally)
+all_dataset_files_copy/DAA_Multimodal_datasets/daa_split_train*_balanced.txt
+
 # Checkpoint directories
 checkpoints/
 align_checkpoints/
