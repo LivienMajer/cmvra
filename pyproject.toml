@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Cross-Modal Video Representation Alignment (CMVRA) for Human Action Recognition"
 readme = "README.md"
 authors = [
-    {name = "Author Name", email = "author@example.com"}
+    {name = "Livien Majer", email = "livien.majer@iosb.fraunhofer.de"}
 ]
 dependencies = [
     "torch>=2.0",
@@ -37,10 +37,10 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-username/visual-modality-alignment"
-Documentation = "https://github.com/your-username/visual-modality-alignment#readme"
-Repository = "https://github.com/your-username/visual-modality-alignment.git"
-"Bug Tracker" = "https://github.com/your-username/visual-modality-alignment/issues"
+Homepage = "https://github.com/LivienMajer/cmvra"
+Documentation = "https://github.com/LivienMajer/cmvra#readme"
+Repository = "https://github.com/LivienMajer/cmvra.git"
+"Bug Tracker" = "https://github.com/LivienMajer/cmvra/issues"
 
 [tool.setuptools.packages.find]
 where = ["VIP/src"]

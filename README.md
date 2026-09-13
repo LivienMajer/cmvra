@@ -23,9 +23,10 @@ The project introduces the **Cross-Modal Video Representation Alignment (CMVRA)*
 ### Paper Information
 
 **Title**: Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition  
-**Type**: Master's Thesis  
-**Authors**: [See Citation section below]  
+**Type**: Conference Paper  
+**Authors**: David J. Lerch, Livien Majer, Zeyun Zhong, Manuel Martin, Frederik Diederichs, Rainer Stiefelhagen  
 **Year**: 2026  
+**Preprint**: https://arxiv.org/abs/2606.02352
 
 ### Important Notes for Users
 
@@ -49,16 +50,16 @@ grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
 If you use this code or our results in your research, please cite:
 
 ```bibtex
-@mastersthesis{visual-modality-alignment-2026,
-  author = {Author Name},
-  title = {Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition},
-  school = {Fraunhofer Institute and Goethe University Frankfurt},
-  year = {2026}
+@article{lerch2026cmvra,
+  title   = {Learning Robust Aligned Representations Across Multiple Visual Modalities in Human Action Recognition},
+  author  = {David J. Lerch and Livien Majer and Zeyun Zhong and Manuel Martin and Frederik Diederichs and Rainer Stiefelhagen},
+  journal = {arXiv preprint arXiv:2606.02352},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2606.02352}
 }
 ```
 
-**DOI**: [Pending publication]  
-**PDF**: See `Master_Thesis_BR_signed.pdf`
+**Preprint**: https://arxiv.org/abs/2606.02352
 
 ## Table of Contents
 
@@ -113,8 +114,8 @@ nano .env  # or your preferred editor
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/your-username/visual-modality-alignment.git
-   cd visual-modality-alignment
+   git clone https://github.com/LivienMajer/cmvra.git
+   cd cmvra
    ```
 
 2. **Create a virtual environment** (recommended):
@@ -399,7 +400,7 @@ See `MM_SWNCE_HYPERPARAMETERS.md` for complete documentation.
 ## Directory Structure
 
 ```
-visual-modality-alignment/
+cmvra/
 ├── Dataset_utils/
 │   ├── NTU/              # NTU dataset preprocessing
 │   ├── DAA/              # DAA dataset preprocessing
@@ -418,9 +419,9 @@ visual-modality-alignment/
 ├── checkpoints/          # Saved model checkpoints
 ├── align_checkpoints/    # Alignment-specific checkpoints
 ├── .env.example         # Environment variable template
+├── LICENSE             # MIT License
 ├── requirements.txt     # Python dependencies
-├── README.md           # This file
-└── Master_Thesis_BR_signed.pdf
+└── README.md           # This file
 ```
 
 ## Dependencies
@@ -448,7 +449,7 @@ See `requirements.txt` for complete dependency list.
 
 This project contains code from multiple sources with different licenses:
 
-- **Main code (this repository)**: [LICENSE - To be determined]
+- **Main code (this repository)**: MIT License (see [LICENSE](LICENSE))
 - **CLIP-ViP code**: MIT License (see `VIP/LICENSE`)
 - **Omnivore/OmniMAE**: CC-BY-NC 4.0 (see `VIP/src/modeling/LICENSE`)
 
@@ -467,9 +468,9 @@ We thank the authors for making their code available.
 
 For questions or issues, please open an issue on GitHub or contact:
 
-**Author**: [Name redacted for blind review]  
-**Institution**: Fraunhofer Institute / Goethe University Frankfurt  
-**Email**: [Email redacted for blind review]
+**Author**: Livien Majer  
+**Institution**: Fraunhofer IOSB  
+**Email**: livien.majer@iosb.fraunhofer.de
 
 ## Security Notes
 

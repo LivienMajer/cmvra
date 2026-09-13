@@ -14,8 +14,8 @@ Thank you for your interest in contributing to the Cross-Modal Video Representat
 
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/visual-modality-alignment.git
-cd visual-modality-alignment
+git clone https://github.com/LivienMajer/cmvra.git
+cd cmvra
 
 # Install dependencies
 pip install -r requirements.txt

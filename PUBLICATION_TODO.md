@@ -15,18 +15,13 @@ This file documents issues and pending items for publication readiness.
 ## Pending Items (High Priority)
 
 ### 1. LICENSE File
-**Status**: Missing  
-**Action**: Add a root-level `LICENSE` file  
-**Note**: The main codebase should use a permissive license (MIT or Apache-2.0) to match CLIP-ViP, but the final decision requires author approval.
+**Status**: Resolved
+**Action**: Added root-level `LICENSE` (MIT)
+**Note**: Main codebase uses MIT. The bundled omnivore component (`VIP/src/modeling/`) remains CC-BY-NC 4.0.
 
-### 2. Paper Information in CITATION.cff
-**Status**: Incomplete  
-**Missing Information**:
-- Author names (currently shows "Author Name")
-- DOI (pending publication)
-- Conference/venue (currently omitted)
-
-**Action**: Update `CITATION.cff` with final publication details when available.
+### 2. Paper Information / Citation
+**Status**: Resolved
+**Action**: Removed `CITATION.cff`. Citation is now provided in `README.md` with the full author list and a link to the arXiv preprint (https://arxiv.org/abs/2606.02352).
 
 ## Pending Items (Medium Priority)
 
@@ -132,8 +127,8 @@ This file documents issues and pending items for publication readiness.
 ## Summary
 
 ### Critical Blocking Issues
-- [ ] Add root `LICENSE` file
-- [ ] Confirm final author names for `CITATION.cff`
+- [x] Add root `LICENSE` file (MIT)
+- [x] Confirm final author names (in README citation)
 
 ### High Priority Items
 - [ ] Add smoke tests
@@ -146,10 +141,9 @@ This file documents issues and pending items for publication readiness.
 - [ ] Configure code formatting
 
 ### Ready to Publish
-The code is functionally ready for publication once the critical issues (license and author names) are resolved.
+The critical issues (license and author names) are resolved. The code is ready for publication.
 
-**Next Steps**:
-1. Author approves final license
-2. Author confirms publication details
-3. Add smoke tests and CI (optional but recommended)
-4. Push branch and create PR
+**Remaining Next Steps**:
+1. Add smoke tests and CI (optional but recommended)
+2. Clean up large model files from repo (optional)
+3. Configure code formatting (optional)
