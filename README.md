@@ -37,12 +37,7 @@ The project introduces the **Cross-Modal Video Representation Alignment (CMVRA)*
 3. **Update hardcoded paths**: Many preprocessing scripts contain hardcoded paths like `/home/bas06400/` and `/net/polaris/` that must be replaced with your actual data locations
 4. **Download datasets**: Ensure you have access to NTU RGB+D and DAA datasets
 5. **Hardware requirements**: Minimum 16GB VRAM for training
-
-**To find hardcoded paths in your codebase**:
-```bash
-grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
-```
-
+   
 **To update paths**: Edit the relevant lines in preprocessing scripts with your actual paths.
 
 ### Citation
@@ -101,7 +96,7 @@ nano .env  # or your preferred editor
 |----------|-------------|----------|
 | `NTU_USERNAME` | NTU dataset login username | Yes (for NTU download) |
 | `NTU_PASSWORD` | NTU dataset login password | Yes (for NTU download) |
-| `NTU_DOWNLOAD_DIR` | Directory for downloaded data | No (default: `/net/polaris/storage/deeplearning/ntu`) |
+| `NTU_DOWNLOAD_DIR` | Directory for downloaded data | Yes (for NTU download) |
 
 ⚠️ **Never commit** `.env` to version control!
 
@@ -189,18 +184,13 @@ nturgb+d_ir/          # IR videos (.avi)
 
 Contains multi-camera RGB, IR, depth, and skeleton data for daily activities.
 
-**Download**: Contact dataset authors for access
+**Download**: available on: https://driveandact.com/
 
 **⚠️ IMPORTANT**: The DAA dataset preprocessing scripts contain hardcoded paths. After downloading, you must:
 
 1. Update file paths in `Dataset_utils/DAA/combined_data.py`
 2. Update input/output paths in `Dataset_utils/DAA/*.py` scripts
 3. Set your data directory paths in `Dataset_utils/DAA/extract_data.py`
-
-**To find all hardcoded paths in the codebase**:
-```bash
-grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
-```
 
 **Structure**:
 ```
@@ -224,11 +214,6 @@ python Dataset_utils/NTU/clean_low_res.py
 # DAA preprocessing (update paths first!)
 python Dataset_utils/DAA/extract_data.py
 python Dataset_utils/DAA/balancer2.py
-```
-
-**Quick search for hardcoded paths in your codebase**:
-```bash
-grep -r "/home/bas06400\|/net/polaris" Dataset_utils/
 ```
 
 ## Training
@@ -281,7 +266,7 @@ See `MM_SWNCE_HYPERPARAMETERS.md` for detailed hyperparameter documentation.
 ## Evaluation
 
 ### LEP Evaluation (Label Embedding Projection)
-
+ 
 ```bash
 python VIP/src/main.py \
   --config VIP/src/configs/examples/lep_evaluation.json \
@@ -430,8 +415,6 @@ Pretrained model checkpoints (e.g., the IR encoder used for alignment) are **not
 
 - Training the encoder with the provided pipeline (see [Training](#training)), or
 - Contacting the authors for the pretrained weights.
-
-<!-- TODO: add a direct download link (e.g. HuggingFace / Zenodo) once available -->
 
 ## Dependencies
 
